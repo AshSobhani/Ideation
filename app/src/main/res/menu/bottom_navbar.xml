@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navTrack"
+        android:icon="@drawable/nav_discovery"
+        android:title="Discovery" />
+
+    <item
+        android:id="@+id/navProjects"
+        android:icon="@drawable/nav_projects"
+        android:title="My Projects" />
+
+    <item
+        android:id="@+id/navProfile"
+        android:icon="@drawable/nav_profile"
+        android:title="Profile" />
+</menu>

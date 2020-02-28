@@ -42,6 +42,7 @@ public class NewProjectActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_project);
 
+		//Setting views to variables
 		editTextTitle = findViewById(R.id.edit_text_title);
 		editTextDescription = findViewById(R.id.edit_text_description);
 		textViewData = findViewById(R.id.text_view_data);

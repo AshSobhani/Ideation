@@ -1,6 +1,7 @@
 package com.example.ideation;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,9 +27,10 @@ public class SplashScreenActivity extends AppCompatActivity {
 				.withLogo(R.drawable.ideation_logo);
 
 		//Set the text colour and size
-		config.getFooterTextView().setTextColor(Color.parseColor("#00CCFF"));
-		config.getFooterTextView().setPadding(0, 0, 0, 40);
+		config.getFooterTextView().setTextColor(Color.parseColor("#0099cc"));
+		config.getFooterTextView().setPadding(0, 0, 0, 50);
 		config.getFooterTextView().setTextSize(20);
+		config.getFooterTextView().setTypeface(null, Typeface.BOLD);
 
 		//Create and view the splash screen
 		View easySplashScreen = config.create();

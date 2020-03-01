@@ -15,14 +15,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import org.w3c.dom.Text;
 
 public class LoginActivity extends AppCompatActivity {
 	private static final String TAG = "LoginActivity";
 
-	private FirebaseAuth mAuth;
+	private FirebaseAuth firebaseAuth;
 	private ProgressBar loginProgressBar;
 	private EditText emailField;
 	private EditText passwordField;
@@ -33,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_login);
 
 		// Initialize Firebase Auth
-		mAuth = FirebaseAuth.getInstance();
+		firebaseAuth = FirebaseAuth.getInstance();
 
 		//Assign the views to object
 		loginProgressBar = findViewById(R.id.loginProgressBar);
@@ -52,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 		showProgressBar();
 
 		// Sign in with email and password
-		mAuth.signInWithEmailAndPassword(email, password)
+		firebaseAuth.signInWithEmailAndPassword(email, password)
 				.addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 					@Override
 					public void onComplete(@NonNull Task<AuthResult> task) {
@@ -94,6 +91,12 @@ public class LoginActivity extends AppCompatActivity {
 		signIn(email, password);
 	}
 
+	public void onSignUp(View v) {
+		Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+		finish();
+		startActivity(intent);
+	}
+
 	public void showProgressBar() {
 		if (loginProgressBar != null) {
 			loginProgressBar.setVisibility(View.VISIBLE);
@@ -110,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
 	public void onStart() {
 		super.onStart();
 		//// Check if firebaseUser is signed in (non-null) and update UI accordingly.
-		//FirebaseUser currentUser = mAuth.getCurrentUser();
+		//FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 		//updateUI(currentUser);
 	}
 

@@ -20,7 +20,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 		//Configure how the splash screen will look and what activity it will go to
 		EasySplashScreen config = new EasySplashScreen(SplashScreenActivity.this)
 				.withFullScreen()
-				.withTargetActivity(MainActivity.class)
+				.withTargetActivity(LoginActivity.class)
 				.withSplashTimeOut(2500)
 				.withBackgroundColor(Color.parseColor("#333333"))
 				.withFooterText("IDEATION LTD. ©")

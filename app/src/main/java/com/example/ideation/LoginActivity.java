@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 	private static final String TAG = "LoginActivity";
 
+	//Initialise variables
 	private FirebaseAuth firebaseAuth;
 	private ProgressBar loginProgressBar;
 	private EditText emailField;
@@ -35,8 +36,8 @@ public class LoginActivity extends AppCompatActivity {
 
 		//Assign the views to object
 		loginProgressBar = findViewById(R.id.loginProgressBar);
-		emailField = findViewById(R.id.emailText);
-		passwordField = findViewById(R.id.passwordText);
+		emailField = findViewById(R.id.newEmailText);
+		passwordField = findViewById(R.id.newPasswordText);
 
 		hideProgressBar();
 	}
@@ -93,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
 	}
 
 	public void onSignUp(View v) {
+		//Start the sign up activity
 		Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-		finish();
 		startActivity(intent);
 	}
 
@@ -125,5 +126,4 @@ public class LoginActivity extends AppCompatActivity {
 		super.onStop();
 		hideProgressBar();
 	}
-
 }

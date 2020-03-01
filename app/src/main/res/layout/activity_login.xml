@@ -17,7 +17,7 @@
         app:layout_constraintTop_toBottomOf="@+id/signUpButton" />
 
     <EditText
-        android:id="@+id/emailText"
+        android:id="@+id/newEmailText"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/passwordText"
+        android:id="@+id/newPasswordText"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -37,7 +37,7 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailText" />
+        app:layout_constraintTop_toBottomOf="@+id/newEmailText" />
 
     <Button
         android:id="@+id/signInButton"
@@ -47,7 +47,7 @@
         android:text="@string/common_signin_button_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordText" />
+        app:layout_constraintTop_toBottomOf="@+id/newPasswordText" />
 
     <Button
         android:id="@+id/signUpButton"

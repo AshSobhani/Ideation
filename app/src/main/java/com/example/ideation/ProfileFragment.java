@@ -39,7 +39,7 @@ public class ProfileFragment extends Fragment {
 		firebaseUser = firebaseAuth.getCurrentUser();
 
 		//Assign views to variables
-		emailView = v.findViewById(R.id.emailText);
+		emailView = v.findViewById(R.id.newEmailText);
 		logoutButton = v.findViewById(R.id.logoutButton);
 
 		//Set an on click listener for the button

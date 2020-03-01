@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 	}
 
 	private void signIn(String email, String password) {
-		Log.d(TAG, "signIn: " + email);
+		Log.d(TAG, "signIn as: " + email);
 //		if (!validateForm()) {
 //			return;
 //		}
@@ -88,6 +88,12 @@ public class LoginActivity extends AppCompatActivity {
 		//Get the text
 		String email = emailField.getText().toString();
 		String password = passwordField.getText().toString();
+
+		//Make sure strings are not empty (causing an issue)
+		if(email.equals("") || password.equals("")) {
+			email = "empty";
+			password = "empty";
+		}
 
 		//Sign in
 		signIn(email, password);

@@ -41,6 +41,12 @@ public class SignUpActivity extends AppCompatActivity {
 		String emailText = emailField.getText().toString();
 		String passwordText = passwordField.getText().toString();
 
+		//Make sure strings are not empty (causing an issue)
+		if(emailText.equals("") || passwordText.equals("")) {
+			emailText = "empty";
+			passwordText = "empty";
+		}
+
 		//Create the account
 		createAccount(emailText, passwordText);
 	}

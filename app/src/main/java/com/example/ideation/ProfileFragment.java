@@ -57,9 +57,13 @@ public class ProfileFragment extends Fragment {
 	}
 
 	private void updateFields() {
+		//Reload information about the user
+		firebaseUser.reload();
+
 		//Set the text fields
 		emailField.setText(firebaseUser.getEmail());
 
+		//Check if the user is verified
 		if (firebaseUser.isEmailVerified()){
 			verificationField.setText("Verified");
 		}

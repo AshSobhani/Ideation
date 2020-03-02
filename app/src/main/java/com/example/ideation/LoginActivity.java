@@ -44,9 +44,6 @@ public class LoginActivity extends AppCompatActivity {
 
 	private void signIn(String email, String password) {
 		Log.d(TAG, "signIn as: " + email);
-//		if (!validateForm()) {
-//			return;
-//		}
 
 		showProgressBar();
 

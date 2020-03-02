@@ -1,6 +1,7 @@
 package com.example.ideation;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,9 @@ public class DiscoveryFragment extends Fragment {
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		Log.d(TAG, "onCreateView: In Discovery Fragment");
 		//Assign the correct view to the fragment
 		v = inflater.inflate(R.layout.fragment_discovery, container, false);
-
 
 		return v;
 	}

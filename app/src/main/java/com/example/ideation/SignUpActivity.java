@@ -61,7 +61,9 @@ public class SignUpActivity extends AppCompatActivity {
 						if (task.isSuccessful()) {
 							// Sign up success
 							Log.d(TAG, "createUserWithEmail:success");
-							FirebaseUser user = firebaseAuth.getCurrentUser();
+
+							//Email for verification
+							sendEmailVerification();
 
 							//Sign out of the account
 							firebaseAuth.signOut();
@@ -74,6 +76,23 @@ public class SignUpActivity extends AppCompatActivity {
 							Log.w(TAG, "createUserWithEmail:failure", task.getException());
 							Toast.makeText(SignUpActivity.this, "Authentication failed.",
 									Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
+	}
+
+	private void sendEmailVerification() {
+		//Get the current user
+		final FirebaseUser user = firebaseAuth.getCurrentUser();
+		user.sendEmailVerification()
+				.addOnCompleteListener(this, new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						if (task.isSuccessful()) {
+							Toast.makeText(SignUpActivity.this, "Verification email sent to " + user.getEmail(), Toast.LENGTH_SHORT).show();
+						} else {
+							Log.e(TAG, "sendEmailVerification", task.getException());
+							Toast.makeText(SignUpActivity.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
 						}
 					}
 				});

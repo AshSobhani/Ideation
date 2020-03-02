@@ -33,6 +33,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileTitle" />
 
+    <TextView
+        android:id="@+id/verificationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:text="Not Verified"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newEmailText" />
+
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"

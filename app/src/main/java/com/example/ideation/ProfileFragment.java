@@ -21,7 +21,7 @@ public class ProfileFragment extends Fragment {
 	private View v;
 
 	//Make variables
-	private TextView emailView;
+	private TextView emailField, verificationField;
 	private Button logoutButton;
 
 
@@ -31,6 +31,7 @@ public class ProfileFragment extends Fragment {
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		Log.d(TAG, "onCreateView: In Profile Fragment");
 		//Assign the correct view to the fragment
 		v = inflater.inflate(R.layout.fragment_profile, container, false);
 
@@ -39,7 +40,8 @@ public class ProfileFragment extends Fragment {
 		firebaseUser = firebaseAuth.getCurrentUser();
 
 		//Assign views to variables
-		emailView = v.findViewById(R.id.newEmailText);
+		emailField = v.findViewById(R.id.newEmailText);
+		verificationField = v.findViewById(R.id.verificationText);
 		logoutButton = v.findViewById(R.id.logoutButton);
 
 		//Set an on click listener for the button
@@ -51,14 +53,16 @@ public class ProfileFragment extends Fragment {
 			}
 		});
 
-		updateFields();
-
 		return v;
 	}
 
 	private void updateFields() {
 		//Set the text fields
-		emailView.setText(firebaseUser.getEmail());
+		emailField.setText(firebaseUser.getEmail());
+
+		if (firebaseUser.isEmailVerified()){
+			verificationField.setText("Verified");
+		}
 	}
 
 	private void onSignOut() {
@@ -70,5 +74,12 @@ public class ProfileFragment extends Fragment {
 		Intent intent = new Intent(getActivity(), LoginActivity.class);
 		getActivity().finish();
 		startActivity(intent);
+	}
+
+	@Override
+	public void onStart() {
+		//Update fields when they return to the fragment
+		updateFields();
+		super.onStart();
 	}
 }

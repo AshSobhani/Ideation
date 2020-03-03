@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
 
 		//Assign the views to object
 		loginProgressBar = findViewById(R.id.loginProgressBar);
-		emailField = findViewById(R.id.newEmailText);
+		emailField = findViewById(R.id.emailText);
 		passwordField = findViewById(R.id.newPasswordText);
 
 		hideProgressBar();

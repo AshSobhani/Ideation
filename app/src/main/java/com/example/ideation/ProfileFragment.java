@@ -8,9 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,12 +26,16 @@ public class ProfileFragment extends Fragment {
 	private View v;
 
 	//Make variables
-	private TextView emailField, verificationField;
+	private TextView userNameField, firstNameField, lastNameField, emailField, verificationField;
 	private Button logoutButton;
-
-
 	private FirebaseUser firebaseUser;
 	private FirebaseAuth firebaseAuth;
+
+	//Make Strings
+	private String userNameText, firstNameText, lastNameText;
+
+	//Get Fire Store instance and store in db variable
+	private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 	@Nullable
 	@Override
@@ -40,7 +49,10 @@ public class ProfileFragment extends Fragment {
 		firebaseUser = firebaseAuth.getCurrentUser();
 
 		//Assign views to variables
-		emailField = v.findViewById(R.id.newEmailText);
+		userNameField = v.findViewById(R.id.userNameText);
+		firstNameField = v.findViewById(R.id.firstNameText);
+		lastNameField = v.findViewById(R.id.lastNameText);
+		emailField = v.findViewById(R.id.emailText);
 		verificationField = v.findViewById(R.id.verificationText);
 		logoutButton = v.findViewById(R.id.logoutButton);
 
@@ -56,11 +68,17 @@ public class ProfileFragment extends Fragment {
 		return v;
 	}
 
-	private void updateFields() {
+	private void updateTextFields() {
 		//Reload information about the user
 		firebaseUser.reload();
 
+		//Assign user data to text fields
+		retrieveUserData();
+
 		//Set the text fields
+		userNameField.setText(userNameText);
+		firstNameField.setText(firstNameText);
+		lastNameField.setText(lastNameText);
 		emailField.setText(firebaseUser.getEmail());
 
 		//Check if the user is verified
@@ -80,10 +98,34 @@ public class ProfileFragment extends Fragment {
 		startActivity(intent);
 	}
 
+	public void retrieveUserData() {
+		db.collection(IdeationContract.USERS_COLLECTION).document(firebaseUser.getUid()).get()
+				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+					@Override
+					public void onSuccess(DocumentSnapshot documentSnapshot) {
+						if (documentSnapshot.exists()) {
+							userNameText = documentSnapshot.getString(IdeationContract.USER_USERNAME);
+							firstNameText = documentSnapshot.getString(IdeationContract.USER_FIRSTNAME);
+							lastNameText = documentSnapshot.getString(IdeationContract.USER_LASTNAME);
+
+						} else {
+							Toast.makeText(getActivity(), "Document does not exist", Toast.LENGTH_SHORT).show();
+						}
+					}
+				})
+				.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
+						Toast.makeText(getContext(), "Error!", Toast.LENGTH_SHORT).show();
+						Log.d(TAG, e.toString());
+					}
+				});
+	}
+
 	@Override
 	public void onStart() {
 		//Update fields when they return to the fragment
-		updateFields();
+		updateTextFields();
 		super.onStart();
 	}
 }

@@ -26,8 +26,8 @@ public class SignUpActivity extends AppCompatActivity {
 
 	//Initialise variables
 	private FirebaseAuth firebaseAuth;
-	private EditText emailField;
-	private EditText passwordField;
+	private EditText firstNameField, lastNameField, userNameField, emailField, passwordField;
+	private String emailText, passwordText, firstNameText, lastNameText, userNameText;
 
 	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -41,28 +41,36 @@ public class SignUpActivity extends AppCompatActivity {
 		firebaseAuth = FirebaseAuth.getInstance();
 
 		//Assign the views to object
-		emailField = findViewById(R.id.newEmailText);
+		firstNameField = findViewById(R.id.firstNameText);
+		lastNameField = findViewById(R.id.lastNameText);
+		userNameField = findViewById(R.id.userNameText);
+		emailField = findViewById(R.id.emailText);
 		passwordField = findViewById(R.id.newPasswordText);
 	}
 
 	public void onCreateAccount(View v) {
 		//Retrieve the strings
-		String emailText = emailField.getText().toString();
-		String passwordText = passwordField.getText().toString();
+		emailText = emailField.getText().toString();
+		passwordText = passwordField.getText().toString();
+		firstNameText = firstNameField.getText().toString();
+		lastNameText = lastNameField.getText().toString();
+		userNameText = userNameField.getText().toString();
 
-		//Make sure strings are not empty (causing an issue)
-		if(emailText.equals("") || passwordText.equals("")) {
-			emailText = "empty";
-			passwordText = "empty";
+		//If fields are not empty, try to create the account
+		if(!emailText.equals("") && !passwordText.equals("") && !firstNameText.equals("") && !lastNameText.equals("") && !userNameText.equals("")) {
+			//Create the account
+			createAccount(emailText, passwordText);
 		}
-
-		//Create the account
-		createAccount(emailText, passwordText);
+		else {
+			Toast.makeText(SignUpActivity.this, "Authentication failed. (Error: Empty Fields)",
+					Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	public void createAccount(String email, String password) {
 		Log.d(TAG, "createAccount: Creating account");
 
+		//If email and password comply with expected format create the user
 		firebaseAuth.createUserWithEmailAndPassword(email, password)
 				.addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 					@Override
@@ -96,6 +104,8 @@ public class SignUpActivity extends AppCompatActivity {
 	private void sendEmailVerification() {
 		//Get the current user
 		final FirebaseUser user = firebaseAuth.getCurrentUser();
+
+		//Send the mail verification
 		user.sendEmailVerification()
 				.addOnCompleteListener(this, new OnCompleteListener<Void>() {
 					@Override
@@ -116,8 +126,9 @@ public class SignUpActivity extends AppCompatActivity {
 
 		//Create a hash to store the data before inserting into firebase
 		Map<String, Object> userInfo = new HashMap<>();
-		userInfo.put(IdeationContract.USER_FIRSTNAME, "Ash");
-		userInfo.put(IdeationContract.USER_LASTNAME, "Sobhani");
+		userInfo.put(IdeationContract.USER_FIRSTNAME, firstNameText);
+		userInfo.put(IdeationContract.USER_LASTNAME, lastNameText);
+		userInfo.put(IdeationContract.USER_USERNAME, userNameText);
 
 		//Insert user into users collection
 		db.collection(IdeationContract.USERS_COLLECTION).document(UID).set(userInfo)

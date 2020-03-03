@@ -10,11 +10,11 @@ public class IdeationContract {
 	public static final String USER_UID = "UID";
 	public static final String USER_EMAIL = "Email";
 
-	public static final String USER_USERNAME = "UserName";
-	public static final String USER_BIO = "Bio";
-	public static final String USER_AGE = "Age";
 	public static final String USER_FIRSTNAME = "FirstName";
 	public static final String USER_LASTNAME = "LastName";
+	public static final String USER_USERNAME = "Username";
+	public static final String USER_BIO = "Bio";
+	public static final String USER_AGE = "Age";
 	public static final String USER_PHOTOURL = "PhotoUrl";
 
 	//Project Document Fields

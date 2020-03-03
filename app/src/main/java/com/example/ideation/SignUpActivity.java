@@ -10,10 +10,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 	private static final String TAG = "SignUpActivity";
@@ -22,6 +28,9 @@ public class SignUpActivity extends AppCompatActivity {
 	private FirebaseAuth firebaseAuth;
 	private EditText emailField;
 	private EditText passwordField;
+
+	//Make an database instance
+	private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +71,9 @@ public class SignUpActivity extends AppCompatActivity {
 							// Sign up success
 							Log.d(TAG, "createUserWithEmail:success");
 
+							//Add user to users collection
+							addUserToCollection();
+
 							//Email for verification
 							sendEmailVerification();
 
@@ -94,6 +106,32 @@ public class SignUpActivity extends AppCompatActivity {
 							Log.e(TAG, "sendEmailVerification", task.getException());
 							Toast.makeText(SignUpActivity.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
 						}
+					}
+				});
+	}
+
+	private void addUserToCollection() {
+		//Get the users unique ID
+		String UID = firebaseAuth.getUid();
+
+		//Create a hash to store the data before inserting into firebase
+		Map<String, Object> userInfo = new HashMap<>();
+		userInfo.put(IdeationContract.USER_FIRSTNAME, "Ash");
+		userInfo.put(IdeationContract.USER_LASTNAME, "Sobhani");
+
+		//Insert user into users collection
+		db.collection(IdeationContract.USERS_COLLECTION).document(UID).set(userInfo)
+				.addOnSuccessListener(new OnSuccessListener<Void>() {
+					@Override
+					public void onSuccess(Void aVoid) {
+						Toast.makeText(SignUpActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
+					}
+				})
+				.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
+						Toast.makeText(SignUpActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+						Log.d(TAG, e.toString());
 					}
 				});
 	}

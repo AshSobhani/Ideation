@@ -18,8 +18,10 @@ public class IdeationContract {
 	public static final String USER_PHOTOURL = "PhotoUrl";
 
 	//Project Document Fields
-	public static final String INGREDIENTS_ID = "_id";
-	public static final String INGREDIENTS_NAME = "ingredientname";
+	public static final String PROJECT_OWNERUID = "OwnerUID";
+	public static final String PROJECT_NAME = "Name";
+	public static final String PROJECT_DESCRIPTION = "Description";
+
 
 	//Access Requests Fields
 	public static final String RECIPE_INGREDIENTS_RECIPEID = "recipe_id";

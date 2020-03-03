@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity {
 	private static final String TAG = "MainActivity";
 
+	//Create variables
 	BottomNavigationView bottomNav = null;
 	int fragmentFlag = 0;
 

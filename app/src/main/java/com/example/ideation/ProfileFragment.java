@@ -31,9 +31,6 @@ public class ProfileFragment extends Fragment {
 	private FirebaseUser firebaseUser;
 	private FirebaseAuth firebaseAuth;
 
-	//Make Strings
-	private String userNameText, firstNameText, lastNameText;
-
 	//Get Fire Store instance and store in db variable
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
 

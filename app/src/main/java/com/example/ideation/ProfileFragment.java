@@ -65,26 +65,10 @@ public class ProfileFragment extends Fragment {
 			}
 		});
 
-		return v;
-	}
-
-	private void updateTextFields() {
-		//Reload information about the user
-		firebaseUser.reload();
-
-		//Assign user data to text fields
+		//Retrieve and assign user data to text fields
 		retrieveUserData();
 
-		//Set the text fields
-		userNameField.setText(userNameText);
-		firstNameField.setText(firstNameText);
-		lastNameField.setText(lastNameText);
-		emailField.setText(firebaseUser.getEmail());
-
-		//Check if the user is verified
-		if (firebaseUser.isEmailVerified()){
-			verificationField.setText("Verified");
-		}
+		return v;
 	}
 
 	private void onSignOut() {
@@ -104,9 +88,21 @@ public class ProfileFragment extends Fragment {
 					@Override
 					public void onSuccess(DocumentSnapshot documentSnapshot) {
 						if (documentSnapshot.exists()) {
-							userNameText = documentSnapshot.getString(IdeationContract.USER_USERNAME);
-							firstNameText = documentSnapshot.getString(IdeationContract.USER_FIRSTNAME);
-							lastNameText = documentSnapshot.getString(IdeationContract.USER_LASTNAME);
+							//Reload information about the user
+							firebaseUser.reload();
+
+							//Set the text fields
+							userNameField.setText(documentSnapshot.getString(IdeationContract.USER_USERNAME));
+							firstNameField.setText(documentSnapshot.getString(IdeationContract.USER_FIRSTNAME));
+							lastNameField.setText(documentSnapshot.getString(IdeationContract.USER_LASTNAME));
+							emailField.setText(firebaseUser.getEmail());
+
+							//Check if the user is verified
+							if (firebaseUser.isEmailVerified()){
+								verificationField.setText("Verified");
+							} else {
+								verificationField.setText("Not Verified");
+							}
 
 						} else {
 							Toast.makeText(getActivity(), "Document does not exist", Toast.LENGTH_SHORT).show();
@@ -120,12 +116,5 @@ public class ProfileFragment extends Fragment {
 						Log.d(TAG, e.toString());
 					}
 				});
-	}
-
-	@Override
-	public void onStart() {
-		//Update fields when they return to the fragment
-		updateTextFields();
-		super.onStart();
 	}
 }

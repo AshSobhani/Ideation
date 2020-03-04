@@ -1,5 +1,6 @@
 package com.example.ideation;
 
+import android.icu.text.Transliterator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,10 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 		return new ProjectBoxHolder(v);
 	}
 
+	public void deleteProject(int position) {
+		getSnapshots().getSnapshot(position).getReference().delete();
+	}
+
 	class ProjectBoxHolder extends RecyclerView.ViewHolder {
 		//Initialise variables
 		TextView textViewTitle;
@@ -48,6 +53,7 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 			textViewCategory = itemView.findViewById(R.id.projectCategory);
 			textViewDateCreated = itemView.findViewById(R.id.projectDateCreated);
 
+			
 		}
 	}
 }

@@ -12,6 +12,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -21,6 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +34,7 @@ public class MyProjectsFragment extends Fragment {
 	private FloatingActionButton newProjectButton;
 	private RecyclerView recyclerView;
 	private ProjectBoxAdapter adapter;
+	private FirebaseAuth firebaseAuth;
 
 	//Make an database instance and get collection reference
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -43,6 +46,9 @@ public class MyProjectsFragment extends Fragment {
 		Log.d(TAG, "onCreateView: In My Projects Fragment");
 		//Assign the correct view to the fragment
 		v = inflater.inflate(R.layout.fragment_my_projects, container, false);
+
+		// Initialize Firebase Auth
+		firebaseAuth = FirebaseAuth.getInstance();
 
 		//Find the view and assign to member variable
 		newProjectButton = v.findViewById(R.id.newProject);
@@ -64,8 +70,11 @@ public class MyProjectsFragment extends Fragment {
 	}
 
 	private void populateRecyclerView() {
+		//Get the users unique ID
+		String UID = firebaseAuth.getUid();
+
 		//Add query filer below (priority, by date, etc..)
-		Query query = projectRef;
+		Query query = projectRef.whereEqualTo(IdeationContract.PROJECT_OWNERUID, UID);
 
 		//Query the database and build
 		FirestoreRecyclerOptions<ProjectBox> options = new FirestoreRecyclerOptions.Builder<ProjectBox>()
@@ -79,6 +88,19 @@ public class MyProjectsFragment extends Fragment {
 		recyclerView.setHasFixedSize(true);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		recyclerView.setAdapter(adapter);
+
+		//If a project box is swiped left delete the project
+		new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+			@Override
+			public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+				return false;
+			}
+
+			@Override
+			public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+				adapter.deleteProject(viewHolder.getAdapterPosition());
+			}
+		}).attachToRecyclerView(recyclerView);
 	}
 
 	private void onNewProject() {

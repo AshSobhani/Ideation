@@ -9,8 +9,8 @@ public class ProjectBox {
 		//empty constructor needed
 	}
 
-	public ProjectBox(String name, String category, String date) {
-		this.Title = name;
+	public ProjectBox(String title, String category, String date) {
+		this.Title = title;
 		this.Category = category;
 		this.DateCreated = date;
 	}

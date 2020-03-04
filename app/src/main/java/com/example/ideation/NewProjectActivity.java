@@ -7,20 +7,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +24,8 @@ public class NewProjectActivity extends AppCompatActivity {
 	private static final String TAG = "NewProjectActivity";
 
 	//Initialise variables
-	EditText nameField, descriptionField;
-	String nameText, descriptionText;
+	EditText titleField, descriptionField, categoryField;
+	String titleText, descriptionText, categoryText;
 	private FirebaseAuth firebaseAuth;
 
 	//Make an database instance
@@ -44,17 +40,19 @@ public class NewProjectActivity extends AppCompatActivity {
 		// Initialize Firebase Auth
 		firebaseAuth = FirebaseAuth.getInstance();
 
-		nameField = findViewById(R.id.name);
-		descriptionField = findViewById(R.id.description);
+		titleField = findViewById(R.id.projectTitle);
+		descriptionField = findViewById(R.id.projectDescription);
+		categoryField = findViewById(R.id.projectCategory);
 	}
 
 	public void onAddProject(View v) {
 		//Retrieve the strings
-		nameText = nameField.getText().toString();
+		titleText = titleField.getText().toString();
 		descriptionText = descriptionField.getText().toString();
+		categoryText = categoryField.getText().toString();
 
 		//Add project if fields are not empty and finish activity
-		if (!nameField.equals("") && !descriptionText.equals("")){
+		if (!titleField.equals("") && !descriptionText.equals("") && !categoryText.equals("")){
 			addProjectToCollection();
 			finish();
 		} else {
@@ -67,11 +65,19 @@ public class NewProjectActivity extends AppCompatActivity {
 		//Get the users unique ID
 		String UID = firebaseAuth.getUid();
 
+		//Get current date for date created text
+		Date c = Calendar.getInstance().getTime();
+
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String dateCreatedText = df.format(c);
+
 		//Create a hash to store the data before inserting into firebase
 		Map<String, Object> projectInfo = new HashMap<>();
 		projectInfo.put(IdeationContract.PROJECT_OWNERUID, UID);
-		projectInfo.put(IdeationContract.PROJECT_NAME, nameText);
+		projectInfo.put(IdeationContract.PROJECT_TITLE, titleText);
 		projectInfo.put(IdeationContract.PROJECT_DESCRIPTION, descriptionText);
+		projectInfo.put(IdeationContract.PROJECT_CATEGORY, categoryText);
+		projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, dateCreatedText);
 
 		//Insert user into users collection
 		db.collection(IdeationContract.PROJECTS_COLLECTION).document().set(projectInfo)

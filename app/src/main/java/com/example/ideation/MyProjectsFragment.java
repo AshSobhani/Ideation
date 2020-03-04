@@ -85,7 +85,7 @@ public class MyProjectsFragment extends Fragment {
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		recyclerView.setAdapter(adapter);
 
-		//If a project box is swiped left delete the project
+		//Delete Project - If a project box is swiped left delete the project
 		new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 			@Override
 			public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -98,7 +98,7 @@ public class MyProjectsFragment extends Fragment {
 			}
 		}).attachToRecyclerView(recyclerView);
 
-		//Detect when a project has been clicked and open that activity
+		//View Project - Detect when a project has been clicked and open that activity
 		adapter.setOnBoxClickListener(new ProjectBoxAdapter.OnBoxClickListener() {
 			@Override
 			public void onBoxClick(DocumentSnapshot documentSnapshot, int position) {

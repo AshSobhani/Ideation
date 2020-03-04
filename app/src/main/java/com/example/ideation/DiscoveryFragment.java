@@ -1,5 +1,6 @@
 package com.example.ideation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -66,6 +68,22 @@ public class DiscoveryFragment extends Fragment {
 		recyclerView.setHasFixedSize(true);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		recyclerView.setAdapter(adapter);
+
+		//View Project - Detect when a project has been clicked and open that activity
+		adapter.setOnBoxClickListener(new ProjectBoxAdapter.OnBoxClickListener() {
+			@Override
+			public void onBoxClick(DocumentSnapshot documentSnapshot, int position) {
+				//Get owner UID and put it into a new bundle
+				String projectUID = documentSnapshot.getId();
+				Bundle bundle = new Bundle();
+				bundle.putString("projectUID", projectUID);
+
+				//Create an intent and start view project activity whilst also sending the bundle
+				Intent intent = new Intent(getContext(), ViewProjectActivity.class);
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override

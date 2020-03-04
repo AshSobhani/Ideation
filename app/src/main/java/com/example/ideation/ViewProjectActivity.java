@@ -59,10 +59,22 @@ public class ViewProjectActivity extends AppCompatActivity {
 						if (documentSnapshot.exists()) {
 							//Set the text fields
 							titleField.setText(documentSnapshot.getString(IdeationContract.PROJECT_TITLE));
-							//projectOwnerField.setText(documentSnapshot.getString(IdeationContract.USER_FIRSTNAME));
 							categoryField.setText(documentSnapshot.getString(IdeationContract.PROJECT_CATEGORY));
 							descriptionField.setText(documentSnapshot.getString(IdeationContract.PROJECT_DESCRIPTION));
 
+							//Get the ownerUID
+							String ownerUID = documentSnapshot.getString(IdeationContract.PROJECT_OWNERUID);
+
+							//Use the ownerUID to retrieve their name
+							db.collection(IdeationContract.COLLECTION_USERS).document(ownerUID).get()
+									.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+										@Override
+										public void onSuccess(DocumentSnapshot documentSnapshot) {
+											if (documentSnapshot.exists()) {
+												projectOwnerField.setText(documentSnapshot.getString(IdeationContract.USER_USERNAME));
+											}
+										}
+									});
 						} else {
 							Toast.makeText(ViewProjectActivity.this, "Document does not exist", Toast.LENGTH_SHORT).show();
 						}

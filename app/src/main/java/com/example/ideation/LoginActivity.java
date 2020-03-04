@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,8 +24,8 @@ public class LoginActivity extends AppCompatActivity {
 	//Initialise variables
 	private FirebaseAuth firebaseAuth;
 	private ProgressBar loginProgressBar;
-	private EditText emailField;
-	private EditText passwordField;
+	private EditText emailField, passwordField;
+	private TextView loginFailedField;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
 		loginProgressBar = findViewById(R.id.loginProgressBar);
 		emailField = findViewById(R.id.emailText);
 		passwordField = findViewById(R.id.newPasswordText);
+		loginFailedField = findViewById(R.id.loginFailedText);
 
 		hideProgressBar();
 	}
@@ -59,16 +61,11 @@ public class LoginActivity extends AppCompatActivity {
 							enterApp();
 
 						} else {
-							// Sign in failed
+							// Sign in failed - prompt the user
 							Log.w(TAG, "signInWithEmail:failure", task.getException());
-							Toast.makeText(LoginActivity.this, "Authentication failed.",
-									Toast.LENGTH_SHORT).show();
+							loginFailedField.setText("Incorrect username or password");
 						}
 
-						//If Login fails then let the firebaseUser know
-						if (!task.isSuccessful()) {
-							//mStatusTextView.setText(R.string.auth_failed);
-						}
 						hideProgressBar();
 					}
 				});

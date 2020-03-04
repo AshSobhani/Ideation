@@ -28,7 +28,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
 		//Set the text colour and size
 		config.getFooterTextView().setTextColor(Color.parseColor("#0099cc"));
-		config.getFooterTextView().setPadding(0, 0, 0, 50);
+		config.getFooterTextView().setPadding(0, 0, 0, 70);
 		config.getFooterTextView().setTextSize(20);
 		config.getFooterTextView().setTypeface(null, Typeface.BOLD);
 

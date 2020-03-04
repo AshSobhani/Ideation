@@ -2,9 +2,9 @@ package com.example.ideation;
 
 public class IdeationContract {
 	//Collections
-	public static final String USERS_COLLECTION = "Users";
-	public static final String PROJECTS_COLLECTION = "Projects";
-	public static final String ACCESS_REQUESTS_COLLECTION = "Access Requests";
+	public static final String COLLECTION_USERS = "Users";
+	public static final String COLLECTION_PROJECTS = "Projects";
+	public static final String COLLECTION_ACCESS_REQUESTS = "Access Requests";
 
 	//User Document Fields
 	public static final String USER_UID = "UID";

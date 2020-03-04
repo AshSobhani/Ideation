@@ -1,6 +1,5 @@
 package com.example.ideation;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,7 +29,7 @@ public class DiscoveryFragment extends Fragment {
 
 	//Make an database instance and get collection reference
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
-	private CollectionReference projectRef = db.collection(IdeationContract.PROJECTS_COLLECTION);
+	private CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
 
 	@Nullable
 	@Override

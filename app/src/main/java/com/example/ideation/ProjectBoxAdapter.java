@@ -4,14 +4,17 @@ import android.icu.text.Transliterator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, ProjectBoxAdapter.ProjectBoxHolder> {
+	private OnBoxClickListener listener;
 
 	public ProjectBoxAdapter(@NonNull FirestoreRecyclerOptions<ProjectBox> options) {
 		super(options);
@@ -36,6 +39,7 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 	}
 
 	public void deleteProject(int position) {
+		//Delete the project that has been selected
 		getSnapshots().getSnapshot(position).getReference().delete();
 	}
 
@@ -46,14 +50,31 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 		TextView textViewDateCreated;
 
 
-		public ProjectBoxHolder(@NonNull View itemView) {
-			super(itemView);
+		public ProjectBoxHolder(@NonNull View boxView) {
+			super(boxView);
 			//Find views and assign to variables
-			textViewTitle = itemView.findViewById(R.id.projectName);
-			textViewCategory = itemView.findViewById(R.id.projectCategory);
-			textViewDateCreated = itemView.findViewById(R.id.projectDateCreated);
+			textViewTitle = boxView.findViewById(R.id.projectName);
+			textViewCategory = boxView.findViewById(R.id.projectCategory);
+			textViewDateCreated = boxView.findViewById(R.id.projectDateCreated);
 
-			
+			//Set an on click listener which gets the box position so we can use it later
+			boxView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					int position = getAdapterPosition();
+					if (position != RecyclerView.NO_POSITION && listener != null) {
+						listener.onBoxClick(getSnapshots().getSnapshot(position), position);
+					}
+				}
+			});
 		}
+	}
+
+	public interface OnBoxClickListener {
+		void onBoxClick(DocumentSnapshot documentSnapshot, int position);
+	}
+
+	public void setOnBoxClickListener(OnBoxClickListener listener) {
+		this.listener = listener;
 	}
 }

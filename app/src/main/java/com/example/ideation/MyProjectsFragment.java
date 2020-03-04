@@ -1,6 +1,5 @@
 package com.example.ideation;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,16 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,7 +34,7 @@ public class MyProjectsFragment extends Fragment {
 
 	//Make an database instance and get collection reference
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
-	private CollectionReference projectRef = db.collection(IdeationContract.PROJECTS_COLLECTION);
+	private CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
 
 	@Nullable
 	@Override
@@ -101,6 +97,22 @@ public class MyProjectsFragment extends Fragment {
 				adapter.deleteProject(viewHolder.getAdapterPosition());
 			}
 		}).attachToRecyclerView(recyclerView);
+
+		//Detect when a project has been clicked and open that activity
+		adapter.setOnBoxClickListener(new ProjectBoxAdapter.OnBoxClickListener() {
+			@Override
+			public void onBoxClick(DocumentSnapshot documentSnapshot, int position) {
+				//Get owner UID and put it into a new bundle
+				String projectUID = documentSnapshot.getId();
+				Bundle bundle = new Bundle();
+				bundle.putString("projectUID", projectUID);
+
+				//Create an intent and start view project activity whilst also sending the bundle
+				Intent intent = new Intent(getContext(), ViewProjectActivity.class);
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});
 	}
 
 	private void onNewProject() {

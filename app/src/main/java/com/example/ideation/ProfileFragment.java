@@ -80,7 +80,7 @@ public class ProfileFragment extends Fragment {
 	}
 
 	public void retrieveUserData() {
-		db.collection(IdeationContract.USERS_COLLECTION).document(firebaseUser.getUid()).get()
+		db.collection(IdeationContract.COLLECTION_USERS).document(firebaseUser.getUid()).get()
 				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 					@Override
 					public void onSuccess(DocumentSnapshot documentSnapshot) {

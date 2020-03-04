@@ -131,7 +131,7 @@ public class SignUpActivity extends AppCompatActivity {
 		userInfo.put(IdeationContract.USER_USERNAME, userNameText);
 
 		//Insert user into users collection
-		db.collection(IdeationContract.USERS_COLLECTION).document(UID).set(userInfo)
+		db.collection(IdeationContract.COLLECTION_USERS).document(UID).set(userInfo)
 				.addOnSuccessListener(new OnSuccessListener<Void>() {
 					@Override
 					public void onSuccess(Void aVoid) {

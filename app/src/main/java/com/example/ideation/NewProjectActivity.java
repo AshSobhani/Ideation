@@ -80,7 +80,7 @@ public class NewProjectActivity extends AppCompatActivity {
 		projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, dateCreatedText);
 
 		//Insert user into users collection
-		db.collection(IdeationContract.PROJECTS_COLLECTION).document().set(projectInfo)
+		db.collection(IdeationContract.COLLECTION_PROJECTS).document().set(projectInfo)
 				.addOnSuccessListener(new OnSuccessListener<Void>() {
 					@Override
 					public void onSuccess(Void aVoid) {

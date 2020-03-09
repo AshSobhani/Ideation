@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -73,17 +75,42 @@ public class DiscoveryFragment extends Fragment {
 		adapter.setOnBoxClickListener(new ProjectBoxAdapter.OnBoxClickListener() {
 			@Override
 			public void onBoxClick(DocumentSnapshot documentSnapshot, int position) {
-				//Get owner UID and put it into a new bundle
-				String projectUID = documentSnapshot.getId();
-				Bundle bundle = new Bundle();
-				bundle.putString("projectUID", projectUID);
+				//Get owner UID
+				final String projectUID = documentSnapshot.getId();
 
-				//Create an intent and start view project activity whilst also sending the bundle
-				Intent intent = new Intent(getContext(), ViewProjectActivity.class);
-				intent.putExtras(bundle);
-				startActivity(intent);
+				accessProject(projectUID);
 			}
 		});
+	}
+
+	private void accessProject(final String projectUID) {
+		//Does the user already have access to the project
+		db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).collection(IdeationContract.COLLECTION_PROJECT_WHITELIST).document(firebaseAuth.getUid()).get()
+				.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+					@Override
+					public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+						if (task.isSuccessful()) {
+							//Check if the user exists in the project access collection before giving access
+							DocumentSnapshot document = task.getResult();
+							if (document.exists()) {
+								//Put the projectUID into a new bundle
+								Bundle bundle = new Bundle();
+								bundle.putString("projectUID", projectUID);
+
+								//Create an intent and start view project activity whilst also sending the bundle
+								Intent intent = new Intent(getContext(), ViewProjectActivity.class);
+								intent.putExtras(bundle);
+								startActivity(intent);
+							} else {
+								Log.d(TAG, "Document does not exist!");
+							}
+						}
+					}
+				});
+
+		//Is the user verified?
+		//If an NDA form exists has the user signed it?
+
 	}
 
 	@Override

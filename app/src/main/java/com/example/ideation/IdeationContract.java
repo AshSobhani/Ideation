@@ -4,12 +4,10 @@ public class IdeationContract {
 	//Collections
 	public static final String COLLECTION_USERS = "Users";
 	public static final String COLLECTION_PROJECTS = "Projects";
+	public static final String COLLECTION_PROJECT_WHITELIST = "Project Whitelist";
 	public static final String COLLECTION_ACCESS_REQUESTS = "Access Requests";
 
 	//User Document Fields
-	public static final String USER_UID = "UID";
-	public static final String USER_EMAIL = "Email";
-
 	public static final String USER_FIRSTNAME = "FirstName";
 	public static final String USER_LASTNAME = "LastName";
 	public static final String USER_USERNAME = "Username";
@@ -24,6 +22,8 @@ public class IdeationContract {
 	public static final String PROJECT_DESCRIPTION = "Description";
 	public static final String PROJECT_CATEGORY = "Category";
 	public static final String PROJECT_DATE_CREATED = "DateCreated";
+	//Project Whitelist Fields
+	public static final String PROJECT_WHITELIST_DATE = "WhitelistDate";
 
 
 	//Access Requests Fields

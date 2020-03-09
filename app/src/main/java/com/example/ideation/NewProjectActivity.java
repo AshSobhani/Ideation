@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,7 +32,6 @@ public class NewProjectActivity extends AppCompatActivity {
 
 	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class NewProjectActivity extends AppCompatActivity {
 		categoryText = categoryField.getText().toString();
 
 		//Add project if fields are not empty and finish activity
-		if (!titleField.equals("") && !descriptionText.equals("") && !categoryText.equals("")){
+		if (!titleField.equals("") && !descriptionText.equals("") && !categoryText.equals("")) {
 			addProjectToCollection();
 			finish();
 		} else {
@@ -75,7 +75,7 @@ public class NewProjectActivity extends AppCompatActivity {
 						//Get current date for date created text
 						Date c = Calendar.getInstance().getTime();
 						SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-						String dateCreatedText = df.format(c);
+						final String dateCreatedText = df.format(c);
 
 						//Create a hash to store the data before inserting into firebase
 						Map<String, Object> projectInfo = new HashMap<>();
@@ -87,11 +87,17 @@ public class NewProjectActivity extends AppCompatActivity {
 						projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, dateCreatedText);
 
 						//Insert project into project collection
-						db.collection(IdeationContract.COLLECTION_PROJECTS).document().set(projectInfo)
-								.addOnSuccessListener(new OnSuccessListener<Void>() {
+						db.collection(IdeationContract.COLLECTION_PROJECTS).add(projectInfo)
+								.addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
 									@Override
-									public void onSuccess(Void aVoid) {
-										Toast.makeText(NewProjectActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
+									public void onSuccess(DocumentReference documentReference) {
+										Toast.makeText(NewProjectActivity.this, "Project Created", Toast.LENGTH_SHORT).show();
+
+										//Get the user and project UID
+										String projectUID = documentReference.getId();
+
+										//Create projects whitelist collection and whitelist owner
+										whitelistProjectOwner(projectUID, dateCreatedText);
 									}
 								})
 								.addOnFailureListener(new OnFailureListener() {
@@ -108,6 +114,30 @@ public class NewProjectActivity extends AppCompatActivity {
 					public void onFailure(@NonNull Exception e) {
 						Toast.makeText(NewProjectActivity.this, "Failed to access user", Toast.LENGTH_SHORT).show();
 						Log.d(TAG, e.toString());
+					}
+				});
+	}
+
+	public void whitelistProjectOwner(String passedProjectUID, String whitelistDate) {
+		String projectUID = passedProjectUID;
+		String ownerUID = firebaseAuth.getUid();
+
+		//Create data hash map holding access date
+		Map<String, Object> data = new HashMap<>();
+		data.put(IdeationContract.PROJECT_WHITELIST_DATE, whitelistDate);
+
+		//Add the owner to the project whitelist
+		db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).collection(IdeationContract.COLLECTION_PROJECT_WHITELIST).document(ownerUID).set(data)
+				.addOnSuccessListener(new OnSuccessListener<Void>() {
+					@Override
+					public void onSuccess(Void aVoid) {
+						Toast.makeText(NewProjectActivity.this, "Owner added to whitelist", Toast.LENGTH_SHORT).show();
+					}
+				})
+				.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
+						Toast.makeText(NewProjectActivity.this, "Failed to add owner to whitelist", Toast.LENGTH_SHORT).show();
 					}
 				});
 	}

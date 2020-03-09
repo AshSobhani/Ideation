@@ -56,34 +56,17 @@ public class ViewProjectActivity extends AppCompatActivity {
 				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 					@Override
 					public void onSuccess(DocumentSnapshot documentSnapshot) {
-						if (documentSnapshot.exists()) {
 							//Set the text fields
 							titleField.setText(documentSnapshot.getString(IdeationContract.PROJECT_TITLE));
+							projectOwnerField.setText(documentSnapshot.getString(IdeationContract.PROJECT_OWNERNAME));
 							categoryField.setText(documentSnapshot.getString(IdeationContract.PROJECT_CATEGORY));
 							descriptionField.setText(documentSnapshot.getString(IdeationContract.PROJECT_DESCRIPTION));
-
-							//Get the ownerUID
-							String ownerUID = documentSnapshot.getString(IdeationContract.PROJECT_OWNERUID);
-
-							//Use the ownerUID to retrieve their name
-							db.collection(IdeationContract.COLLECTION_USERS).document(ownerUID).get()
-									.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-										@Override
-										public void onSuccess(DocumentSnapshot documentSnapshot) {
-											if (documentSnapshot.exists()) {
-												projectOwnerField.setText(documentSnapshot.getString(IdeationContract.USER_USERNAME));
-											}
-										}
-									});
-						} else {
-							Toast.makeText(ViewProjectActivity.this, "Document does not exist", Toast.LENGTH_SHORT).show();
-						}
 					}
 				})
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(ViewProjectActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+						Toast.makeText(ViewProjectActivity.this, "Error: Project Not Found", Toast.LENGTH_SHORT).show();
 						Log.d(TAG, e.toString());
 					}
 				});

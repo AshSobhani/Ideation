@@ -8,6 +8,7 @@
         android:id="@+id/projectsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="600dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/discoveryTitle" />
@@ -15,10 +16,10 @@
     <TextView
         android:id="@+id/discoveryTitle"
         android:layout_width="200dp"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:gravity="center_vertical"
         android:text="Discovery"
         android:textAllCaps="true"

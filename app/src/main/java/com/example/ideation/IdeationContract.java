@@ -26,7 +26,6 @@ public class IdeationContract {
 	public static final String PROJECT_WHITELIST_DATE = "WhitelistDate";
 
 
-	//Access Requests Fields
-	public static final String RECIPE_INGREDIENTS_RECIPEID = "recipe_id";
-	public static final String RECIPE_INGREDIENTS_INGREDIENTID = "ingredient_id";
+	//Access Requests Document Fields
+	public static final String ACCESS_REQUESTS_EXAMPLE = "Example";
 }

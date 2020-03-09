@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +28,7 @@ public class SignUpActivity extends AppCompatActivity {
 	//Initialise variables
 	private FirebaseAuth firebaseAuth;
 	private EditText firstNameField, lastNameField, userNameField, emailField, passwordField;
+	private TextView signUpTextField;
 	private String emailText, passwordText, firstNameText, lastNameText, userNameText;
 
 	//Make an database instance
@@ -46,6 +48,7 @@ public class SignUpActivity extends AppCompatActivity {
 		userNameField = findViewById(R.id.userNameText);
 		emailField = findViewById(R.id.emailText);
 		passwordField = findViewById(R.id.newPasswordText);
+		signUpTextField = findViewById(R.id.signUpFailedText);
 	}
 
 	public void onCreateAccount(View v) {
@@ -62,8 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
 			createAccount(emailText, passwordText);
 		}
 		else {
-			Toast.makeText(SignUpActivity.this, "Authentication failed. (Error: Empty Fields)",
-					Toast.LENGTH_SHORT).show();
+			signUpTextField.setText("Please fill out all the empty fields.");
 		}
 	}
 

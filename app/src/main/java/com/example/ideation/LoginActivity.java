@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
 						} else {
 							// Sign in failed - prompt the user
 							Log.w(TAG, "signInWithEmail:failure", task.getException());
-							loginFailedField.setText("Incorrect username or password");
+							loginFailedField.setText("Incorrect username or password.");
 						}
 
 						hideProgressBar();

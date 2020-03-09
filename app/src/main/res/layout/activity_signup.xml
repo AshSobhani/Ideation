@@ -72,6 +72,15 @@
             android:inputType="textPassword"
             android:padding="10dp" />
 
+        <EditText
+            android:id="@+id/confirmPasswordText"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:padding="10dp" />
+
         <TextView
             android:id="@+id/signUpFailedText"
             android:layout_width="match_parent"

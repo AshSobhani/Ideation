@@ -27,9 +27,9 @@ public class SignUpActivity extends AppCompatActivity {
 
 	//Initialise variables
 	private FirebaseAuth firebaseAuth;
-	private EditText firstNameField, lastNameField, userNameField, emailField, passwordField;
+	private EditText firstNameField, lastNameField, userNameField, emailField, passwordField, confirmPasswordField;
+	private String emailText, passwordText, confirmPasswordText, firstNameText, lastNameText, userNameText;
 	private TextView signUpTextField;
-	private String emailText, passwordText, firstNameText, lastNameText, userNameText;
 
 	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -48,23 +48,29 @@ public class SignUpActivity extends AppCompatActivity {
 		userNameField = findViewById(R.id.userNameText);
 		emailField = findViewById(R.id.emailText);
 		passwordField = findViewById(R.id.newPasswordText);
+		confirmPasswordField = findViewById(R.id.confirmPasswordText);
 		signUpTextField = findViewById(R.id.signUpFailedText);
 	}
 
 	public void onCreateAccount(View v) {
 		//Retrieve the strings
-		emailText = emailField.getText().toString();
-		passwordText = passwordField.getText().toString();
 		firstNameText = firstNameField.getText().toString();
 		lastNameText = lastNameField.getText().toString();
+		emailText = emailField.getText().toString();
+		passwordText = passwordField.getText().toString();
+		confirmPasswordText = confirmPasswordField.getText().toString();
 		userNameText = userNameField.getText().toString();
 
 		//If fields are not empty, try to create the account
 		if(!emailText.equals("") && !passwordText.equals("") && !firstNameText.equals("") && !lastNameText.equals("") && !userNameText.equals("")) {
-			//Create the account
-			createAccount(emailText, passwordText);
-		}
-		else {
+			//If the password match
+			if(passwordText.equals(confirmPasswordText)){
+				//Create the account
+				createAccount(emailText, passwordText);
+			} else {
+				signUpTextField.setText("Passwords do not match");
+			}
+		} else {
 			signUpTextField.setText("Please fill out all the empty fields.");
 		}
 	}

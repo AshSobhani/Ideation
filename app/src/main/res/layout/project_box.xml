@@ -49,6 +49,16 @@
             android:textColor="@color/colorPrimary"
             android:layout_alignParentLeft="true" />
 
+        <TextView
+            android:id="@+id/ownerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/projectName"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="John Doe"
+            android:textColor="@color/colorAccent" />
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

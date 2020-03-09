@@ -24,6 +24,7 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 	protected void onBindViewHolder(@NonNull ProjectBoxHolder holder, int position, @NonNull ProjectBox model) {
 		//Set the Project Box fields respectively
 		holder.textViewTitle.setText(model.getTitle());
+		holder.textViewOwnerName.setText(model.getOwnerName());
 		holder.textViewCategory.setText(model.getCategory());
 		holder.textViewDateCreated.setText(model.getDateCreated());
 	}
@@ -46,6 +47,7 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 	class ProjectBoxHolder extends RecyclerView.ViewHolder {
 		//Initialise variables
 		TextView textViewTitle;
+		TextView textViewOwnerName;
 		TextView textViewCategory;
 		TextView textViewDateCreated;
 
@@ -54,6 +56,7 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 			super(boxView);
 			//Find views and assign to variables
 			textViewTitle = boxView.findViewById(R.id.projectName);
+			textViewOwnerName = boxView.findViewById(R.id.ownerName);
 			textViewCategory = boxView.findViewById(R.id.projectCategory);
 			textViewDateCreated = boxView.findViewById(R.id.projectDateCreated);
 

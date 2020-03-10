@@ -57,6 +57,7 @@ public class DiscoveryFragment extends Fragment {
 	private void populateRecyclerView() {
 		//Add query filer below (priority, by date, etc..)
 		Query query = projectRef;
+		//Query query = projectRef.orderBy("name").startAt(searchText).endAt(searchText + "\uf8ff");
 
 		//Query the database and build
 		FirestoreRecyclerOptions<ProjectBox> options = new FirestoreRecyclerOptions.Builder<ProjectBox>()

@@ -10,6 +10,8 @@
         android:layout_width="152dp"
         android:layout_height="56dp"
 
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
         android:clickable="true"
         android:focusable="true"
         android:tint="#00ccff"
@@ -17,7 +19,6 @@
         app:elevation="5dp"
         app:layout_constraintBottom_toTopOf="@+id/projectsRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/projectsTitle"
         app:layout_constraintTop_toTopOf="parent"
         app:maxImageSize="50dp"
         app:srcCompat="@android:drawable/ic_input_add"
@@ -34,7 +35,7 @@
         android:text="My Projects"
         android:textAllCaps="true"
         android:textColor="#333333"
-        android:textSize="36sp"
+        android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

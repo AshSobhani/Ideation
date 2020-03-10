@@ -17,7 +17,7 @@
         android:text="Login"
         android:textAllCaps="true"
         android:textColor="#333333"
-        android:textSize="36sp"
+        android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,10 +27,10 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUpButton" />
+        app:layout_constraintTop_toBottomOf="@+id/forgottenPassword" />
 
     <EditText
         android:id="@+id/emailText"
@@ -98,5 +98,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newPasswordText" />
+
+    <TextView
+        android:id="@+id/forgottenPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:text="Forgot my password"
+        android:textColor="#3368ED"
+        app:layout_constraintStart_toStartOf="@+id/signUpButton"
+        app:layout_constraintTop_toBottomOf="@+id/signUpButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

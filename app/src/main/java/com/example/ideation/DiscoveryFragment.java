@@ -103,7 +103,9 @@ public class DiscoveryFragment extends Fragment {
 								intent.putExtras(bundle);
 								startActivity(intent);
 							} else {
-								Log.d(TAG, "Document does not exist!");
+								Log.d(TAG, "Project access denied");
+
+								openAccessDialog();
 							}
 						}
 					}
@@ -112,6 +114,12 @@ public class DiscoveryFragment extends Fragment {
 		//Is the user verified?
 		//If an NDA form exists has the user signed it?
 
+	}
+
+	private void openAccessDialog() {
+		//Make an instance of our access dialog and show
+		AccessDialog accessDialog = new AccessDialog();
+		accessDialog.show(getParentFragmentManager(), "Access Dialog");
 	}
 
 	@Override

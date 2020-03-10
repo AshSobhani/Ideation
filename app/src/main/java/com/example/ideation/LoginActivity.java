@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 	private FirebaseAuth firebaseAuth;
 	private ProgressBar loginProgressBar;
 	private EditText emailField, passwordField;
-	private TextView loginFailedField;
+	private TextView loginFailedField, forgottonPasswordField;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,15 @@ public class LoginActivity extends AppCompatActivity {
 		emailField = findViewById(R.id.emailText);
 		passwordField = findViewById(R.id.newPasswordText);
 		loginFailedField = findViewById(R.id.loginFailedText);
+		forgottonPasswordField = findViewById(R.id.forgottenPassword);
+
+		//Open dialog on forgot my password click
+		forgottonPasswordField.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				openResetDialog();
+			}
+		});
 
 		hideProgressBar();
 	}
@@ -56,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 					public void onComplete(@NonNull Task<AuthResult> task) {
 						if (task.isSuccessful()) {
 							// Sign in success
-							Log.d(TAG, "signInWithEmail:success");
+							Log.d(TAG, "signInWithEmail: success");
 
 							enterApp();
 
@@ -82,6 +93,9 @@ public class LoginActivity extends AppCompatActivity {
 		String email = emailField.getText().toString();
 		String password = passwordField.getText().toString();
 
+		//Minimise the keyboard on action done
+		passwordField.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
 		//Make sure strings are not empty (causing an issue)
 		if(email.equals("") || password.equals("")) {
 			email = "empty";
@@ -96,6 +110,12 @@ public class LoginActivity extends AppCompatActivity {
 		//Start the sign up activity
 		Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
 		startActivity(intent);
+	}
+
+	private void openResetDialog() {
+		//Make an instance of our access dialog and show
+		ResetPasswordDialog resetDialog = new ResetPasswordDialog();
+		resetDialog.show(getSupportFragmentManager(), "Reset Dialog");
 	}
 
 	public void showProgressBar() {

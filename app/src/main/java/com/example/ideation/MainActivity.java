@@ -27,12 +27,9 @@ public class MainActivity extends AppCompatActivity {
 		bottomNav = findViewById(R.id.bottom_navbar);
 		bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-
 		//Set starting fragment to sessions
 		getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DiscoveryFragment()).commit();
-
 	}
-
 
 	//Create a listener to detect changes in selected fragments
 	private BottomNavigationView.OnNavigationItemSelectedListener navListener =
@@ -42,14 +39,16 @@ public class MainActivity extends AppCompatActivity {
 					Fragment selectedFragment = null;
 
 					//Set selected fragment accordingly by whats been selected
+					//Set a flag to for return to fragment checker
 					switch (menuItem.getItemId()) {
-						case R.id.navProjects:
+						case R.id.navDiscovery:
 							fragmentFlag = 0;
-							selectedFragment = new MyProjectsFragment();
+							selectedFragment = new DiscoveryFragment();
 							break;
 
-						case R.id.navTrack:
-							selectedFragment = new DiscoveryFragment();
+						case R.id.navMyProjects:
+							fragmentFlag = 1;
+							selectedFragment = new MyProjectsFragment();
 							break;
 
 						case R.id.navProfile:
@@ -71,8 +70,13 @@ public class MainActivity extends AppCompatActivity {
 		switch (fragmentFlag) {
 			case 0:
 				//Return to sessions fragment and check navigation icon
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProjectsFragment()).commit();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DiscoveryFragment()).commit();
 				bottomNav.getMenu().getItem(0).setChecked(true);
+				break;
+			case 1:
+				//Return to sessions fragment and check navigation icon
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProjectsFragment()).commit();
+				bottomNav.getMenu().getItem(1).setChecked(true);
 				break;
 			case 2:
 				//Return to profile fragment and check navigation icon
@@ -82,5 +86,12 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		//Make sure we are on the right fragment
+		returnToFragment();
+	}
 }
 

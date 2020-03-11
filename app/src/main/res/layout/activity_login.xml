@@ -65,7 +65,7 @@
         android:onClick="onSignIn"
         android:text="@string/common_signin_button_text"
         android:textSize="15sp"
-        android:background="@drawable/rounded_login_button"
+        android:background="@drawable/rounded_signin_button"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

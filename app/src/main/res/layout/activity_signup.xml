@@ -116,6 +116,6 @@
             android:text="Create Account"
             android:textSize="15sp"
             android:textColor="@color/colorPrimary"
-            android:background="@drawable/rounded_login_button"/>
+            android:background="@drawable/rounded_signin_button"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

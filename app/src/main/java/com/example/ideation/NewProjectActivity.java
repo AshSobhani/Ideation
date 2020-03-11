@@ -41,6 +41,7 @@ public class NewProjectActivity extends AppCompatActivity {
 		// Initialize Firebase Auth
 		firebaseAuth = FirebaseAuth.getInstance();
 
+		//Assign views to variables
 		titleField = findViewById(R.id.projectTitle);
 		descriptionField = findViewById(R.id.projectDescription);
 		categoryField = findViewById(R.id.projectCategory);

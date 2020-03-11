@@ -11,10 +11,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
 	private FirebaseAuth firebaseAuth;
 	private ProgressBar loginProgressBar;
 	private EditText emailField, passwordField;
-	private TextView loginFailedField, forgottonPasswordField;
+	private TextView loginFailedField, forgottenPasswordField;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +40,10 @@ public class LoginActivity extends AppCompatActivity {
 		emailField = findViewById(R.id.emailText);
 		passwordField = findViewById(R.id.newPasswordText);
 		loginFailedField = findViewById(R.id.loginFailedText);
-		forgottonPasswordField = findViewById(R.id.forgottenPassword);
+		forgottenPasswordField = findViewById(R.id.forgottenPassword);
 
 		//Open dialog on forgot my password click
-		forgottonPasswordField.setOnClickListener(new View.OnClickListener() {
+		forgottenPasswordField.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				openResetDialog();
@@ -67,14 +65,14 @@ public class LoginActivity extends AppCompatActivity {
 					public void onComplete(@NonNull Task<AuthResult> task) {
 						if (task.isSuccessful()) {
 							// Sign in success
-							Log.d(TAG, "signInWithEmail: success");
+							Log.d(TAG, "signIn: Success");
 
 							enterApp();
 
 						} else {
 							// Sign in failed - prompt the user
-							Log.w(TAG, "signInWithEmail:failure", task.getException());
-							loginFailedField.setText("Incorrect username or password.");
+							Log.w(TAG, "signIn: Failure", task.getException());
+							loginFailedField.setText("Incorrect email or password.");
 						}
 						hideProgressBar();
 					}

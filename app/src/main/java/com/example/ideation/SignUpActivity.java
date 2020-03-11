@@ -32,7 +32,7 @@ public class SignUpActivity extends AppCompatActivity {
 	private FirebaseAuth firebaseAuth;
 	private EditText firstNameField, lastNameField, userNameField, emailField, passwordField, confirmPasswordField;
 	private String emailText, passwordText, confirmPasswordText, firstNameText, lastNameText, userNameText;
-	private TextView signUpTextField;
+	private TextView signUpFailedTextField;
 
 	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -52,7 +52,7 @@ public class SignUpActivity extends AppCompatActivity {
 		emailField = findViewById(R.id.emailText);
 		passwordField = findViewById(R.id.newPasswordText);
 		confirmPasswordField = findViewById(R.id.confirmPasswordText);
-		signUpTextField = findViewById(R.id.signUpFailedText);
+		signUpFailedTextField = findViewById(R.id.signUpFailedText);
 	}
 
 	public void onCreateAccount(View v) {
@@ -71,10 +71,10 @@ public class SignUpActivity extends AppCompatActivity {
 				//Create the account
 				createAccount(emailText, passwordText);
 			} else {
-				signUpTextField.setText("Passwords do not match");
+				signUpFailedTextField.setText("Passwords do not match");
 			}
 		} else {
-			signUpTextField.setText("Please fill out all the empty fields.");
+			signUpFailedTextField.setText("Please fill out all the empty fields.");
 		}
 	}
 
@@ -88,7 +88,7 @@ public class SignUpActivity extends AppCompatActivity {
 					public void onComplete(@NonNull Task<AuthResult> task) {
 						if (task.isSuccessful()) {
 							// Sign up success
-							Log.d(TAG, "createUserWithEmail:success");
+							Log.d(TAG, "createAccount: Success");
 
 							//Add user to users collection
 							addUserToCollection();
@@ -101,26 +101,27 @@ public class SignUpActivity extends AppCompatActivity {
 
 							//Finish activity and return to login activity
 							finish();
-
 						}
 					}
 				})
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
+						Log.d(TAG, "createAccount: Failed");
+
 						// Sign up failure, check why the sign up failed
 						if (e instanceof FirebaseAuthWeakPasswordException) {
 							// Password too weak
-							signUpTextField.setText("Password is too week");
+							signUpFailedTextField.setText("Password is too week");
 						} else if (e instanceof FirebaseAuthInvalidCredentialsException) {
 							// Email address is not a real email address
-							signUpTextField.setText("Please enter a valid email address");
+							signUpFailedTextField.setText("Please enter a valid email address");
 						} else if (e instanceof FirebaseAuthUserCollisionException) {
 							// Collision with existing user email
-							signUpTextField.setText("Email address is already in use");
+							signUpFailedTextField.setText("Email address is already in use");
 						} else {
 							//If its not any of the issues above just inform of creation failure
-							signUpTextField.setText("Account creation was unsuccessful");
+							signUpFailedTextField.setText("Account creation was unsuccessful");
 						}
 					}
 				});

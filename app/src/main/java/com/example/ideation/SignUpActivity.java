@@ -16,6 +16,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -62,9 +65,9 @@ public class SignUpActivity extends AppCompatActivity {
 		userNameText = userNameField.getText().toString();
 
 		//If fields are not empty, try to create the account
-		if(!emailText.equals("") && !passwordText.equals("") && !firstNameText.equals("") && !lastNameText.equals("") && !userNameText.equals("")) {
+		if (!emailText.equals("") && !passwordText.equals("") && !firstNameText.equals("") && !lastNameText.equals("") && !userNameText.equals("")) {
 			//If the password match
-			if(passwordText.equals(confirmPasswordText)){
+			if (passwordText.equals(confirmPasswordText)) {
 				//Create the account
 				createAccount(emailText, passwordText);
 			} else {
@@ -99,12 +102,25 @@ public class SignUpActivity extends AppCompatActivity {
 							//Finish activity and return to login activity
 							finish();
 
-						} else {
-							// Sign up failure
-							Log.w(TAG, "createUserWithEmail:failure", task.getException());
+						}
+					}
+				})
+				.addOnFailureListener(new OnFailureListener() {
+					@Override
+					public void onFailure(@NonNull Exception e) {
+						// Sign up failure, check why the sign up failed
+						if (e instanceof FirebaseAuthWeakPasswordException) {
+							// Password too weak
+							signUpTextField.setText("Password is too week");
+						} else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+							// Email address is not a real email address
+							signUpTextField.setText("Please enter a valid email address");
+						} else if (e instanceof FirebaseAuthUserCollisionException) {
+							// Collision with existing user email
 							signUpTextField.setText("Email address is already in use");
-							Toast.makeText(SignUpActivity.this, "Authentication failed.",
-									Toast.LENGTH_SHORT).show();
+						} else {
+							//If its not any of the issues above just inform of creation failure
+							signUpTextField.setText("Account creation was unsuccessful");
 						}
 					}
 				});

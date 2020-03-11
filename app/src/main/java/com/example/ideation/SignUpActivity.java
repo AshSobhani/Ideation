@@ -102,6 +102,7 @@ public class SignUpActivity extends AppCompatActivity {
 						} else {
 							// Sign up failure
 							Log.w(TAG, "createUserWithEmail:failure", task.getException());
+							signUpTextField.setText("Email address is already in use");
 							Toast.makeText(SignUpActivity.this, "Authentication failed.",
 									Toast.LENGTH_SHORT).show();
 						}

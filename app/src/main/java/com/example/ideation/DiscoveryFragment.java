@@ -104,22 +104,25 @@ public class DiscoveryFragment extends Fragment {
 								startActivity(intent);
 							} else {
 								Log.d(TAG, "Project access denied");
-
-								openAccessDialog();
+								//Open dialog notifying user they don't have access to the project
+								openDeniedDialog(projectUID);
 							}
 						}
 					}
 				});
-
 		//Is the user verified?
 		//If an NDA form exists has the user signed it?
-
 	}
 
-	private void openAccessDialog() {
-		//Make an instance of our access dialog and show
-		AccessDialog accessDialog = new AccessDialog();
-		accessDialog.show(getParentFragmentManager(), "Access Dialog");
+	private void openDeniedDialog(String projectUID) {
+		//Put the projectUID into a new bundle
+		Bundle bundle = new Bundle();
+		bundle.putString("projectUID", projectUID);
+
+		//Make an instance of our access dialog and pass through our bundle before showing
+		DeniedDialog deniedDialog = new DeniedDialog();
+		deniedDialog.setArguments(bundle);
+		deniedDialog.show(getParentFragmentManager(), "Denied Dialog");
 	}
 
 	@Override

@@ -98,7 +98,7 @@ public class NewProjectActivity extends AppCompatActivity {
 										String projectUID = documentReference.getId();
 
 										//Create projects whitelist collection and whitelist owner
-										whitelistProjectOwner(projectUID, dateCreatedText);
+										whitelistProjectOwner(projectUID);
 									}
 								})
 								.addOnFailureListener(new OnFailureListener() {
@@ -119,13 +119,19 @@ public class NewProjectActivity extends AppCompatActivity {
 				});
 	}
 
-	public void whitelistProjectOwner(String passedProjectUID, String whitelistDate) {
+	public void whitelistProjectOwner(String passedProjectUID) {
+		//Get project and owner UID
 		String projectUID = passedProjectUID;
 		String ownerUID = firebaseAuth.getUid();
 
+		//Get current date for whitelisted date time
+		Date c = Calendar.getInstance().getTime();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd 'at' HH:mm:ss");
+		final String whitelistDate = df.format(c);
+
 		//Create data hash map holding access date
 		Map<String, Object> data = new HashMap<>();
-		data.put(IdeationContract.PROJECT_WHITELIST_DATE, whitelistDate);
+		data.put(IdeationContract.PROJECT_WHITELIST_DATETIME, whitelistDate);
 
 		//Add the owner to the project whitelist
 		db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).collection(IdeationContract.COLLECTION_PROJECT_WHITELIST).document(ownerUID).set(data)

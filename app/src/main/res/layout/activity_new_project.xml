@@ -45,6 +45,8 @@
         android:layout_marginTop="16dp"
         android:onClick="onAddProject"
         android:text="Save"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/rounded_signin_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,6 +36,7 @@ public class MyProjectsFragment extends Fragment {
 	//Make an database instance and get collection reference
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
 	private CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
+	private Button accessRequestsButton;
 
 	@Nullable
 	@Override
@@ -48,6 +50,7 @@ public class MyProjectsFragment extends Fragment {
 
 		//Find the view and assign to member variable
 		newProjectButton = v.findViewById(R.id.newProject);
+		accessRequestsButton = v.findViewById(R.id.openAccessRequests);
 		recyclerView = v.findViewById(R.id.projectsRecyclerView);
 
 		//Set an on click listener for the button
@@ -56,6 +59,15 @@ public class MyProjectsFragment extends Fragment {
 			public void onClick(View view) {
 				//Start Tracking activity and service
 				onNewProject();
+			}
+		});
+
+		//Set an on click listener for the button
+		accessRequestsButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				//Start Tracking activity and service
+				openAccessRequestsDialog();
 			}
 		});
 
@@ -113,6 +125,12 @@ public class MyProjectsFragment extends Fragment {
 				startActivity(intent);
 			}
 		});
+	}
+
+	private void openAccessRequestsDialog() {
+		//Make an instance of our access dialog and show it
+		AccessRequestsDialog accessRequestsDialog = new AccessRequestsDialog();
+		accessRequestsDialog.show(getParentFragmentManager(), "Access Request Dialog");
 	}
 
 	private void onNewProject() {

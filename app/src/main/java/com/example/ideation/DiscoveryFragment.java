@@ -31,9 +31,8 @@ public class DiscoveryFragment extends Fragment {
 	private ProjectBoxAdapter adapter;
 	private FirebaseAuth firebaseAuth;
 
-	//Make an database instance and get collection reference
+	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
-	private CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
 
 	@Nullable
 	@Override
@@ -55,8 +54,8 @@ public class DiscoveryFragment extends Fragment {
 	}
 
 	private void populateRecyclerView() {
-		//Add query filer below (priority, by date, etc..)
-		Query query = projectRef;
+		//Create the project collection reference, and if needed add query filer below (priority, by date, etc..)
+		Query query = db.collection(IdeationContract.COLLECTION_PROJECTS);
 		//Query query = projectRef.orderBy("name").startAt(searchText).endAt(searchText + "\uf8ff");
 
 		//Query the database and build

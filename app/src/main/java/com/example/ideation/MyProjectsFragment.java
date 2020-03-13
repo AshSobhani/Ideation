@@ -29,14 +29,14 @@ public class MyProjectsFragment extends Fragment {
 	//Initialise Variables
 	private View v;
 	private FloatingActionButton newProjectButton;
+	private Button accessRequestsButton;
 	private RecyclerView recyclerView;
 	private ProjectBoxAdapter adapter;
 	private FirebaseAuth firebaseAuth;
 
-	//Make an database instance and get collection reference
+	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
-	private CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
-	private Button accessRequestsButton;
+
 
 	@Nullable
 	@Override
@@ -81,7 +81,8 @@ public class MyProjectsFragment extends Fragment {
 		//Get the users unique ID
 		String UID = firebaseAuth.getUid();
 
-		//Add query filer below (priority, by date, etc..)
+		//Get collection reference and add query filer below (priority, by date, etc..)
+		CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
 		Query query = projectRef.whereEqualTo(IdeationContract.PROJECT_OWNERUID, UID);
 
 		//Query the database and build
@@ -96,19 +97,6 @@ public class MyProjectsFragment extends Fragment {
 		recyclerView.setHasFixedSize(true);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		recyclerView.setAdapter(adapter);
-
-		//Delete Project - If a project box is swiped left delete the project
-		new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-			@Override
-			public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-				return false;
-			}
-
-			@Override
-			public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-				adapter.deleteProject(viewHolder.getAdapterPosition());
-			}
-		}).attachToRecyclerView(recyclerView);
 
 		//View Project - Detect when a project has been clicked and open that activity
 		adapter.setOnBoxClickListener(new ProjectBoxAdapter.OnBoxClickListener() {
@@ -125,6 +113,19 @@ public class MyProjectsFragment extends Fragment {
 				startActivity(intent);
 			}
 		});
+
+		//Delete Project - If a project box is swiped left delete the project
+		new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+			@Override
+			public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+				return false;
+			}
+
+			@Override
+			public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+				adapter.deleteProject(viewHolder.getAdapterPosition());
+			}
+		}).attachToRecyclerView(recyclerView);
 	}
 
 	private void openAccessRequestsDialog() {

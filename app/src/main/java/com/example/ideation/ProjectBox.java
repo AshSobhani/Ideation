@@ -1,15 +1,19 @@
 package com.example.ideation;
 
-public class ProjectBox {
+import com.google.firebase.Timestamp;
 
+import java.text.SimpleDateFormat;
+
+public class ProjectBox {
 	//Declare variables (must be caps for fire store query)
-	private String Title, OwnerName, Category, DateCreated;
+	private String Title, OwnerName, Category;
+	private Timestamp DateCreated;
 
 	public ProjectBox() {
 		//empty constructor needed
 	}
 
-	public ProjectBox(String title, String ownerName, String category, String dateCreated) {
+	public ProjectBox(String title, String ownerName, String category, Timestamp dateCreated) {
 		this.Title = title;
 		this.OwnerName = ownerName;
 		this.Category = category;
@@ -29,6 +33,10 @@ public class ProjectBox {
 	}
 
 	public String getDateCreated() {
-		return DateCreated;
+		//Change format
+		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		String formattedDateCreated = df.format(DateCreated.toDate());
+
+		return formattedDateCreated;
 	}
 }

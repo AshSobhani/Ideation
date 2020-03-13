@@ -4,8 +4,20 @@
     android:padding="20dp">
 
     <TextView
-        android:id="@+id/resetMessage"
+        android:id="@+id/requestMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Would you like to request access from the project owner?" />
+
+    <EditText
+        android:id="@+id/requestReasonText"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/requestMessage"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:textSize="12dp"
+        android:hint="The reason for your access request..."
+        android:inputType="textEmailAddress" />
+
 </RelativeLayout>

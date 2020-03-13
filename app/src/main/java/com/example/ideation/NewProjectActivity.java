@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -73,11 +74,6 @@ public class NewProjectActivity extends AppCompatActivity {
 						String ownerUID = firebaseAuth.getUid();
 						String ownerName = documentSnapshot.getString(IdeationContract.USER_USERNAME);
 
-						//Get current date for date created text
-						Date c = Calendar.getInstance().getTime();
-						SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-						final String dateCreatedText = df.format(c);
-
 						//Create a hash to store the data before inserting into firebase
 						Map<String, Object> projectInfo = new HashMap<>();
 						projectInfo.put(IdeationContract.PROJECT_OWNERUID, ownerUID);
@@ -85,7 +81,7 @@ public class NewProjectActivity extends AppCompatActivity {
 						projectInfo.put(IdeationContract.PROJECT_TITLE, titleText);
 						projectInfo.put(IdeationContract.PROJECT_DESCRIPTION, descriptionText);
 						projectInfo.put(IdeationContract.PROJECT_CATEGORY, categoryText);
-						projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, dateCreatedText);
+						projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, new Timestamp(new Date()));
 
 						//Insert project into project collection
 						db.collection(IdeationContract.COLLECTION_PROJECTS).add(projectInfo)
@@ -124,14 +120,9 @@ public class NewProjectActivity extends AppCompatActivity {
 		String projectUID = passedProjectUID;
 		String ownerUID = firebaseAuth.getUid();
 
-		//Get current date for whitelisted date time
-		Date c = Calendar.getInstance().getTime();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd 'at' HH:mm:ss");
-		final String whitelistDate = df.format(c);
-
 		//Create data hash map holding access date
 		Map<String, Object> data = new HashMap<>();
-		data.put(IdeationContract.PROJECT_WHITELIST_DATETIME, whitelistDate);
+		data.put(IdeationContract.PROJECT_WHITELIST_DATETIME, new Timestamp(new Date()));
 
 		//Add the owner to the project whitelist
 		db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).collection(IdeationContract.COLLECTION_PROJECT_WHITELIST).document(ownerUID).set(data)

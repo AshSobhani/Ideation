@@ -32,9 +32,13 @@ public class IdeationContract {
 	//Project Sub Collection: Whitelist Fields
 	public static final String PROJECT_REQUESTS_USERUID = "UserUID";
 	public static final String PROJECT_REQUESTS_USERNAME = "UserName";
-	public static final String PROJECT_REQUESTS_DATETIME = "RequestDateTime";
+	public static final String PROJECT_REQUESTS_PROJECT = "Project";
+	public static final String PROJECT_REQUESTS_DATETIME = "DateTime";
+	public static final String PROJECT_REQUESTS_REASON = "Reason";
 	public static final String PROJECT_REQUESTS_STATUS = "Status";
 	//Request status states
 	public static final String REQUESTS_STATUS_ACCESS_REQUESTED = "Access Requested";
 	public static final String REQUESTS_STATUS_SIGNATURE_PENDING = "Signature Pending";
+	public static final String REQUESTS_STATUS_PROJECT_ARCHIVED = "Project Archived";
+
 }

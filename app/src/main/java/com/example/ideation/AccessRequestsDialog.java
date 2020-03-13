@@ -3,21 +3,35 @@ package com.example.ideation;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class AccessRequestsDialog extends AppCompatDialogFragment {
+	private static final String TAG = "AccessRequestsDialog";
+	
 	//Initialise variables
 	private FirebaseAuth firebaseAuth;
-	private EditText resetEmailField;
+	private RequestBoxAdapter adapter;
+	private RecyclerView recyclerView;
+
+	//Make an database instance
+	private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 	@NonNull
 	@Override
@@ -29,27 +43,64 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View v = inflater.inflate(R.layout.layout_access_requests_dialog, null);
 
-		// Initialize Firebase Auth
+		// Get Firebase Auth instance and assign to variable
 		firebaseAuth = FirebaseAuth.getInstance();
 
-		//Assign view to variable
-		resetEmailField = v.findViewById(R.id.resetEmailText);
+		//Assign views to variables
+		recyclerView = v.findViewById(R.id.requestsRecyclerView);
+
+		//Populate the recycler view
+		populateRecyclerView();
 
 		//Set the builder view and customise
 		builder.setView(v)
 				.setTitle("Access Requests")
-//				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//					@Override
-//					public void onClick(DialogInterface dialogInterface, int i) {
-//						//Do something
-//					}
-//				})
 				.setPositiveButton("Done", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
+						Log.d(TAG, "onClick: Recycler stop listening");
+						adapter.stopListening();
 					}
 				});
 
 		return builder.create();
+	}
+
+	private void populateRecyclerView() {
+		//Create the project collection query, and if needed add query filer below (priority, by date, etc..)
+		Query query = db.collectionGroup(IdeationContract.COLLECTION_PROJECT_REQUESTS)
+				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
+
+		//Query the database and build
+		FirestoreRecyclerOptions<RequestBox> options = new FirestoreRecyclerOptions.Builder<RequestBox>()
+				.setQuery(query, RequestBox.class)
+				.build();
+
+		//Assign project box adapter to variable
+		adapter = new RequestBoxAdapter(options);
+
+		//Set adapter attributes and start
+		recyclerView.setHasFixedSize(true);
+		recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+		recyclerView.setAdapter(adapter);
+
+		//View Project - Detect when a project has been clicked and open that activity
+		adapter.setOnBoxClickListener(new RequestBoxAdapter.OnBoxClickListener() {
+			@Override
+			public void onBoxClick(DocumentSnapshot documentSnapshot, int position) {
+				//Get owner UID
+				final String projectUID = documentSnapshot.getId();
+
+				//accessProject(projectUID);
+			}
+		});
+	}
+
+	@Override
+	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		Log.d(TAG, "onActivityCreated: Recycler view start listening");
+		//Start listening for database updates
+		adapter.startListening();
 	}
 }

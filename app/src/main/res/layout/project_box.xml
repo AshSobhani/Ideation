@@ -19,17 +19,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/projectDateCreated"
+            android:layout_toStartOf="@id/creationDate"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Title"
             android:textColor="@color/colorAccent"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:layout_toLeftOf="@id/projectDateCreated"
+            android:layout_toLeftOf="@id/creationDate"
             android:layout_alignParentLeft="true" />
 
         <TextView
-            android:id="@+id/projectDateCreated"
+            android:id="@+id/creationDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

@@ -1,19 +1,31 @@
 package com.example.ideation;
 
-import android.icu.text.Transliterator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, ProjectBoxAdapter.ProjectBoxHolder> {
+	private static final String TAG = "ProjectBoxAdapter";
+	//Initialise variables
 	private OnBoxClickListener listener;
 
 	public ProjectBoxAdapter(@NonNull FirestoreRecyclerOptions<ProjectBox> options) {
@@ -40,8 +52,33 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 	}
 
 	public void deleteProject(int position) {
-		//Delete the project that has been selected
-		getSnapshots().getSnapshot(position).getReference().delete();
+		//Make position final so it can be called in an inner class
+		final int finalPosition = position;
+
+		//Get all the project access requests
+		getSnapshots().getSnapshot(finalPosition).getReference().collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).get()
+				.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+					@Override
+					public void onComplete(@NonNull Task<QuerySnapshot> task) {
+						//If its successful get all of the documents
+						if (task.isSuccessful()) {
+							for (QueryDocumentSnapshot document : task.getResult()) {
+								//Create a hash map to insert archived status into the request status fields
+								Map<String, Object> statusData = new HashMap<>();
+								statusData.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_PROJECT_ARCHIVED);
+
+								//Set the data and ensure that the data merges
+								getSnapshots().getSnapshot(finalPosition).getReference().collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(document.getId())
+										.set(statusData, SetOptions.merge());
+
+								//Delete the project that has been selected
+								getSnapshots().getSnapshot(finalPosition).getReference().delete();
+							}
+						} else {
+							Log.d(TAG, "Error getting documents: ", task.getException());
+						}
+					}
+				});
 	}
 
 	class ProjectBoxHolder extends RecyclerView.ViewHolder {
@@ -51,14 +88,13 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 		TextView textViewCategory;
 		TextView textViewDateCreated;
 
-
 		public ProjectBoxHolder(@NonNull View boxView) {
 			super(boxView);
 			//Find views and assign to variables
 			textViewTitle = boxView.findViewById(R.id.projectName);
 			textViewOwnerName = boxView.findViewById(R.id.ownerName);
 			textViewCategory = boxView.findViewById(R.id.projectCategory);
-			textViewDateCreated = boxView.findViewById(R.id.projectDateCreated);
+			textViewDateCreated = boxView.findViewById(R.id.creationDate);
 
 			//Set an on click listener which gets the box position so we can use it later
 			boxView.setOnClickListener(new View.OnClickListener() {

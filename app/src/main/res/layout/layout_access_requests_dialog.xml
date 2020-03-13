@@ -4,21 +4,18 @@
     android:padding="20dp">
 
     <TextView
-        android:id="@+id/resetMessage"
+        android:id="@+id/requestMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="false"
-        android:text="Don't worry, resetting your password is easy. \nSubmit your email below to receive a reset link."
+        android:text="Either approve or deny project access requests by clicking the tick or cross respectively."
         android:textSize="15sp" />
 
-    <EditText
-        android:id="@+id/resetEmailText"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/resetMessage"
-        android:layout_marginTop="10dp"
-        android:padding="10dp"
-        android:ems="10"
-        android:hint="johndoe@gmail.com"
-        android:inputType="textEmailAddress" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/requestsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/requestMessage" />
+
 </RelativeLayout>

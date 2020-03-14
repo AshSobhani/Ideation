@@ -6,20 +6,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,11 @@ public class DeniedDialog extends AppCompatDialogFragment {
 	private static final String TAG = "DeniedDialog";
 
 	//Initialise variables
+	private String projectUID;
+	private Button positiveButton;
+	private AlertDialog deniedDialog;
 	private EditText requestReason;
+	private TextView requestFailedField;
 
 	//Make an database, user, and auth instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -56,10 +61,12 @@ public class DeniedDialog extends AppCompatDialogFragment {
 
 		//Assign view to variable
 		requestReason = v.findViewById(R.id.requestReasonText);
+		requestFailedField = v.findViewById(R.id.requestFailedText);
 
 		//Retrieve project UID
-		final String projectUID = getArguments().getString("projectUID");
+		projectUID = getArguments().getString("projectUID");
 
+		//Set the dialog settings
 		builder.setView(v)
 				.setTitle("Project Access Denied")
 				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -68,12 +75,7 @@ public class DeniedDialog extends AppCompatDialogFragment {
 						//Do something
 					}
 				})
-				.setPositiveButton("Send Request", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialogInterface, int i) {
-						sendAccessRequest(projectUID);
-					}
-				});
+				.setPositiveButton("Send Request", null);
 
 		return builder.create();
 	}
@@ -82,8 +84,6 @@ public class DeniedDialog extends AppCompatDialogFragment {
 		//Get the current user and project UID
 		String userUID = firebaseUser.getUid();
 		final String projectUIDFinal = projectUID;
-
-		Log.d(TAG, "sendAccessRequest: " + firebaseAuth.getUid() + " | " + userUID);
 
 		//Access the users record to retrieve User UID and User Name
 		db.collection(IdeationContract.COLLECTION_USERS).document(userUID).get()
@@ -100,23 +100,54 @@ public class DeniedDialog extends AppCompatDialogFragment {
 									@Override
 									public void onSuccess(DocumentSnapshot documentSnapshot) {
 										//Retrieve the project title and put into variable
+										final String ownerUID = documentSnapshot.getString(IdeationContract.PROJECT_OWNERUID);
 										final String projectTitle = documentSnapshot.getString(IdeationContract.PROJECT_TITLE);
 
-										//Create data hash map holding user uid, request date, and set request status stage
-										Map<String, Object> data = new HashMap<>();
-										data.put(IdeationContract.PROJECT_REQUESTS_USERUID, userUID);
-										data.put(IdeationContract.PROJECT_REQUESTS_USERNAME, userName);
-										data.put(IdeationContract.PROJECT_REQUESTS_PROJECT, projectTitle);
-										data.put(IdeationContract.PROJECT_REQUESTS_DATETIME, new Timestamp(new Date()));
-										data.put(IdeationContract.PROJECT_REQUESTS_REASON, requestReason.getText().toString());
-										data.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
-
 										//Add a request document to project request
-										db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(userUID).set(data)
-												.addOnSuccessListener(new OnSuccessListener<Void>() {
+										db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(userUID).get()
+												.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 													@Override
-													public void onSuccess(Void aVoid) {
-														Log.d(TAG, "onSuccess: Request added");
+													public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+														if (task.isSuccessful()) {
+															//Get the document
+															DocumentSnapshot document = task.getResult();
+
+															//If the document exists don't duplicate requests otherwise create the request
+															if (document.exists()) {
+																Log.d(TAG, "Access already requested");
+
+																//If text view is not null post error message
+																if(!requestFailedField.equals(null)){
+																	requestFailedField.setText("Access already requested for this project");
+																}
+																//Disable the request button
+																positiveButton.setEnabled(false);
+
+															} else {
+																Log.d(TAG, "Request Successful");
+
+																//Create data hash map holding user uid, request date, and set request status stage
+																Map<String, Object> data = new HashMap<>();
+																data.put(IdeationContract.PROJECT_REQUESTS_OWNERUID, ownerUID);
+																data.put(IdeationContract.PROJECT_REQUESTS_USERUID, userUID);
+																data.put(IdeationContract.PROJECT_REQUESTS_USERNAME, userName);
+																data.put(IdeationContract.PROJECT_REQUESTS_PROJECT, projectTitle);
+																data.put(IdeationContract.PROJECT_REQUESTS_DATETIME, new Timestamp(new Date()));
+																data.put(IdeationContract.PROJECT_REQUESTS_REASON, requestReason.getText().toString());
+																data.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
+
+																//Add a request document to project request
+																db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(userUID).set(data, SetOptions.merge())
+																		.addOnSuccessListener(new OnSuccessListener<Void>() {
+																			@Override
+																			public void onSuccess(Void aVoid) {
+																				Log.d(TAG, "onSuccess: Request added");
+
+																				deniedDialog.dismiss();
+																			}
+																		});
+															}
+														}
 													}
 												});
 									}
@@ -129,5 +160,24 @@ public class DeniedDialog extends AppCompatDialogFragment {
 						Log.d(TAG, "Failed to send a request" + e.toString());
 					}
 				});
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		deniedDialog = (AlertDialog) getDialog();
+		if (deniedDialog != null) {
+			//Assign button to variable
+			positiveButton = deniedDialog.getButton(Dialog.BUTTON_POSITIVE);
+
+			//Set an on click listener
+			positiveButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					//Try to request access
+					sendAccessRequest(projectUID);
+				}
+			});
+		}
 	}
 }

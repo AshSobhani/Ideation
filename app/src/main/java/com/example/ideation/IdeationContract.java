@@ -30,6 +30,7 @@ public class IdeationContract {
 	public static final String PROJECT_WHITELIST_DATETIME = "WhitelistDateTime";
 
 	//Project Sub Collection: Whitelist Fields
+	public static final String PROJECT_REQUESTS_OWNERUID = "OwnerUID";
 	public static final String PROJECT_REQUESTS_USERUID = "UserUID";
 	public static final String PROJECT_REQUESTS_USERNAME = "UserName";
 	public static final String PROJECT_REQUESTS_PROJECT = "Project";

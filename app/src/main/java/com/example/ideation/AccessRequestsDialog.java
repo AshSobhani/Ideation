@@ -67,9 +67,12 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 	}
 
 	private void populateRecyclerView() {
+		String ownerUID = firebaseAuth.getUid();
+
 		//Create the project collection query, and if needed add query filer below (priority, by date, etc..)
 		Query query = db.collectionGroup(IdeationContract.COLLECTION_PROJECT_REQUESTS)
-				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
+				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED)
+				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_OWNERUID, ownerUID);
 
 		//Query the database and build
 		FirestoreRecyclerOptions<RequestBox> options = new FirestoreRecyclerOptions.Builder<RequestBox>()

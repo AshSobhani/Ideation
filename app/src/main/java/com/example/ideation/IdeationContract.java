@@ -40,6 +40,7 @@ public class IdeationContract {
 	//Request status states
 	public static final String REQUESTS_STATUS_ACCESS_REQUESTED = "Access Requested";
 	public static final String REQUESTS_STATUS_SIGNATURE_PENDING = "Signature Pending";
+	public static final String REQUESTS_STATUS_REQUEST_DECLINED = "Request Declined";
 	public static final String REQUESTS_STATUS_PROJECT_ARCHIVED = "Project Archived";
 
 }

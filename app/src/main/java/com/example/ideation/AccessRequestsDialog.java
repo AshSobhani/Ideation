@@ -60,7 +60,6 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
 						Log.d(TAG, "onClick: Recycler stop listening");
-						
 					}
 				});
 

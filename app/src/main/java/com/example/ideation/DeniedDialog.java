@@ -113,10 +113,10 @@ public class DeniedDialog extends AppCompatDialogFragment {
 													public void onComplete(@NonNull Task<QuerySnapshot> task) {
 														if (task.isSuccessful()) {
 															//Get the document
-															QuerySnapshot document = task.getResult();
+															QuerySnapshot queryResult = task.getResult();
 
 															//If the document exists don't duplicate requests otherwise create the request
-															if (!document.isEmpty()) {
+															if (!queryResult.isEmpty()) {
 																Log.d(TAG, "Access already requested");
 
 																//If text view is not null post error message

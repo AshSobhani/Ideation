@@ -24,8 +24,12 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 		//Set the Project Box fields respectively
 		holder.textViewProject.setText(model.getProject());
 		holder.textViewUserName.setText(model.getUserName());
-		holder.textViewRequestReason.setText(model.getReason());
 		holder.textViewRequestDateTime.setText(model.getDateTime());
+
+		if (!model.getReason().equals("")) {
+			holder.textViewRequestReason.setText(model.getReason());
+			holder.textViewRequestReason.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@NonNull

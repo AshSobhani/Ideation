@@ -80,7 +80,7 @@ public class DeniedDialog extends AppCompatDialogFragment {
 		return builder.create();
 	}
 
-	private void sendAccessRequest(final String projectUID) {
+	private void sendAccessRequest(String projectUID) {
 		//Get the current user and project UID
 		String userUID = firebaseUser.getUid();
 		final String projectUIDFinal = projectUID;
@@ -95,7 +95,7 @@ public class DeniedDialog extends AppCompatDialogFragment {
 						final String userName = documentSnapshot.getString(IdeationContract.USER_USERNAME);
 
 						//Access the users record to retrieve User UID and User Name
-						db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).get()
+						db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).get()
 								.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 									@Override
 									public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -137,12 +137,13 @@ public class DeniedDialog extends AppCompatDialogFragment {
 																data.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
 
 																//Add a request document to project request
-																db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document().set(data, SetOptions.merge())
+																db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document().set(data)
 																		.addOnSuccessListener(new OnSuccessListener<Void>() {
 																			@Override
 																			public void onSuccess(Void aVoid) {
 																				Log.d(TAG, "onSuccess: Request added");
 
+																				//Once added dismiss the dialog
 																				deniedDialog.dismiss();
 																			}
 																		});

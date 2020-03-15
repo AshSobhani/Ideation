@@ -11,12 +11,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="15dp">
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <TextView
             android:id="@+id/projectName"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
@@ -30,8 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/requesterName"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_toEndOf="@+id/requestDate"
             android:layout_toRightOf="@+id/requestDate"
             android:gravity="center"
@@ -63,8 +67,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/projectName"
-            android:layout_marginRight="15dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
             android:layout_toEndOf="@+id/requester"
             android:layout_toRightOf="@+id/requester"
             android:text="John Doe"
@@ -75,36 +79,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/requestDateTime"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorAccent"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
             android:layout_alignBottom="@+id/requestDateTime"
+
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_toEndOf="@+id/requesterName"
-            android:layout_toRightOf="@+id/requesterName"
+            android:gravity="right"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/acceptRequestButton"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:padding="5dp"
                 android:background="@color/colorPrimaryDark"
                 app:srcCompat="@drawable/request_accept"
-                tools:ignore="VectorDrawableCompat" />
+                tools:ignore="VectorDrawableCompat"/>
 
             <ImageButton
                 android:id="@+id/declineRequestButton"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:padding="5dp"
                 android:background="@color/colorPrimaryDark"
                 app:srcCompat="@drawable/request_decline"
                 tools:ignore="VectorDrawableCompat" />

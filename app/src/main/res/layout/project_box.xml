@@ -19,45 +19,46 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/creationDate"
+            android:layout_alignParentLeft="true"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Title"
             android:textColor="@color/colorAccent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:layout_toLeftOf="@id/creationDate"
-            android:layout_alignParentLeft="true" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/creationDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/ownerName"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:text="20/02/2019"
             android:textSize="15sp"
-            android:textColor="@color/colorPrimary"
-            android:layout_alignParentRight="true" />
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/projectCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/projectName"
             android:text="Category"
-            android:textColor="@color/colorPrimary"
+            android:textSize="15sp"
+            android:textColor="@color/colorAccent"
             android:layout_alignParentLeft="true" />
 
         <TextView
             android:id="@+id/ownerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/projectName"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="John Doe"
-            android:textColor="@color/colorAccent" />
+            android:text="AshSobhani"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 

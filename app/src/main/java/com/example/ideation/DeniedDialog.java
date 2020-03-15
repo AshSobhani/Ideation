@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.Date;
@@ -104,16 +105,18 @@ public class DeniedDialog extends AppCompatDialogFragment {
 										final String projectTitle = documentSnapshot.getString(IdeationContract.PROJECT_TITLE);
 
 										//Add a request document to project request
-										db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(userUID).get()
-												.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+										db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS)
+												.whereEqualTo(IdeationContract.PROJECT_REQUESTS_USERUID, userUID)
+												.whereEqualTo(IdeationContract.PROJECT_REQUESTS_PROJECT, projectTitle).get()
+												.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 													@Override
-													public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+													public void onComplete(@NonNull Task<QuerySnapshot> task) {
 														if (task.isSuccessful()) {
 															//Get the document
-															DocumentSnapshot document = task.getResult();
+															QuerySnapshot document = task.getResult();
 
 															//If the document exists don't duplicate requests otherwise create the request
-															if (document.exists()) {
+															if (!document.isEmpty()) {
 																Log.d(TAG, "Access already requested");
 
 																//If text view is not null post error message

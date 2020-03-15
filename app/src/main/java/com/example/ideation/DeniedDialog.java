@@ -137,7 +137,7 @@ public class DeniedDialog extends AppCompatDialogFragment {
 																data.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
 
 																//Add a request document to project request
-																db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(userUID).set(data, SetOptions.merge())
+																db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document().set(data, SetOptions.merge())
 																		.addOnSuccessListener(new OnSuccessListener<Void>() {
 																			@Override
 																			public void onSuccess(Void aVoid) {

@@ -3,6 +3,7 @@ package com.example.ideation;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +39,7 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 	@NonNull
 	@Override
 	public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+		Log.d(TAG, "onCreateDialog: Creating request access dialog");
 		//Get an instance of the dialog builder
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -49,9 +53,6 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 		//Assign views to variables
 		recyclerView = v.findViewById(R.id.requestsRecyclerView);
 
-		//Populate the recycler view
-		populateRecyclerView();
-
 		//Set the builder view and customise
 		builder.setView(v)
 				.setTitle("Access Requests")
@@ -59,23 +60,28 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
 						Log.d(TAG, "onClick: Recycler stop listening");
-						adapter.stopListening();
+						
 					}
 				});
+
+		//Populate the recycler view
+		populateRecyclerView();
 
 		return builder.create();
 	}
 
 	private void populateRecyclerView() {
+		//Get current ownerUID
 		String ownerUID = firebaseAuth.getUid();
 
 		//Create the project collection query, and if needed add query filer below (priority, by date, etc..)
 		Query query = db.collectionGroup(IdeationContract.COLLECTION_PROJECT_REQUESTS)
-				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED)
-				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_OWNERUID, ownerUID);
+				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_OWNERUID, ownerUID)
+				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
 
 		//Query the database and build
 		FirestoreRecyclerOptions<RequestBox> options = new FirestoreRecyclerOptions.Builder<RequestBox>()
+				.setLifecycleOwner(this)
 				.setQuery(query, RequestBox.class)
 				.build();
 
@@ -97,13 +103,5 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 				//accessProject(projectUID);
 			}
 		});
-	}
-
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		Log.d(TAG, "onActivityCreated: Recycler view start listening");
-		//Start listening for database updates
-		adapter.startListening();
 	}
 }

@@ -87,6 +87,7 @@ public class MyProjectsFragment extends Fragment {
 
 		//Query the database and build
 		FirestoreRecyclerOptions<ProjectBox> options = new FirestoreRecyclerOptions.Builder<ProjectBox>()
+				.setLifecycleOwner(this)
 				.setQuery(query, ProjectBox.class)
 				.build();
 
@@ -138,19 +139,5 @@ public class MyProjectsFragment extends Fragment {
 		//Make intent and start activity
 		Intent intent = new Intent(getContext(), NewProjectActivity.class);
 		startActivity(intent);
-	}
-
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		//Start listening for database updates
-		adapter.startListening();
-	}
-
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		//Stop listening for database updates
-		adapter.stopListening();
 	}
 }

@@ -10,12 +10,16 @@ import android.widget.TextView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,8 +53,8 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 			public void onClick(View v) {
 				Log.d(TAG, "onClick: Request Accepted");
 
+				//Accept the request by updating request status and adding them to whitelist
 				acceptRequest(position);
-
 			}
 		});
 
@@ -108,13 +112,36 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 	}
 
 	private void acceptRequest(int position) {
-		//On request decline request, set status to declined
-		getSnapshots().getSnapshot(position).getReference()
-				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_ACCEPTED)
-				.addOnCompleteListener(new OnCompleteListener<Void>() {
+		//Make position final so it can be used in the inner class
+		final int finalPosition = position;
+
+		//Access the requests document to get the requester user UID
+		getSnapshots().getSnapshot(position).getReference().get()
+				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 					@Override
-					public void onComplete(@NonNull Task<Void> task) {
-						Log.d(TAG, "onComplete: Request accepted and status updated");
+					public void onSuccess(DocumentSnapshot documentSnapshot) {
+						//Retrieve the user UID and put into a string
+						String userUID = documentSnapshot.getString(IdeationContract.PROJECT_REQUESTS_USERUID);
+
+						//Put the requester user UID into the projects whitelist
+						documentSnapshot.getReference().getParent().getParent()
+								.update(IdeationContract.PROJECT_WHITELIST, FieldValue.arrayUnion(userUID))
+								.addOnCompleteListener(new OnCompleteListener<Void>() {
+									@Override
+									public void onComplete(@NonNull Task<Void> task) {
+										Log.d(TAG, "onComplete: User added to whitelist");
+									}
+								});
+
+						//On request accepted, set status to accepted
+						documentSnapshot.getReference()
+								.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_ACCEPTED)
+								.addOnCompleteListener(new OnCompleteListener<Void>() {
+									@Override
+									public void onComplete(@NonNull Task<Void> task) {
+										Log.d(TAG, "onComplete: Request accepted and status updated");
+									}
+								});
 					}
 				});
 	}

@@ -83,7 +83,7 @@ public class MyProjectsFragment extends Fragment {
 
 		//Get collection reference and add query filer below (priority, by date, etc..)
 		CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
-		Query query = projectRef.whereEqualTo(IdeationContract.PROJECT_OWNERUID, UID);
+		Query query = projectRef.whereArrayContains(IdeationContract.PROJECT_WHITELIST, UID);
 
 		//Query the database and build
 		FirestoreRecyclerOptions<ProjectBox> options = new FirestoreRecyclerOptions.Builder<ProjectBox>()

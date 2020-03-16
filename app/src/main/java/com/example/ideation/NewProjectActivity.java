@@ -17,8 +17,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,6 +81,8 @@ public class NewProjectActivity extends AppCompatActivity {
 						projectInfo.put(IdeationContract.PROJECT_DESCRIPTION, descriptionText);
 						projectInfo.put(IdeationContract.PROJECT_CATEGORY, categoryText);
 						projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, new Timestamp(new Date()));
+						//Add the owner to the project white list
+						projectInfo.put(IdeationContract.PROJECT_WHITELIST, Arrays.asList(ownerUID));
 
 						//Insert project into project collection
 						db.collection(IdeationContract.COLLECTION_PROJECTS).add(projectInfo)
@@ -89,12 +90,6 @@ public class NewProjectActivity extends AppCompatActivity {
 									@Override
 									public void onSuccess(DocumentReference documentReference) {
 										Toast.makeText(NewProjectActivity.this, "Project Created", Toast.LENGTH_SHORT).show();
-
-										//Get the user and project UID
-										String projectUID = documentReference.getId();
-
-										//Create projects whitelist collection and whitelist owner
-										whitelistProjectOwner(projectUID);
 									}
 								})
 								.addOnFailureListener(new OnFailureListener() {
@@ -111,31 +106,6 @@ public class NewProjectActivity extends AppCompatActivity {
 					public void onFailure(@NonNull Exception e) {
 						Toast.makeText(NewProjectActivity.this, "Failed to access user", Toast.LENGTH_SHORT).show();
 						Log.d(TAG, e.toString());
-					}
-				});
-	}
-
-	public void whitelistProjectOwner(String passedProjectUID) {
-		//Get project and owner UID
-		String projectUID = passedProjectUID;
-		String ownerUID = firebaseAuth.getUid();
-
-		//Create data hash map holding access date
-		Map<String, Object> data = new HashMap<>();
-		data.put(IdeationContract.PROJECT_WHITELIST_DATETIME, new Timestamp(new Date()));
-
-		//Add the owner to the project whitelist
-		db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).collection(IdeationContract.COLLECTION_PROJECT_WHITELIST).document(ownerUID).set(data)
-				.addOnSuccessListener(new OnSuccessListener<Void>() {
-					@Override
-					public void onSuccess(Void aVoid) {
-						Toast.makeText(NewProjectActivity.this, "Owner added to whitelist", Toast.LENGTH_SHORT).show();
-					}
-				})
-				.addOnFailureListener(new OnFailureListener() {
-					@Override
-					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(NewProjectActivity.this, "Failed to add owner to whitelist", Toast.LENGTH_SHORT).show();
 					}
 				});
 	}

@@ -108,15 +108,20 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 	}
 
 	private void acceptRequest(int position) {
-
+		//On request decline request, set status to declined
+		getSnapshots().getSnapshot(position).getReference()
+				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_ACCEPTED)
+				.addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						Log.d(TAG, "onComplete: Request accepted and status updated");
+					}
+				});
 	}
 
 	private void declineRequest(int position) {
-		//Make position final so it can be called in an inner class
-		final int finalPosition = position;
-
 		//On request decline request, set status to declined
-		getSnapshots().getSnapshot(finalPosition).getReference()
+		getSnapshots().getSnapshot(position).getReference()
 				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_DECLINED)
 				.addOnCompleteListener(new OnCompleteListener<Void>() {
 					@Override

@@ -112,9 +112,6 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 	}
 
 	private void acceptRequest(int position) {
-		//Make position final so it can be used in the inner class
-		final int finalPosition = position;
-
 		//Access the requests document to get the requester user UID
 		getSnapshots().getSnapshot(position).getReference().get()
 				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

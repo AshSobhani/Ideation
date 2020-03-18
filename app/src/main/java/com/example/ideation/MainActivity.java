@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
 						case R.id.navMyProjects:
 							fragmentFlag = 1;
-							selectedFragment = new MyProjectsFragment();
+							selectedFragment = new ProjectsFragment();
 							break;
 
 						case R.id.navProfile:
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 				break;
 			case 1:
 				//Return to sessions fragment and check navigation icon
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProjectsFragment()).commit();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProjectsFragment()).commit();
 				bottomNav.getMenu().getItem(1).setChecked(true);
 				break;
 			case 2:

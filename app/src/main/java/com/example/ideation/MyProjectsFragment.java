@@ -1,5 +1,6 @@
 package com.example.ideation;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,6 @@ public class MyProjectsFragment extends Fragment {
 	private static final String TAG = "MyProjectsFragment";
 
 	//Initialise Variables
-	private View v;
 	private FloatingActionButton newProjectButton;
 	private Button accessRequestsButton;
 	private RecyclerView recyclerView;
@@ -37,13 +37,12 @@ public class MyProjectsFragment extends Fragment {
 	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: In My Projects Fragment");
 		//Assign the correct view to the fragment
-		v = inflater.inflate(R.layout.fragment_my_projects, container, false);
+		View v = inflater.inflate(R.layout.fragment_my_projects, container, false);
 
 		// Initialize Firebase Auth
 		firebaseAuth = FirebaseAuth.getInstance();

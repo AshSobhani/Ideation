@@ -11,20 +11,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, ProjectBoxAdapter.ProjectBoxHolder> {
 	private static final String TAG = "ProjectBoxAdapter";
+
 	//Initialise variables
 	private OnBoxClickListener listener;
 
@@ -54,9 +53,13 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 	public void deleteProject(int position) {
 		//Make position final so it can be called in an inner class
 		final int finalPosition = position;
+		//Create a reference to the project
+		final DocumentReference projectRef = getSnapshots().getSnapshot(finalPosition).getReference();
+
+
 
 		//Get all the project access requests
-		getSnapshots().getSnapshot(finalPosition).getReference().collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).get()
+		projectRef.collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).get()
 				.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 					@Override
 					public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -70,10 +73,11 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 								//Set the data and ensure that the data merges
 								getSnapshots().getSnapshot(finalPosition).getReference().collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(document.getId())
 										.set(statusData, SetOptions.merge());
-
-								//Delete the project that has been selected
-								getSnapshots().getSnapshot(finalPosition).getReference().delete();
 							}
+
+							//Delete the document
+							projectRef.delete();
+							
 						} else {
 							Log.d(TAG, "Error getting documents: ", task.getException());
 						}

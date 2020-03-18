@@ -95,7 +95,7 @@ public class MyProjectsFragment extends Fragment {
 
 		//Set adapter attributes and start
 		recyclerView.setHasFixedSize(true);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recyclerView.setAdapter(adapter);
 
 		//View Project - Detect when a project has been clicked and open that activity

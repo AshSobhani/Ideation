@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -24,8 +23,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class SharedProjectsFragment extends Fragment {
 	private static final String TAG = "SharedProjectsFragment";
@@ -116,12 +113,12 @@ public class SharedProjectsFragment extends Fragment {
 			@Override
 			public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 				//Show validation dialog - Delete if confirmed and restore if not
-				deleteIfValidated(viewHolder);
+				revokeIfValidated(viewHolder);
 			}
 		}).attachToRecyclerView(recyclerView);
 	}
 
-	private void deleteIfValidated(RecyclerView.ViewHolder viewHolder) {
+	private void revokeIfValidated(RecyclerView.ViewHolder viewHolder) {
 		//Make the view holder final so it can be called in an inner class
 		final RecyclerView.ViewHolder finalViewHolder = viewHolder;
 
@@ -129,7 +126,7 @@ public class SharedProjectsFragment extends Fragment {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
 
 		//Set the builder view and customise
-		alertDialogBuilder.setTitle("Are you sure?").setMessage("This project will be deleted permanently and cannot be restored")
+		alertDialogBuilder.setTitle("Are you sure?").setMessage("You will be removed from the whitelist and will no longer have access to this project.")
 				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
@@ -141,7 +138,7 @@ public class SharedProjectsFragment extends Fragment {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
 						//If the deletion is confirmed the delete the project
-						adapter.deleteProject(finalViewHolder.getAdapterPosition());
+						adapter.revokeAccess(finalViewHolder.getAdapterPosition());
 					}
 				});
 

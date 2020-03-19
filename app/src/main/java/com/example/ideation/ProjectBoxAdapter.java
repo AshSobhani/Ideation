@@ -12,8 +12,10 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -25,6 +27,7 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 	private static final String TAG = "ProjectBoxAdapter";
 
 	//Initialise variables
+	private FirebaseAuth firebaseAuth;
 	private OnBoxClickListener listener;
 
 	public ProjectBoxAdapter(@NonNull FirestoreRecyclerOptions<ProjectBox> options) {
@@ -46,6 +49,9 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 		//Find the view
 		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.project_box,
 				parent, false);
+
+		//Get the firebase auth instance
+		firebaseAuth = FirebaseAuth.getInstance();
 
 		return new ProjectBoxHolder(v);
 	}
@@ -75,6 +81,25 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 						} else {
 							Log.d(TAG, "Error getting documents: ", task.getException());
 						}
+					}
+				});
+	}
+
+	public void revokeAccess(int position) {
+		Log.d(TAG, "revokeAccess: User being removed from whitelist");
+		
+		//Get the userUID
+		String userUID = firebaseAuth.getUid();
+
+		//Create a reference to the project and make it final so it can be accessed in inner class
+		final DocumentReference projectRef = getSnapshots().getSnapshot(position).getReference();
+
+		//Get all the project access requests
+		projectRef.update(IdeationContract.PROJECT_WHITELIST, FieldValue.arrayRemove(userUID))
+				.addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						Log.d(TAG, "onComplete: User has been removed from the project whitelist");
 					}
 				});
 	}

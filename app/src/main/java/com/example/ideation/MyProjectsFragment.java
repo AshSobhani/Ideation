@@ -139,7 +139,7 @@ public class MyProjectsFragment extends Fragment {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
 
 		//Set the builder view and customise
-		alertDialogBuilder.setTitle("Are you sure?").setMessage("This project will be deleted permanently and cannot be restored")
+		alertDialogBuilder.setTitle("Are you sure?").setMessage("This project will be deleted permanently and cannot be restored.")
 				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {

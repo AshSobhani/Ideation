@@ -51,12 +51,8 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 	}
 
 	public void deleteProject(int position) {
-		//Make position final so it can be called in an inner class
-		final int finalPosition = position;
-		//Create a reference to the project
-		final DocumentReference projectRef = getSnapshots().getSnapshot(finalPosition).getReference();
-
-
+		//Create a reference to the project and make it final so it can be accessed in inner class
+		final DocumentReference projectRef = getSnapshots().getSnapshot(position).getReference();
 
 		//Get all the project access requests
 		projectRef.collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).get()
@@ -71,13 +67,11 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 								statusData.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_PROJECT_ARCHIVED);
 
 								//Set the data and ensure that the data merges
-								getSnapshots().getSnapshot(finalPosition).getReference().collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(document.getId())
+								projectRef.collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(document.getId())
 										.set(statusData, SetOptions.merge());
 							}
-
 							//Delete the document
 							projectRef.delete();
-							
 						} else {
 							Log.d(TAG, "Error getting documents: ", task.getException());
 						}

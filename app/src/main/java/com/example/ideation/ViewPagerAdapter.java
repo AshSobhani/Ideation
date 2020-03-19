@@ -18,7 +18,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 				fragment = new MyProjectsFragment();
 				break;
 			case 1:
-				fragment = new SharedProjectsFragment2();
+				fragment = new SharedProjectsFragment();
 				break;
 		}
 		return fragment;

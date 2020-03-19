@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Would you like to request access from the project owner?"
-        android:textSize="14dp"/>
+        android:textSize="13dp"/>
 
     <EditText
         android:id="@+id/requestReasonText"

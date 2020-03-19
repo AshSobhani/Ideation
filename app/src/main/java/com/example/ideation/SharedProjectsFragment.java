@@ -1,7 +1,6 @@
 package com.example.ideation;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,12 +25,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyProjectsFragment extends Fragment {
-	private static final String TAG = "MyProjectsFragment";
+import static androidx.constraintlayout.widget.Constraints.TAG;
+
+public class SharedProjectsFragment extends Fragment {
+	private static final String TAG = "SharedProjectsFragment";
 
 	//Initialise Variables
-	private FloatingActionButton newProjectButton;
-	private Button accessRequestsButton;
+	private Button signatureRequestsButton;
 	private RecyclerView recyclerView;
 	private ProjectBoxAdapter adapter;
 	private FirebaseAuth firebaseAuth;
@@ -44,27 +44,17 @@ public class MyProjectsFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: In My Projects Fragment");
 		//Assign the correct view to the fragment
-		View v = inflater.inflate(R.layout.fragment_my_projects, container, false);
+		View v = inflater.inflate(R.layout.fragment_shared_projects, container, false);
 
 		// Initialize Firebase Auth
 		firebaseAuth = FirebaseAuth.getInstance();
 
 		//Find the view and assign to member variable
-		newProjectButton = v.findViewById(R.id.newProject);
-		accessRequestsButton = v.findViewById(R.id.openAccessRequests);
+		signatureRequestsButton = v.findViewById(R.id.openSignatureRequests);
 		recyclerView = v.findViewById(R.id.projectsRecyclerView);
 
 		//Set an on click listener for the button
-		newProjectButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				//Start Tracking activity and service
-				onNewProject();
-			}
-		});
-
-		//Set an on click listener for the button
-		accessRequestsButton.setOnClickListener(new View.OnClickListener() {
+		signatureRequestsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				//Start Tracking activity and service
@@ -80,11 +70,11 @@ public class MyProjectsFragment extends Fragment {
 
 	private void populateRecyclerView() {
 		//Get the users unique ID
-		String userUID = firebaseAuth.getUid();
+		String UID = firebaseAuth.getUid();
 
 		//Get collection reference and add query filer below (priority, by date, etc..)
 		CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
-		Query query = projectRef.whereEqualTo(IdeationContract.PROJECT_OWNERUID, userUID);
+		Query query = projectRef.whereArrayContains(IdeationContract.PROJECT_WHITELIST, UID);
 
 		//Query the database and build
 		FirestoreRecyclerOptions<ProjectBox> options = new FirestoreRecyclerOptions.Builder<ProjectBox>()
@@ -166,11 +156,5 @@ public class MyProjectsFragment extends Fragment {
 		//Make an instance of our access dialog and show it
 		AccessRequestsDialog accessRequestsDialog = new AccessRequestsDialog();
 		accessRequestsDialog.show(getParentFragmentManager(), "Access Request Dialog");
-	}
-
-	private void onNewProject() {
-		//Make intent and start activity
-		Intent intent = new Intent(getContext(), NewProjectActivity.class);
-		startActivity(intent);
 	}
 }

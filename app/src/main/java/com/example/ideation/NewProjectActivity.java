@@ -82,7 +82,7 @@ public class NewProjectActivity extends AppCompatActivity {
 						projectInfo.put(IdeationContract.PROJECT_CATEGORY, categoryText);
 						projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, new Timestamp(new Date()));
 						//Add the owner to the project white list
-						projectInfo.put(IdeationContract.PROJECT_WHITELIST, Arrays.asList(ownerUID));
+						projectInfo.put(IdeationContract.PROJECT_WHITELIST, Arrays.asList("Initiator"));
 
 						//Insert project into project collection
 						db.collection(IdeationContract.COLLECTION_PROJECTS).add(projectInfo)

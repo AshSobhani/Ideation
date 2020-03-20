@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 	private static final String TAG = "MainActivity";
 
 	//Create variables
+	Fragment discoveryFragment , projectsFragment, profileFragment;
 	BottomNavigationView bottomNav = null;
 	int fragmentFlag;
 
@@ -27,6 +28,17 @@ public class MainActivity extends AppCompatActivity {
 		Log.d(TAG, "onCreate: Main Activity Open");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		//Create fragments and assign to variables
+		discoveryFragment = new DiscoveryFragment();
+		profileFragment = new ProfileFragment();
+
+		if (savedInstanceState != null) {
+			//Restore the fragment's instance
+			projectsFragment = getSupportFragmentManager().getFragment(savedInstanceState, "projectsFragment");
+		} else {
+			projectsFragment = new ProjectsFragment();
+		}
 
 		//Find my nav bar and assign to variable
 		bottomNav = findViewById(R.id.bottom_navbar);
@@ -48,17 +60,17 @@ public class MainActivity extends AppCompatActivity {
 					switch (menuItem.getItemId()) {
 						case R.id.navDiscovery:
 							fragmentFlag = 0;
-							selectedFragment = new DiscoveryFragment();
+							selectedFragment = discoveryFragment;
 							break;
 
 						case R.id.navMyProjects:
 							fragmentFlag = 1;
-							selectedFragment = new ProjectsFragment();
+							selectedFragment = projectsFragment;
 							break;
 
 						case R.id.navProfile:
 							fragmentFlag = 2;
-							selectedFragment = new ProfileFragment();
+							selectedFragment = profileFragment;
 							break;
 					}
 
@@ -76,17 +88,17 @@ public class MainActivity extends AppCompatActivity {
 		switch (fragmentFlag) {
 			case 0:
 				//Return to discovery fragment and check navigation icon
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DiscoveryFragment()).commit();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoveryFragment).commit();
 				bottomNav.getMenu().getItem(0).setChecked(true);
 				break;
 			case 1:
 				//Return to projects fragment and check navigation icon
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProjectsFragment()).commit();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, projectsFragment).commit();
 				bottomNav.getMenu().getItem(1).setChecked(true);
 				break;
 			case 2:
 				//Return to profile fragment and check navigation icon
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, profileFragment).commit();
 				bottomNav.getMenu().getItem(2).setChecked(true);
 				break;
 		}
@@ -96,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		//Save the fragment flag when state is being saved
 		outState.putInt("fragmentFlag", fragmentFlag);
+		//Save the fragment's instance
+		getSupportFragmentManager().putFragment(outState, "projectsFragment", projectsFragment);
 		super.onSaveInstanceState(outState);
 	}
 

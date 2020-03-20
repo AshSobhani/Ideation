@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 	private static final String TAG = "MainActivity";
 
 	//Create variables
-	Fragment discoveryFragment , projectsFragment, profileFragment;
+	Fragment selectedFragment, discoveryFragment , projectsFragment, profileFragment;
 	BottomNavigationView bottomNav = null;
 	int fragmentFlag;
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 		bottomNav.setOnNavigationItemSelectedListener(navListener);
 
 		//Set starting fragment to discovery
-		getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DiscoveryFragment()).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoveryFragment).commit();
 	}
 
 	//Create a listener to detect changes in selected fragments
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 			new BottomNavigationView.OnNavigationItemSelectedListener() {
 				@Override
 				public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-					Fragment selectedFragment = null;
+					selectedFragment = null;
 
 					//Set selected fragment accordingly by whats been selected
 					//Set a flag to for return to fragment checker
@@ -108,8 +108,13 @@ public class MainActivity extends AppCompatActivity {
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		//Save the fragment flag when state is being saved
 		outState.putInt("fragmentFlag", fragmentFlag);
-		//Save the fragment's instance
-		getSupportFragmentManager().putFragment(outState, "projectsFragment", projectsFragment);
+
+		//If we are currently on the projects fragment then save the instance
+		if (selectedFragment == projectsFragment) {
+			//Save the fragment's instance
+			getSupportFragmentManager().putFragment(outState, "projectsFragment", projectsFragment);
+		}
+
 		super.onSaveInstanceState(outState);
 	}
 

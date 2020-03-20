@@ -1,4 +1,4 @@
-package com.example.ideation;
+package com.example.ideation.database;
 
 public class IdeationContract {
 	//Collections
@@ -27,9 +27,6 @@ public class IdeationContract {
 	public static final String PROJECT_DATE_CREATED = "DateCreated";
 	public static final String PROJECT_WHITELIST = "Whitelist";
 
-	//Project Sub Collection: Whitelist Fields
-	public static final String PROJECT_WHITELIST_DATETIME = "WhitelistDateTime";
-
 	//Project Sub Collection: Request Fields
 	public static final String PROJECT_REQUESTS_OWNERUID = "OwnerUID";
 	public static final String PROJECT_REQUESTS_USERUID = "UserUID";
@@ -43,5 +40,4 @@ public class IdeationContract {
 	public static final String REQUESTS_STATUS_REQUEST_ACCEPTED = "Request Accepted";
 	public static final String REQUESTS_STATUS_REQUEST_DECLINED = "Request Declined";
 	public static final String REQUESTS_STATUS_PROJECT_ARCHIVED = "Project Archived";
-
 }

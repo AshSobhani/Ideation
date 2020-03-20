@@ -1,4 +1,4 @@
-package com.example.ideation;
+package com.example.ideation.recycler;
 
 import com.google.firebase.Timestamp;
 
@@ -14,6 +14,7 @@ public class ProjectBox {
 	}
 
 	public ProjectBox(String title, String ownerName, String category, Timestamp dateCreated) {
+		//Assign values to variables
 		this.Title = title;
 		this.OwnerName = ownerName;
 		this.Category = category;
@@ -33,7 +34,7 @@ public class ProjectBox {
 	}
 
 	public String getDateCreated() {
-		//Change format
+		//Change date format to desired format
 		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 		String formattedDateCreated = df.format(DateCreated.toDate());
 

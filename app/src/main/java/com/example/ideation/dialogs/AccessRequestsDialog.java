@@ -1,22 +1,20 @@
-package com.example.ideation;
+package com.example.ideation.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 
+import com.example.ideation.database.IdeationContract;
+import com.example.ideation.R;
+import com.example.ideation.recycler.RequestBox;
+import com.example.ideation.recycler.RequestBoxAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -91,16 +89,5 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 		recyclerView.setHasFixedSize(true);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 		recyclerView.setAdapter(adapter);
-
-		//View Project - Detect when a project has been clicked and open that activity
-		adapter.setOnBoxClickListener(new RequestBoxAdapter.OnBoxClickListener() {
-			@Override
-			public void onBoxClick(DocumentSnapshot documentSnapshot, int position) {
-				//Get owner UID
-				final String projectUID = documentSnapshot.getId();
-
-				//accessProject(projectUID);
-			}
-		});
 	}
 }

@@ -1,4 +1,7 @@
-package com.example.ideation;
+package com.example.ideation.fragments;
+
+import com.example.ideation.fragments.MyProjectsFragment;
+import com.example.ideation.fragments.SharedProjectsFragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -12,7 +15,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int position) {
+		//Create a fragment variable and set to null
 		Fragment fragment = null;
+
+		//Open fragment based on the tab that is selected
 		switch (position) {
 			case 0:
 				fragment = new MyProjectsFragment();
@@ -32,6 +38,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public CharSequence getPageTitle(int position) {
+		//Give the tabs titles
 		switch (position) {
 			case 0:
 				return "My Projects";

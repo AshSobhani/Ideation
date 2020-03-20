@@ -1,4 +1,4 @@
-package com.example.ideation;
+package com.example.ideation.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.ideation.fragments.DiscoveryFragment;
+import com.example.ideation.fragments.ProfileFragment;
+import com.example.ideation.fragments.ProjectsFragment;
+import com.example.ideation.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -69,12 +73,12 @@ public class MainActivity extends AppCompatActivity {
 	private void returnToFragment() {
 		switch (fragmentFlag) {
 			case 0:
-				//Return to sessions fragment and check navigation icon
+				//Return to discovery fragment and check navigation icon
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DiscoveryFragment()).commit();
 				bottomNav.getMenu().getItem(0).setChecked(true);
 				break;
 			case 1:
-				//Return to sessions fragment and check navigation icon
+				//Return to projects fragment and check navigation icon
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProjectsFragment()).commit();
 				bottomNav.getMenu().getItem(1).setChecked(true);
 				break;
@@ -89,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+		Log.d(TAG, "onStart: Starting activity");
 
 		//Make sure we are on the right fragment
 		returnToFragment();

@@ -1,4 +1,4 @@
-package com.example.ideation;
+package com.example.ideation.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,6 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.ideation.dialogs.AccessRequestsDialog;
+import com.example.ideation.database.IdeationContract;
+import com.example.ideation.recycler.ProjectBox;
+import com.example.ideation.recycler.ProjectBoxAdapter;
+import com.example.ideation.R;
+import com.example.ideation.activities.ViewProjectActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -70,7 +76,7 @@ public class SharedProjectsFragment extends Fragment {
 		String UID = firebaseAuth.getUid();
 
 		//Get collection reference and add query filer below (priority, by date, etc..)
-		CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
+		final CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
 		Query query = projectRef.whereArrayContains(IdeationContract.PROJECT_WHITELIST, UID);
 
 		//Query the database and build

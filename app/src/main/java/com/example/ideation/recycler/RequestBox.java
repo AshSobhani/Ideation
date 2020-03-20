@@ -1,13 +1,10 @@
-package com.example.ideation;
-
-import android.util.Log;
+package com.example.ideation.recycler;
 
 import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
 
 public class RequestBox {
-	private static final String TAG = "RequestBox";
 	//Declare variables (must be caps for fire store query)
 	private String Project, UserName, Reason;
 	private Timestamp DateTime;
@@ -17,6 +14,7 @@ public class RequestBox {
 	}
 
 	public RequestBox(String title, String userName, String requestReason, Timestamp requestDateTime) {
+		//Assign values to variables
 		this.Project = title;
 		this.UserName = userName;
 		this.Reason = requestReason;
@@ -24,7 +22,6 @@ public class RequestBox {
 	}
 
 	public String getProject() {
-		Log.d(TAG, "getProject: " + Project);
 		return Project;
 	}
 

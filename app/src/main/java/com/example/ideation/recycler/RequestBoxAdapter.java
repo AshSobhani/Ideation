@@ -1,4 +1,4 @@
-package com.example.ideation;
+package com.example.ideation.recycler;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,28 +7,21 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.ideation.database.IdeationContract;
+import com.example.ideation.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, RequestBoxAdapter.RequestBoxHolder> {
 	private static final String TAG = "RequestBoxAdapter";
-	private OnBoxClickListener listener;
 
 	public RequestBoxAdapter(@NonNull FirestoreRecyclerOptions<RequestBox> options) {
 		super(options);
@@ -97,17 +90,6 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 			textViewRequestDateTime = boxView.findViewById(R.id.requestDateTime);
 			acceptRequestButton = boxView.findViewById(R.id.acceptRequestButton);
 			declineRequestButton = boxView.findViewById(R.id.declineRequestButton);
-
-			//Set an on click listener which gets the box position so we can use it later
-			boxView.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int position = getAdapterPosition();
-					if (position != RecyclerView.NO_POSITION && listener != null) {
-						listener.onBoxClick(getSnapshots().getSnapshot(position), position);
-					}
-				}
-			});
 		}
 	}
 
@@ -153,13 +135,5 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 						Log.d(TAG, "onComplete: Request declined and status updated");
 					}
 				});
-	}
-
-	public interface OnBoxClickListener {
-		void onBoxClick(DocumentSnapshot documentSnapshot, int position);
-	}
-
-	public void setOnBoxClickListener(OnBoxClickListener listener) {
-		this.listener = listener;
 	}
 }

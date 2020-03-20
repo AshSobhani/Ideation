@@ -1,4 +1,4 @@
-package com.example.ideation;
+package com.example.ideation.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.ideation.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.annotation.NonNull;

@@ -1,7 +1,6 @@
-package com.example.ideation;
+package com.example.ideation.fragments;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.ideation.dialogs.AccessRequestsDialog;
+import com.example.ideation.database.IdeationContract;
+import com.example.ideation.recycler.ProjectBox;
+import com.example.ideation.recycler.ProjectBoxAdapter;
+import com.example.ideation.R;
+import com.example.ideation.activities.NewProjectActivity;
+import com.example.ideation.activities.ViewProjectActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,7 +48,7 @@ public class MyProjectsFragment extends Fragment {
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView: In My Projects Fragment");
+		Log.d(TAG, "onCreateView: In the my projects fragment");
 		//Assign the correct view to the fragment
 		View v = inflater.inflate(R.layout.fragment_my_projects, container, false);
 

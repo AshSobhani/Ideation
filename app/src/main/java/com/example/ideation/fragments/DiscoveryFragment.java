@@ -1,4 +1,4 @@
-package com.example.ideation;
+package com.example.ideation.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,12 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ideation.dialogs.DeniedDialog;
+import com.example.ideation.database.IdeationContract;
+import com.example.ideation.recycler.ProjectBox;
+import com.example.ideation.recycler.ProjectBoxAdapter;
+import com.example.ideation.R;
+import com.example.ideation.activities.ViewProjectActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -93,11 +96,12 @@ public class DiscoveryFragment extends Fragment {
 				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 					@Override
 					public void onSuccess(DocumentSnapshot documentSnapshot) {
-						//Retrieve the whitelist from database
+						//Retrieve the ownerUID and whitelist from database
+						String ownerUID = documentSnapshot.getString(IdeationContract.PROJECT_OWNERUID);
 						List<String> whitelist = (List<String>) documentSnapshot.get(IdeationContract.PROJECT_WHITELIST);
 
-						//If the user is in the whitelist let them in otherwise all the to request access
-						if (whitelist.contains(firebaseAuth.getUid())) {
+						//If the user is in the whitelist or if its the owner let them in, otherwise all the to request access
+						if (whitelist.contains(firebaseAuth.getUid()) || ownerUID.equals(firebaseAuth.getUid())) {
 							//Put the projectUID into a new bundle
 							Bundle bundle = new Bundle();
 							bundle.putString("projectUID", projectUID);
@@ -114,8 +118,6 @@ public class DiscoveryFragment extends Fragment {
 						}
 					}
 				});
-		//Is the user verified?
-		//If an NDA form exists has the user signed it?
 	}
 
 	private void openDeniedDialog(String projectUID) {

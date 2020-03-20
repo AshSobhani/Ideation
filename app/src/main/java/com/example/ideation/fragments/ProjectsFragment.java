@@ -1,11 +1,15 @@
-package com.example.ideation;
+package com.example.ideation.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.ideation.R;
 import com.google.android.material.tabs.TabLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,7 +26,7 @@ public class ProjectsFragment extends Fragment {
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView: In My Projects Fragment");
+		Log.d(TAG, "onCreateView: In the projects fragment");
 		//Assign the correct view to the fragment
 		View v = inflater.inflate(R.layout.fragment_projects, container, false);
 
@@ -38,5 +42,4 @@ public class ProjectsFragment extends Fragment {
 
 		return v;
 	}
-
 }

@@ -1,4 +1,4 @@
-package com.example.ideation;
+package com.example.ideation.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ideation.database.IdeationContract;
+import com.example.ideation.R;
+import com.example.ideation.activities.LoginActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -80,6 +83,7 @@ public class ProfileFragment extends Fragment {
 	}
 
 	public void retrieveUserData() {
+		//Retrieve information about the user from the database
 		db.collection(IdeationContract.COLLECTION_USERS).document(firebaseUser.getUid()).get()
 				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 					@Override

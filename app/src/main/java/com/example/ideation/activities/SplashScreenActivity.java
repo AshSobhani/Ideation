@@ -1,10 +1,12 @@
-package com.example.ideation;
+package com.example.ideation.activities;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import com.example.ideation.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 import gr.net.maroulis.library.EasySplashScreen;

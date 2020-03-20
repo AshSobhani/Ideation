@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
 	//Create variables
 	BottomNavigationView bottomNav = null;
-	int fragmentFlag = 0;
+	int fragmentFlag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 		bottomNav = findViewById(R.id.bottom_navbar);
 		bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-		//Set starting fragment to sessions
+		//Set starting fragment to discovery
 		getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DiscoveryFragment()).commit();
 	}
 
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 			};
 
 	private void returnToFragment() {
+		//Use a switch that returns the user to their selected fragment based on the set flag
 		switch (fragmentFlag) {
 			case 0:
 				//Return to discovery fragment and check navigation icon
@@ -91,11 +93,18 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		Log.d(TAG, "onStart: Starting activity");
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		//Save the fragment flag when state is being saved
+		outState.putInt("fragmentFlag", fragmentFlag);
+		super.onSaveInstanceState(outState);
+	}
 
-		//Make sure we are on the right fragment
+	@Override
+	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+
+		//Retrieve the fragment flag and return to the correct fragment
+		fragmentFlag = savedInstanceState.getInt("fragmentFlag");
 		returnToFragment();
 	}
 }

@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 	private static final String TAG = "MainActivity";
 
 	//Create variables
-	Fragment selectedFragment, discoveryFragment , projectsFragment, profileFragment;
+	Fragment selectedFragment, discoveryFragment, projectsFragment, profileFragment;
 	BottomNavigationView bottomNav = null;
 	int fragmentFlag;
 
@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
 		discoveryFragment = new DiscoveryFragment();
 		profileFragment = new ProfileFragment();
 
-		if (savedInstanceState != null) {
+		//If the project fragment exists then retrieve it otherwise create it
+		if (savedInstanceState != null && getSupportFragmentManager().getFragment(savedInstanceState, "projectsFragment") != null) {
 			//Restore the fragment's instance
 			projectsFragment = getSupportFragmentManager().getFragment(savedInstanceState, "projectsFragment");
 		} else {
@@ -106,12 +107,13 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
+		Log.d(TAG, "onSaveInstanceState: Saving");
 		//Save the fragment flag when state is being saved
 		outState.putInt("fragmentFlag", fragmentFlag);
 
-		//If we are currently on the projects fragment then save the instance
-		if (selectedFragment == projectsFragment) {
-			//Save the fragment's instance
+		//If we are currently on the projects fragment then save the its instance
+		Fragment currentFragment = (Fragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+		if(currentFragment instanceof ProjectsFragment){
 			getSupportFragmentManager().putFragment(outState, "projectsFragment", projectsFragment);
 		}
 
@@ -120,10 +122,12 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		Log.d(TAG, "onRestoreInstanceState: Restoring");
 		super.onRestoreInstanceState(savedInstanceState);
 
 		//Retrieve the fragment flag and return to the correct fragment
 		fragmentFlag = savedInstanceState.getInt("fragmentFlag");
+
 		returnToFragment();
 	}
 }

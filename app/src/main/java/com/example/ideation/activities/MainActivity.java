@@ -3,9 +3,10 @@ package com.example.ideation.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 	//Create variables
 	Fragment selectedFragment, discoveryFragment, projectsFragment, profileFragment;
 	BottomNavigationView bottomNav = null;
+	FragmentManager fragmentManager;
 	int fragmentFlag;
 
 	@Override
@@ -29,24 +31,32 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		//Create fragments and assign to variables
-		discoveryFragment = new DiscoveryFragment();
-		profileFragment = new ProfileFragment();
+		//Get the fragment manager and assign to variable
+		fragmentManager = getSupportFragmentManager();
 
 		//If the project fragment exists then retrieve it otherwise create it
-		if (savedInstanceState != null && getSupportFragmentManager().getFragment(savedInstanceState, "projectsFragment") != null) {
-			//Restore the fragment's instance
-			projectsFragment = getSupportFragmentManager().getFragment(savedInstanceState, "projectsFragment");
+		if (savedInstanceState != null) {
+			//Restore the fragment states instead of creating new ones
+			discoveryFragment = fragmentManager.getFragment(savedInstanceState, "discoveryFragment");
+			projectsFragment = fragmentManager.getFragment(savedInstanceState, "projectsFragment");
+			profileFragment = fragmentManager.getFragment(savedInstanceState, "profileFragment");
 		} else {
+			//Create fragments and assign to variables
+			discoveryFragment = new DiscoveryFragment();
 			projectsFragment = new ProjectsFragment();
+			profileFragment = new ProfileFragment();
+
+			//Create a initial fragment transaction
+			FragmentTransaction initialiseFragmentTransaction = fragmentManager.beginTransaction();
+			//Add the fragments to the fragment manager and only display the discovery fragment
+			initialiseFragmentTransaction.add(R.id.fragment_container, discoveryFragment).show(discoveryFragment);
+			initialiseFragmentTransaction.add(R.id.fragment_container, projectsFragment).hide(projectsFragment);
+			initialiseFragmentTransaction.add(R.id.fragment_container, profileFragment).hide(profileFragment).commit();
 		}
 
 		//Find my nav bar and assign to variable
 		bottomNav = findViewById(R.id.bottom_navbar);
 		bottomNav.setOnNavigationItemSelectedListener(navListener);
-
-		//Set starting fragment to discovery
-		getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoveryFragment).commit();
 	}
 
 	//Create a listener to detect changes in selected fragments
@@ -55,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
 				@Override
 				public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 					selectedFragment = null;
+
+					//Create a select fragment transaction
+					FragmentTransaction selectFragmentTransaction = fragmentManager.beginTransaction();
+					//Hide all the fragments
+					selectFragmentTransaction.hide(discoveryFragment);
+					selectFragmentTransaction.hide(projectsFragment);
+					selectFragmentTransaction.hide(profileFragment);
 
 					//Set selected fragment accordingly by whats been selected
 					//Set a flag to for return to fragment checker
@@ -78,28 +95,35 @@ public class MainActivity extends AppCompatActivity {
 					//Make sure a fragment has been selected
 					if (selectedFragment != null) {
 						//Execute set or switch respectfully to the selected fragment
-						getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+						selectFragmentTransaction.show(selectedFragment).commit();
 					}
 					return true;
 				}
 			};
 
 	private void returnToFragment() {
+		//Create a select fragment transaction
+		FragmentTransaction returnToFragmentTransaction = fragmentManager.beginTransaction();
+		//Hide all the fragments
+		returnToFragmentTransaction.hide(discoveryFragment);
+		returnToFragmentTransaction.hide(projectsFragment);
+		returnToFragmentTransaction.hide(profileFragment);
+
 		//Use a switch that returns the user to their selected fragment based on the set flag
 		switch (fragmentFlag) {
 			case 0:
 				//Return to discovery fragment and check navigation icon
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoveryFragment).commit();
+				returnToFragmentTransaction.show(discoveryFragment);
 				bottomNav.getMenu().getItem(0).setChecked(true);
 				break;
 			case 1:
 				//Return to projects fragment and check navigation icon
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, projectsFragment).commit();
+				returnToFragmentTransaction.show(projectsFragment);
 				bottomNav.getMenu().getItem(1).setChecked(true);
 				break;
 			case 2:
 				//Return to profile fragment and check navigation icon
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, profileFragment).commit();
+				returnToFragmentTransaction.show(profileFragment);
 				bottomNav.getMenu().getItem(2).setChecked(true);
 				break;
 		}
@@ -108,14 +132,14 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		Log.d(TAG, "onSaveInstanceState: Saving");
+
 		//Save the fragment flag when state is being saved
 		outState.putInt("fragmentFlag", fragmentFlag);
 
-		//If we are currently on the projects fragment then save the its instance
-		Fragment currentFragment = (Fragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-		if(currentFragment instanceof ProjectsFragment){
-			getSupportFragmentManager().putFragment(outState, "projectsFragment", projectsFragment);
-		}
+		//Save all the fragment states
+		fragmentManager.putFragment(outState, "discoveryFragment", discoveryFragment);
+		fragmentManager.putFragment(outState, "projectsFragment", projectsFragment);
+		fragmentManager.putFragment(outState, "profileFragment", profileFragment);
 
 		super.onSaveInstanceState(outState);
 	}

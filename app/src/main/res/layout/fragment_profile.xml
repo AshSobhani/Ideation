@@ -77,6 +77,22 @@
         app:layout_constraintTop_toBottomOf="@+id/projectTitle" />
 
     <Button
+        android:id="@+id/resendVerificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_signup_button"
+        android:text="Resend Verification"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/verificationText" />
+
+    <Button
         android:id="@+id/logoutButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"

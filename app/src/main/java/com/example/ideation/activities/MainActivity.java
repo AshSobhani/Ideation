@@ -89,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
 						case R.id.navProfile:
 							fragmentFlag = 2;
 							selectedFragment = profileFragment;
+
+							//Check user verification on selecting profile fragment
+							ProfileFragment fragment = (ProfileFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+							fragment.checkVerification();
 							break;
 					}
 

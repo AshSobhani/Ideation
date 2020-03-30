@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.ideation.dialogs.AccessRequestsDialog;
 import com.example.ideation.database.IdeationContract;
+import com.example.ideation.dialogs.SignaturesPendingDialog;
 import com.example.ideation.recycler.ProjectBox;
 import com.example.ideation.recycler.ProjectBoxAdapter;
 import com.example.ideation.R;
@@ -61,7 +61,7 @@ public class SharedProjectsFragment extends Fragment {
 			@Override
 			public void onClick(View view) {
 				//Start Tracking activity and service
-				openAccessRequestsDialog();
+				openSignaturesPendingDialog();
 			}
 		});
 
@@ -155,9 +155,9 @@ public class SharedProjectsFragment extends Fragment {
 		alertDialog.show();
 	}
 
-	private void openAccessRequestsDialog() {
+	private void openSignaturesPendingDialog() {
 		//Make an instance of our access dialog and show it
-		AccessRequestsDialog accessRequestsDialog = new AccessRequestsDialog();
-		accessRequestsDialog.show(getParentFragmentManager(), "Access Request Dialog");
+		SignaturesPendingDialog signaturesPendingDialog = new SignaturesPendingDialog();
+		signaturesPendingDialog.show(getParentFragmentManager(), "Signatures Pending Dialog");
 	}
 }

@@ -153,11 +153,17 @@ public class ProfileFragment extends Fragment {
 
 	public void checkVerification() {
 		Log.d(TAG, "checkVerification: Checking");
+
+		//Reload the user data
+		firebaseUser.reload();
+
 		//Check if the user is verified
 		if (firebaseUser.isEmailVerified()){
 			verificationField.setText("Verified");
+			resendVerificationButton.setVisibility(getView().INVISIBLE);
 		} else {
 			verificationField.setText("Not Verified");
+			resendVerificationButton.setVisibility(getView().VISIBLE);
 		}
 	}
 }

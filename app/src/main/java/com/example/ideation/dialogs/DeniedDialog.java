@@ -103,6 +103,7 @@ public class DeniedDialog extends AppCompatDialogFragment {
 									public void onSuccess(DocumentSnapshot documentSnapshot) {
 										//Retrieve the project title and put into variable
 										final String ownerUID = documentSnapshot.getString(IdeationContract.PROJECT_OWNERUID);
+										final String ownerName = documentSnapshot.getString(IdeationContract.PROJECT_OWNERNAME);
 										final String projectTitle = documentSnapshot.getString(IdeationContract.PROJECT_TITLE);
 
 										//Add a request document to project request
@@ -133,6 +134,7 @@ public class DeniedDialog extends AppCompatDialogFragment {
 																//Create data hash map holding user uid, request date, and set request status stage
 																Map<String, Object> data = new HashMap<>();
 																data.put(IdeationContract.PROJECT_REQUESTS_OWNERUID, ownerUID);
+																data.put(IdeationContract.PROJECT_REQUESTS_OWNERNAME, ownerName);
 																data.put(IdeationContract.PROJECT_REQUESTS_USERUID, userUID);
 																data.put(IdeationContract.PROJECT_REQUESTS_USERNAME, userName);
 																data.put(IdeationContract.PROJECT_REQUESTS_PROJECT, projectTitle);

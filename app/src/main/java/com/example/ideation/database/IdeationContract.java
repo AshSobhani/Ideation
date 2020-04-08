@@ -1,6 +1,9 @@
 package com.example.ideation.database;
 
 public class IdeationContract {
+	//Storage
+	public static final String STORAGE_NDA_FORMS = "NDAForms";
+
 	//Collections
 	public static final String COLLECTION_USERS = "Users";
 	public static final String COLLECTION_PROJECTS = "Projects";
@@ -8,7 +11,6 @@ public class IdeationContract {
 	//Project Sub Collections
 	public static final String COLLECTION_PROJECT_WHITELIST = "Whitelist";
 	public static final String COLLECTION_PROJECT_REQUESTS = "Access Requests";
-
 
 	//User Document Fields
 	public static final String USER_FIRSTNAME = "FirstName";
@@ -26,6 +28,7 @@ public class IdeationContract {
 	public static final String PROJECT_CATEGORY = "Category";
 	public static final String PROJECT_DATE_CREATED = "DateCreated";
 	public static final String PROJECT_WHITELIST = "Whitelist";
+	public static final String PROJECT_NDA_PATH = "NDAPath";
 
 	//Project Sub Collection: Request Fields
 	public static final String PROJECT_REQUESTS_OWNERUID = "OwnerUID";

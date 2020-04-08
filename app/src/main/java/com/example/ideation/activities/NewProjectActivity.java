@@ -3,6 +3,7 @@ package com.example.ideation.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -26,8 +28,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,42 +40,43 @@ import java.util.Map;
 
 public class NewProjectActivity extends AppCompatActivity {
 	private static final String TAG = "NewProjectActivity";
-	private static final int PICK_PDF_REQUEST = 1;
+	private static final int PICK_FILE_REQUEST = 1;
 
 	//Initialise variables
 	EditText titleField, descriptionField, categoryField;
 	String titleText, descriptionText, categoryText;
-	private Button buttonChoosePdf;
+	private Button buttonChooseFile;
 	private Button buttonUpload;
 	private TextView textViewShowUpload;
-	private EditText pdfFileName;
+	private EditText fileName;
 	private ProgressBar progressBar;
 
 	//Declare a URI for the PDF
-	private Uri pdfUri;
+	private Uri fileUri;
 
-	//Make an database instance
+	//Initialise firebase auth then make a database and storage instance
 	private FirebaseAuth firebaseAuth;
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
 	private FirebaseStorage storage = FirebaseStorage.getInstance();
+	private StorageReference storageRef;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_project);
 
-		//Initialize Firebase Auth
+		//Get auth instance and storage reference
 		firebaseAuth = FirebaseAuth.getInstance();
+		storageRef = storage.getReference(IdeationContract.STORAGE_NDA_FORMS);
 
 		//Assign views to variables
 		titleField = findViewById(R.id.projectTitle);
 		descriptionField = findViewById(R.id.projectDescription);
 		categoryField = findViewById(R.id.projectCategory);
-		//Upload Views
-		buttonChoosePdf = findViewById(R.id.button_choose_image);
+		buttonChooseFile = findViewById(R.id.button_choose_file);
 		buttonUpload = findViewById(R.id.button_upload);
 		textViewShowUpload = findViewById(R.id.text_view_show_upload);
-		pdfFileName = findViewById(R.id.edit_text_file_name);
+		fileName = findViewById(R.id.edit_text_file_name);
 		progressBar = findViewById(R.id.progress_bar);
 	}
 
@@ -82,15 +88,52 @@ public class NewProjectActivity extends AppCompatActivity {
 
 		//Add project if fields are not empty and finish activity
 		if (!titleField.equals("") && !descriptionText.equals("") && !categoryText.equals("")) {
-			addProjectToCollection();
+			uploadFileAndAddProject();
 			finish();
 		} else {
 			Toast.makeText(NewProjectActivity.this, "Error: Empty Fields", Toast.LENGTH_SHORT).show();
 		}
-
 	}
 
-	private void addProjectToCollection() {
+	public void uploadFileAndAddProject() {
+		//If a file has been selected
+		if (fileUri != null) {
+			//Give the file its name and file extension
+			final StorageReference fileReference = storageRef.child(System.currentTimeMillis()
+					+ "." + getFileExtension(fileUri));
+
+			fileReference.putFile(fileUri)
+					.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+						@Override
+						public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+							Toast.makeText(NewProjectActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
+
+							//Get the NDA form path and pass it to the add project function
+							String NDAFormPath = taskSnapshot.getStorage().getPath();
+							addProjectToCollection(NDAFormPath);
+						}
+					})
+					.addOnFailureListener(new OnFailureListener() {
+						@Override
+						public void onFailure(@NonNull Exception e) {
+							Toast.makeText(NewProjectActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+						}
+					})
+					.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+						@Override
+						public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+							//Show the upload progress on the progress bar
+							double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+							progressBar.setProgress((int) progress);
+						}
+					});
+		} else {
+			addProjectToCollection(null);
+			Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	private void addProjectToCollection(final String NDAFormPath) {
 		//Access the users record to retrieve User UID and User Name
 		db.collection(IdeationContract.COLLECTION_USERS).document(firebaseAuth.getUid()).get()
 				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -108,8 +151,13 @@ public class NewProjectActivity extends AppCompatActivity {
 						projectInfo.put(IdeationContract.PROJECT_DESCRIPTION, descriptionText);
 						projectInfo.put(IdeationContract.PROJECT_CATEGORY, categoryText);
 						projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, new Timestamp(new Date()));
-						//Add the owner to the project white list
+						//Initiate the project white list
 						projectInfo.put(IdeationContract.PROJECT_WHITELIST, Arrays.asList("Initiator"));
+
+						//If an NDA form exists put the URL into the project
+						if (NDAFormPath != null) {
+							projectInfo.put(IdeationContract.PROJECT_NDA_PATH, NDAFormPath);
+						}
 
 						//Insert project into project collection
 						db.collection(IdeationContract.COLLECTION_PROJECTS).add(projectInfo)
@@ -137,33 +185,29 @@ public class NewProjectActivity extends AppCompatActivity {
 				});
 	}
 
-	public void onChoosePdf (View v) {
+	public void onChooseFile(View v) {
+		//Create a new intent looking for PDF files and start it
 		Intent intent = new Intent();
 		intent.setType("application/pdf");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
-		startActivityForResult(intent, PICK_PDF_REQUEST);
+		startActivityForResult(intent, PICK_FILE_REQUEST);
 	}
 
-	private void openFileChooser() {
-
+	private String getFileExtension(Uri uri) {
+		//Get the file extension for so that firebase can identify it
+		ContentResolver contentResolver = getContentResolver();
+		MimeTypeMap mime = MimeTypeMap.getSingleton();
+		return mime.getExtensionFromMimeType(contentResolver.getType(uri));
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (requestCode == PICK_PDF_REQUEST && resultCode == RESULT_OK
+		//If a file has been selected and its ok add it to the file uri variable
+		if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK
 				&& data != null && data.getData() != null) {
-			pdfUri = data.getData();
-
-			//Create a cursor to retrieve the name and get the name index
-			Cursor cursor = getContentResolver().query(pdfUri, null, null, null, null);
-			int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-			cursor.moveToFirst();
-
-			//Set the upload text to the PDF file name and close the cursor
-			textViewShowUpload.setText(cursor.getString(nameIndex));
-			cursor.close();
+			fileUri = data.getData();
 		}
 	}
 }

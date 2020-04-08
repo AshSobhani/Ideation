@@ -53,10 +53,10 @@
         app:layout_constraintTop_toBottomOf="@+id/projectCategory" />
 
     <Button
-        android:id="@+id/button_choose_image"
+        android:id="@+id/button_choose_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onChoosePdf"
+        android:onClick="onChooseFile"
         android:text="Choose file"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,14 +73,14 @@
         android:text="Choose file"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_choose_image" />
+        app:layout_constraintTop_toBottomOf="@+id/button_choose_file" />
 
     <EditText
         android:id="@+id/edit_text_file_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/button_choose_image"
-        android:layout_toRightOf="@+id/button_choose_image"
+        android:layout_toEndOf="@+id/button_choose_file"
+        android:layout_toRightOf="@+id/button_choose_file"
         android:hint="Enter file name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,13 +90,13 @@
         android:id="@+id/progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_above="@+id/button_upload"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_file_name"
-        android:layout_alignParentLeft="true" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_file_name" />
 
     <Button
         android:id="@+id/button_upload"

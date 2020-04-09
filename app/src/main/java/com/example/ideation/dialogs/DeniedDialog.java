@@ -107,7 +107,7 @@ public class DeniedDialog extends AppCompatDialogFragment {
 										final String projectTitle = documentSnapshot.getString(IdeationContract.PROJECT_TITLE);
 
 										//Add a request document to project request
-										db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS)
+										db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_ACCESS_REQUESTS)
 												.whereEqualTo(IdeationContract.PROJECT_REQUESTS_USERUID, userUID)
 												.whereEqualTo(IdeationContract.PROJECT_REQUESTS_PROJECT, projectTitle).get()
 												.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -143,7 +143,7 @@ public class DeniedDialog extends AppCompatDialogFragment {
 																data.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
 
 																//Add a request document to project request
-																db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document().set(data)
+																db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).document().set(data)
 																		.addOnSuccessListener(new OnSuccessListener<Void>() {
 																			@Override
 																			public void onSuccess(Void aVoid) {

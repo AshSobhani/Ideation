@@ -63,7 +63,7 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 		final DocumentReference projectRef = getSnapshots().getSnapshot(position).getReference();
 
 		//Get all the project access requests
-		projectRef.collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).get()
+		projectRef.collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).get()
 				.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 					@Override
 					public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -75,7 +75,7 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 								statusData.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_PROJECT_ARCHIVED);
 
 								//Set the data and ensure that the data merges
-								projectRef.collection(IdeationContract.COLLECTION_PROJECT_REQUESTS).document(document.getId())
+								projectRef.collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).document(document.getId())
 										.set(statusData, SetOptions.merge());
 							}
 							//Delete the document

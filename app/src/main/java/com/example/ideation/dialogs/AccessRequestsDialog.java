@@ -72,7 +72,7 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 		String ownerUID = firebaseAuth.getUid();
 
 		//Create the project collection query, and if needed add query filer below (priority, by date, etc..)
-		Query query = db.collectionGroup(IdeationContract.COLLECTION_PROJECT_REQUESTS)
+		Query query = db.collectionGroup(IdeationContract.COLLECTION_ACCESS_REQUESTS)
 				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_OWNERUID, ownerUID)
 				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
 

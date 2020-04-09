@@ -9,8 +9,7 @@ public class IdeationContract {
 	public static final String COLLECTION_PROJECTS = "Projects";
 
 	//Project Sub Collections
-	public static final String COLLECTION_PROJECT_WHITELIST = "Whitelist";
-	public static final String COLLECTION_PROJECT_REQUESTS = "Access Requests";
+	public static final String COLLECTION_ACCESS_REQUESTS = "Access Requests";
 
 	//User Document Fields
 	public static final String USER_FIRSTNAME = "FirstName";

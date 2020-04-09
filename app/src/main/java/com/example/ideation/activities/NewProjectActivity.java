@@ -74,7 +74,6 @@ public class NewProjectActivity extends AppCompatActivity {
 		descriptionField = findViewById(R.id.projectDescription);
 		categoryField = findViewById(R.id.projectCategory);
 		buttonChooseFile = findViewById(R.id.button_choose_file);
-		buttonUpload = findViewById(R.id.button_upload);
 		textViewShowUpload = findViewById(R.id.text_view_show_upload);
 		fileName = findViewById(R.id.edit_text_file_name);
 		progressBar = findViewById(R.id.progress_bar);

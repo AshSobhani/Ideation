@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.example.ideation.R;
 import com.example.ideation.activities.SignatureActivity;
-import com.example.ideation.activities.ViewProjectActivity;
 import com.example.ideation.database.IdeationContract;
 import com.example.ideation.recycler.SignatureBox;
 import com.example.ideation.recycler.SignatureBoxAdapter;
@@ -28,7 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SignaturesPendingDialog extends AppCompatDialogFragment {
-	private static final String TAG = "AccessRequestsDialog";
+	private static final String TAG = "SignaturesPendingDialog";
 	
 	//Initialise variables
 	private FirebaseAuth firebaseAuth;
@@ -73,12 +72,12 @@ public class SignaturesPendingDialog extends AppCompatDialogFragment {
 
 	private void populateRecyclerView() {
 		//Get current ownerUID
-		String ownerUID = firebaseAuth.getUid();
+		String userUID = firebaseAuth.getUid();
 
 		//Create the project collection query, and if needed add query filer below (priority, by date, etc..)
-		Query query = db.collectionGroup(IdeationContract.COLLECTION_PROJECT_REQUESTS)
-				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_OWNERUID, ownerUID)
-				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
+		Query query = db.collectionGroup(IdeationContract.COLLECTION_ACCESS_REQUESTS)
+				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_USERUID, userUID)
+				.whereEqualTo(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_SIGNATURE_PENDING);
 
 		//Query the database and build
 		FirestoreRecyclerOptions<SignatureBox> options = new FirestoreRecyclerOptions.Builder<SignatureBox>()
@@ -98,17 +97,21 @@ public class SignaturesPendingDialog extends AppCompatDialogFragment {
 		adapter.setOnBoxClickListener(new SignatureBoxAdapter.OnBoxClickListener() {
 			@Override
 			public void onBoxClick(DocumentSnapshot documentSnapshot, int position) {
+				//Get project UID
+				final String projectUID = documentSnapshot.getReference().getParent().getParent().getId();
 				//Get request UID
 				final String requestUID = documentSnapshot.getId();
 
-				toSignatureActivity(requestUID);
+				//Pass through the project and request UID
+				toSignatureActivity(projectUID, requestUID);
 			}
 		});
 	}
 
-	private void toSignatureActivity(final String requestUID) {
+	private void toSignatureActivity(final String projectUID, final String requestUID) {
 		//Put the projectUID into a new bundle
 		Bundle bundle = new Bundle();
+		bundle.putString("projectUID", projectUID);
 		bundle.putString("requestUID", requestUID);
 
 		//Create an intent and start view project activity whilst also sending the bundle

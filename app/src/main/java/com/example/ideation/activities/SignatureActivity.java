@@ -3,8 +3,13 @@ package com.example.ideation.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,12 +21,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.IOException;
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class SignatureActivity extends AppCompatActivity {
 	private static final String TAG = "SignatureActivity";
@@ -31,6 +34,7 @@ public class SignatureActivity extends AppCompatActivity {
 	private TextView titleField;
 	private FirebaseUser firebaseUser;
 	private FirebaseAuth firebaseAuth;
+	private DownloadManager.Request request;
 
 	//Get firestore and storage instance and store in variables, and then create storage reference
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -56,35 +60,36 @@ public class SignatureActivity extends AppCompatActivity {
 		db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).get()
 				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 					@Override
-					public void onSuccess(DocumentSnapshot documentSnapshot) {
+					public void onSuccess(final DocumentSnapshot documentSnapshot) {
+						//Get the project title
+						final String projectTitle = documentSnapshot.getString(IdeationContract.PROJECT_TITLE);
+
 						//Set the text fields
-						titleField.setText(documentSnapshot.getString(IdeationContract.PROJECT_TITLE));
+						titleField.setText(projectTitle);
 
-						//Get the NDA path
+						//Get the NDA path and make a storage reference
 						String NDAPath = documentSnapshot.getString(IdeationContract.PROJECT_NDA_PATH);
-
 						StorageReference NDAReference = storage.getReference().child(NDAPath);
 
-						File localFile = null;
-						try {
-							localFile = File.createTempFile("Downloads", "pdf");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						//Get the download Url
+						NDAReference.getDownloadUrl()
+								.addOnSuccessListener(new OnSuccessListener<Uri>() {
+									@Override
+									public void onSuccess(Uri uri) {
+										//Create the file name and make a string url
+										String fileName = projectTitle + "NDAForm";
+										String url = uri.toString();
 
-						NDAReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-							@Override
-							public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-								Log.d(TAG, "onSuccess: file downloaded");
-							}
-						}).addOnFailureListener(new OnFailureListener() {
-							@Override
-							public void onFailure(@NonNull Exception exception) {
-								// Handle any errors
-							}
-						});
+										//Create the request but don't download yet
+										createRequest(fileName, ".pdf", DIRECTORY_DOWNLOADS, url);
+									}
+								})
+								.addOnFailureListener(new OnFailureListener() {
+									@Override
+									public void onFailure(@NonNull Exception e) {
 
-
+									}
+								});
 					}
 				})
 				.addOnFailureListener(new OnFailureListener() {
@@ -94,5 +99,24 @@ public class SignatureActivity extends AppCompatActivity {
 						Log.d(TAG, e.toString());
 					}
 				});
+	}
+
+	public void createRequest(String fileName, String fileExtension, String saveDirectory, String url) {
+		//Parse the url and create the download request
+		Uri uri = Uri.parse(url);
+		request = new DownloadManager.Request(uri);
+
+		//Customise the download notification
+		request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+		request.setDestinationInExternalPublicDir(saveDirectory, fileName + fileExtension);
+	}
+
+	public void onDownloadAndViewFile(View v) {
+		//Initialise a download manager
+		DownloadManager downloadManager = (DownloadManager) SignatureActivity.this.getSystemService(Context.DOWNLOAD_SERVICE);
+
+		//Enqueue the download request and navigate user to downloads
+		downloadManager.enqueue(request);
+		startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
 	}
 }

@@ -11,8 +11,8 @@
     android:id="@+id/projectTitleText"
     android:layout_width="wrap_content"
     android:layout_height="80dp"
-    android:layout_marginStart="32dp"
-    android:layout_marginLeft="32dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginLeft="20dp"
     android:layout_marginTop="16dp"
     android:gravity="center_vertical"
     android:text=""
@@ -21,6 +21,80 @@
     android:textSize="30sp"
     android:textStyle="bold"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toTopOf="parent" />20<TextView
+        android:id="@+id/digitalSignatureText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:text="Non Disclosure Agreement"
+        android:textAllCaps="true"
+        android:textColor="#333333"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/projectTitleText" />
+
+    <TextView
+        android:id="@+id/signatureDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="This project is protected by a digital non disclosure agreement. To gain access you are required to download and read this legal document and accept its conditions."
+        android:textColor="#333333"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/digitalSignatureText" />
+
+    <Button
+        android:id="@+id/downloadNDAButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@drawable/rounded_signin_button"
+        android:onClick="onDownloadAndViewFile"
+        android:text="Download Non Disclosure Agreement"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signatureDescription" />
+
+    <TextView
+        android:id="@+id/digitalSignatureTexta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:gravity="center_vertical"
+        android:text="Digital Signature Consent"
+        android:textAllCaps="true"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/downloadNDAButton" />
+
+    <TextView
+        android:id="@+id/signatureConsentText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="By clicking accept you are consenting to the conditions stated in the projects NDA form, if you do not consent then please either go back to consider it further, alternately you can disagree and revoke the project request."
+        android:textColor="#333333"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/digitalSignatureTexta" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 		//Assign the views to object
 		loginProgressBar = findViewById(R.id.loginProgressBar);
 		emailField = findViewById(R.id.emailText);
-		passwordField = findViewById(R.id.newPasswordText);
+		passwordField = findViewById(R.id.passwordText);
 		loginFailedField = findViewById(R.id.loginFailedText);
 		forgottenPasswordField = findViewById(R.id.forgottenPassword);
 

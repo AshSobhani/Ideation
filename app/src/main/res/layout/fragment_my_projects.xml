@@ -27,7 +27,7 @@
                 android:text="My Projects"
                 android:textAllCaps="true"
                 android:textColor="#333333"
-                android:textSize="34sp"
+                android:textSize="32sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -48,16 +48,16 @@
             android:layout_width="152dp"
             android:layout_height="56dp"
 
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="24dp"
-            android:layout_marginLeft="10dp"
             android:clickable="true"
             android:focusable="true"
             android:tint="#00ccff"
             app:backgroundTint="#333333"
-            app:elevation="5dp"
+            app:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:maxImageSize="50dp"
+            app:maxImageSize="48dp"
             app:srcCompat="@android:drawable/ic_input_add"
             app:useCompatPadding="false" />
 
@@ -70,7 +70,7 @@
         android:layout_weight="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deleteHint" >
+        app:layout_constraintTop_toBottomOf="@+id/deleteHint">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -78,10 +78,10 @@
         android:id="@+id/openAccessRequests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/rounded_signin_button"
         android:text="Access Requests"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/rounded_signin_button" />
+        android:textColor="@color/colorPrimary" />
 
 </LinearLayout>
 

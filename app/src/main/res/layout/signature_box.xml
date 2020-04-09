@@ -11,10 +11,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="4dp">
 
         <TextView
             android:id="@+id/projectName"
@@ -22,8 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:gravity="center_vertical"
             android:layout_centerVertical="true"
+            android:gravity="center_vertical"
             android:maxLines="1"
             android:text="Title"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -33,13 +31,14 @@
             android:id="@+id/owner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="4dp"
             android:layout_toStartOf="@+id/ownerName"
             android:layout_toLeftOf="@+id/ownerName"
             android:text="Owner:"
-            android:textColor="@color/colorPrimary"
-             />
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/requestDateTime"
@@ -48,8 +47,7 @@
             android:layout_below="@+id/ownerName"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center"
             android:text="20/02/2019"
             android:textColor="@color/colorAccent" />
@@ -60,6 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
             android:text="John Doe"
             android:textColor="@color/colorAccent" />
 
@@ -67,9 +67,10 @@
             android:id="@+id/requestDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_below="@+id/owner"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="8dp"
             android:layout_toStartOf="@+id/requestDateTime"
             android:layout_toLeftOf="@+id/requestDateTime"
             android:text="Date:"

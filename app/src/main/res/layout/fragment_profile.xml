@@ -16,7 +16,7 @@
         android:text="Profile"
         android:textAllCaps="true"
         android:textColor="#333333"
-        android:textSize="34sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -72,7 +72,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginTop="8dp"
-        android:textSize="25sp"
+        android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/projectTitle" />
 
@@ -80,12 +80,11 @@
         android:id="@+id/resendVerificationButton"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_signup_button"
+        android:paddingHorizontal="8dp"
         android:text="Resend Verification"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="12sp"
@@ -100,10 +99,10 @@
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginBottom="32dp"
-        android:text="Logout"
-        android:textSize="15sp"
-        android:textColor="@color/colorPrimary"
         android:background="@drawable/rounded_signin_button"
+        android:text="Logout"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

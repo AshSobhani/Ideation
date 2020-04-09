@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="12dp"
-    android:layout_marginStart="12dp"
+    android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
     app:cardBackgroundColor="@color/colorPrimaryDark"
-    app:cardCornerRadius="6dp">
+    app:cardCornerRadius="8dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="15dp">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/projectName"
@@ -24,31 +24,31 @@
             android:maxLines="1"
             android:text="Title"
             android:textColor="@color/colorAccent"
-            android:textSize="22sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/creationDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_below="@+id/ownerName"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_marginTop="8dp"
             android:text="20/02/2019"
-            android:textSize="15sp"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/projectCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_alignParentStart="true"
             android:layout_below="@id/projectName"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="8dp"
             android:text="Category"
-            android:textSize="15sp"
             android:textColor="@color/colorAccent"
-            android:layout_alignParentLeft="true" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/ownerName"

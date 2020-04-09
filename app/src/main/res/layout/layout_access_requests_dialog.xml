@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:padding="20dp">
 
     <TextView
@@ -9,13 +10,13 @@
         android:layout_height="wrap_content"
         android:singleLine="false"
         android:text="Either approve or deny project access requests by clicking the tick or cross respectively."
-        android:textSize="15sp" />
+        android:textSize="16sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/requestsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/requestMessage" />
+        android:layout_below="@+id/requestMessage"
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>

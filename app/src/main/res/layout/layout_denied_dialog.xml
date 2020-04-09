@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:padding="20dp">
 
     <TextView
@@ -8,25 +9,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Would you like to request access from the project owner?"
-        android:textSize="13dp"/>
+        android:textSize="12sp" />
 
     <EditText
         android:id="@+id/requestReasonText"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/requestMessage"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
-        android:textSize="13dp"
         android:hint="The reason for your access request..."
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:textSize="12dp" />
 
     <TextView
         android:id="@+id/requestFailedText"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/requestReasonText"
-        android:paddingLeft="10dp"
+        android:paddingLeft="8dp"
         android:text=""
         android:textColor="#BA0000"
         android:textStyle="italic" />

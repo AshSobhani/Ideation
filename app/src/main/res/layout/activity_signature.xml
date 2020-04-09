@@ -4,31 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SignatureActivity"
-    android:background="@color/colorPrimary">
+    tools:context=".activities.SignatureActivity">
 
-<TextView
-    android:id="@+id/projectTitleText"
-    android:layout_width="wrap_content"
-    android:layout_height="80dp"
-    android:layout_marginStart="20dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginTop="16dp"
-    android:gravity="center_vertical"
-    android:text=""
-    android:textAllCaps="true"
-    android:textColor="#333333"
-    android:textSize="30sp"
-    android:textStyle="bold"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/projectTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:text=""
+        android:textAllCaps="true"
+        android:textColor="#333333"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/digitalSignatureText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginHorizontal="16dp"
         android:gravity="center_vertical"
         android:text="Non Disclosure Agreement"
         android:textAllCaps="true"
@@ -44,8 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingHorizontal="16dp"
         android:text="This project is protected by a digital non disclosure agreement. To gain access you are required to download and read this legal document and accept its conditions."
         android:textColor="#333333"
         android:textSize="16sp"
@@ -58,7 +54,7 @@
         android:id="@+id/downloadNDAButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_margin="16dp"
         android:background="@drawable/rounded_signin_button"
         android:onClick="onDownloadAndViewFile"
         android:text="Download Non Disclosure Agreement"
@@ -72,8 +68,8 @@
         android:id="@+id/signatureConsentTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="30dp"
         android:gravity="center_vertical"
         android:text="Digital Signature Consent"
@@ -89,8 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingHorizontal="16dp"
         android:text="By clicking accept you are consenting to the conditions stated in the projects NDA form, if you do not consent then please either go back to consider it further, alternately you can disagree and revoke the project request."
         android:textColor="#333333"
         android:textSize="12sp"
@@ -104,40 +99,41 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="16dp"
         android:hint="Confirm Password"
         app:layout_constraintTop_toBottomOf="@+id/signatureConsentText">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/confirmPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-    android:id="@+id/agreeButton"
-    android:layout_width="100dp"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="15dp"
-    android:layout_marginRight="15dp"
-    android:layout_marginBottom="15dp"
-    android:text="Accept"
-    android:textColor="@color/colorAccent"
-    android:background="@drawable/rounded_signin_button"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
+        android:id="@+id/agreeButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_signin_button"
+        android:text="Accept"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/declineButton"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_signin_button"
         android:text="Decline"
         android:textColor="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

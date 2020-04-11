@@ -44,6 +44,8 @@ public class IdeationContract {
 	public static final String REQUESTS_STATUS_SIGNATURE_PENDING = "Signature Pending";
 	public static final String REQUESTS_STATUS_REQUEST_ACCEPTED = "Request Accepted";
 	public static final String REQUESTS_STATUS_REQUEST_DECLINED = "Request Declined";
+	public static final String REQUESTS_STATUS_ACCESS_REVOKED = "Access Revoked";
+	public static final String REQUESTS_STATUS_REQUEST_REVOKED = "Request Revoked";
 	public static final String REQUESTS_STATUS_PROJECT_ARCHIVED = "Project Archived";
 	//NDA Flag States
 	public static final Boolean NDA_FLAG_TRUE = true;

@@ -105,8 +105,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 						//If the project does not have an NDA form grant the user access otherwise request signature
 						if (!ndaFlag) {
 							acceptRequest(documentSnapshot);
-						}
-						else {
+						} else {
 							//Project has an NDA so request a signature
 							requestSignature(documentSnapshot);
 						}

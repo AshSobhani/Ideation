@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class AccessRequestsDialog extends AppCompatDialogFragment {
 	private static final String TAG = "AccessRequestsDialog";
-	
+
 	//Initialise variables
 	private FirebaseAuth firebaseAuth;
 	private RequestBoxAdapter adapter;

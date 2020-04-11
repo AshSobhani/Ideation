@@ -8,10 +8,9 @@
 
     <TextView
         android:id="@+id/projectTitleText"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
         android:gravity="center_vertical"
         android:text=""
@@ -24,10 +23,9 @@
 
     <TextView
         android:id="@+id/projectOwnerText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="8dp"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,10 +33,9 @@
 
     <TextView
         android:id="@+id/categoryText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,11 +45,26 @@
         android:id="@+id/descriptionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
         android:text=""
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/categoryText" />
+
+    <Button
+        android:id="@+id/downloadNDAButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_signin_button"
+        android:onClick="onDownloadAndViewFile"
+        android:text="Download Projects NDA"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionText"
+        android:visibility="invisible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

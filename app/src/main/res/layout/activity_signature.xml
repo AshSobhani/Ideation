@@ -60,7 +60,6 @@
         android:text="Download Non Disclosure Agreement"
         android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signatureDescription" />
 
@@ -104,20 +103,35 @@
         app:layout_constraintTop_toBottomOf="@+id/signatureConsentText">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/confirmPassword"
+            android:id="@+id/confirmPasswordText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/confirmPasswordFailedText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="8dp"
+        android:text=""
+        android:textColor="#BA0000"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextField" />
+
     <Button
-        android:id="@+id/agreeButton"
+        android:id="@+id/acceptButton"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_signin_button"
+        android:onClick="onSignAndAccept"
         android:text="Accept"
         android:textColor="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -131,6 +145,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_signin_button"
+        android:onClick="onDecline"
         android:text="Decline"
         android:textColor="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"

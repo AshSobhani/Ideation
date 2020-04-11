@@ -23,6 +23,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Title"
+            android:textStyle="bold"
             android:textColor="@color/colorAccent"
             android:textSize="24sp" />
 
@@ -30,10 +31,10 @@
             android:id="@+id/creationDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ownerName"
+            android:layout_alignTop="@+id/projectCategory"
+            android:layout_alignBottom="@+id/projectCategory"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="8dp"
             android:text="20/02/2019"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
@@ -58,7 +59,7 @@
             android:layout_alignParentRight="true"
             android:text="AshSobhani"
             android:textColor="@color/colorPrimary"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
     </RelativeLayout>
 

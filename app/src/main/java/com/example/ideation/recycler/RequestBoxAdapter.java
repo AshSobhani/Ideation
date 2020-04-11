@@ -28,7 +28,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 	}
 
 	@Override
-	protected void onBindViewHolder(@NonNull RequestBoxHolder holder, final int position, @NonNull RequestBox model) {
+	protected void onBindViewHolder(@NonNull final RequestBoxHolder holder, int position, @NonNull RequestBox model) {
 		//Set the Project Box fields respectively
 		holder.textViewProject.setText(model.getProject());
 		holder.textViewUserName.setText(model.getUserName());
@@ -40,14 +40,19 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 			holder.textViewRequestReason.setVisibility(View.VISIBLE);
 		}
 
+		final int pos = position;
+
 		//If they click the accept request button do as follows
 		holder.acceptRequestButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "onClick: Request Accepted");
 
-				//Accept the request by updating request status and adding them to whitelist
-				handleRequest(position);
+				//Accept the request by updating request status and adding them to whitelist and notify the holder
+				handleRequest(pos);
+
+				Log.d(TAG, "Button clicked position: " + pos);
+				Log.d(TAG, "Items: " + getItemCount());
 			}
 		});
 
@@ -57,8 +62,11 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 			public void onClick(View v) {
 				Log.d(TAG, "onClick: Request Declined");
 
-				//Decline the request by updating request status
-				declineRequest(position);
+				//Decline the request by updating request status and notify the holder
+				declineRequest(pos);
+
+				Log.d(TAG, "Button clicked position: " + pos);
+				Log.d(TAG, "Items: " + getItemCount());
 			}
 		});
 	}
@@ -134,6 +142,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						Log.d(TAG, "onComplete: Request accepted and status updated to request accepted");
+						notifyDataSetChanged();
 					}
 				});
 	}
@@ -146,6 +155,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						Log.d(TAG, "onComplete: Request accepted and status updated to signature pending");
+						notifyDataSetChanged();
 					}
 				});
 	}
@@ -158,6 +168,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						Log.d(TAG, "onComplete: Request declined and status updated");
+						notifyDataSetChanged();
 					}
 				});
 	}

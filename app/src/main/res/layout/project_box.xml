@@ -58,7 +58,7 @@
             android:layout_alignParentRight="true"
             android:text="AshSobhani"
             android:textColor="@color/colorPrimary"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
     </RelativeLayout>
 

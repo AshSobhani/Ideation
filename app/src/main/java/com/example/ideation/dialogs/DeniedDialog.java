@@ -105,6 +105,7 @@ public class DeniedDialog extends AppCompatDialogFragment {
 										final String ownerUID = documentSnapshot.getString(IdeationContract.PROJECT_OWNERUID);
 										final String ownerName = documentSnapshot.getString(IdeationContract.PROJECT_OWNERNAME);
 										final String projectTitle = documentSnapshot.getString(IdeationContract.PROJECT_TITLE);
+										final String ndaPath = documentSnapshot.getString(IdeationContract.PROJECT_NDA_PATH);
 
 										//Add a request document to project request
 										db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_ACCESS_REQUESTS)
@@ -141,6 +142,14 @@ public class DeniedDialog extends AppCompatDialogFragment {
 																data.put(IdeationContract.PROJECT_REQUESTS_DATETIME, new Timestamp(new Date()));
 																data.put(IdeationContract.PROJECT_REQUESTS_REASON, requestReason.getText().toString());
 																data.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
+
+																//Create a boolean flag field showing if an NDA exists or not
+																if (ndaPath == null) {
+																	data.put(IdeationContract.PROJECT_REQUESTS_NDA_FLAG, IdeationContract.NDA_FLAG_FALSE);
+																}
+																else {
+																	data.put(IdeationContract.PROJECT_REQUESTS_NDA_FLAG, IdeationContract.NDA_FLAG_TRUE);
+																}
 
 																//Add a request document to project request
 																db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).document().set(data)

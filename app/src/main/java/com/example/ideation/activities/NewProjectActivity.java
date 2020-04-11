@@ -30,7 +30,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.Arrays;
@@ -45,10 +44,7 @@ public class NewProjectActivity extends AppCompatActivity {
 	//Initialise variables
 	EditText titleField, descriptionField, categoryField;
 	String titleText, descriptionText, categoryText;
-	private Button buttonChooseFile;
-	private Button buttonUpload;
-	private TextView textViewShowUpload;
-	private EditText fileName;
+	private TextView fileName;
 	private ProgressBar progressBar;
 
 	//Declare a URI for the PDF
@@ -73,9 +69,7 @@ public class NewProjectActivity extends AppCompatActivity {
 		titleField = findViewById(R.id.projectTitle);
 		descriptionField = findViewById(R.id.projectDescription);
 		categoryField = findViewById(R.id.projectCategory);
-		buttonChooseFile = findViewById(R.id.button_choose_file);
-		textViewShowUpload = findViewById(R.id.text_view_show_upload);
-		fileName = findViewById(R.id.edit_text_file_name);
+		fileName = findViewById(R.id.fileName);
 		progressBar = findViewById(R.id.progress_bar);
 	}
 
@@ -207,6 +201,12 @@ public class NewProjectActivity extends AppCompatActivity {
 		if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK
 				&& data != null && data.getData() != null) {
 			fileUri = data.getData();
+
+			Cursor cursor = getContentResolver().query(fileUri, null, null, null, null);
+
+			int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+			cursor.moveToFirst();
+			fileName.setText(cursor.getString(nameIndex));
 		}
 	}
 }

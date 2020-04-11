@@ -6,85 +6,93 @@
     android:layout_height="match_parent"
     tools:context=".activities.NewProjectActivity">
 
-    <EditText
-        android:id="@+id/projectTitle"
-        android:layout_width="300dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutProjectTitle"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="156dp"
+        android:layout_marginHorizontal="48dp"
+        android:layout_marginVertical="4dp"
         android:hint="Title"
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/layoutProjectDescription"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
-    <EditText
-        android:id="@+id/projectDescription"
-        android:layout_width="300dp"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/projectTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutProjectDescription"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="48dp"
+        android:layout_marginVertical="4dp"
         android:hint="Description"
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/projectTitle" />
+        app:layout_constraintBottom_toTopOf="@+id/layoutProjectCategory"
+        app:layout_constraintTop_toBottomOf="@+id/layoutProjectTitle">
 
-    <EditText
-        android:id="@+id/projectCategory"
-        android:layout_width="300dp"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/projectDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutProjectCategory"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="48dp"
+        android:layout_marginVertical="4dp"
         android:hint="Category"
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/projectDescription" />
+        app:layout_constraintBottom_toTopOf="@+id/button_choose_file"
+        app:layout_constraintTop_toBottomOf="@+id/layoutProjectDescription">
 
-    <Button
-        android:id="@+id/buttonAdd"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/rounded_signin_button"
-        android:onClick="onAddProject"
-        android:text="Save"
-        android:textColor="@color/colorPrimary"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/projectCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/fileName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="48dp"
+        android:background="@drawable/textview_border"
+        android:gravity="center"
+        android:text="Project NDA (PDF)"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_choose_file"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/projectCategory" />
+        app:layout_constraintStart_toEndOf="@+id/button_choose_file"
+        app:layout_constraintTop_toTopOf="@+id/button_choose_file" />
 
     <Button
         android:id="@+id/button_choose_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/rounded_signup_button"
         android:onClick="onChooseFile"
-        android:text="Choose file"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        android:paddingHorizontal="8dp"
+        android:text="Files"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAdd"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonAdd"
-        app:layout_constraintVertical_bias="0.198" />
-
-    <TextView
-        android:id="@+id/text_view_show_upload"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Choose file"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_choose_file" />
-
-    <EditText
-        android:id="@+id/edit_text_file_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/button_choose_file"
-        android:layout_toRightOf="@+id/button_choose_file"
-        android:hint="Enter file name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_show_upload" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutProjectCategory" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -93,9 +101,28 @@
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
+        android:layout_marginHorizontal="48dp"
+        android:layout_marginVertical="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_file_name" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonAdd" />
 
+    <Button
+        android:id="@+id/buttonAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="48dp"
+        android:layout_marginVertical="4dp"
+        android:background="@drawable/rounded_signin_button"
+        android:onClick="onAddProject"
+        android:text="Save"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@id/progress_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_choose_file" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

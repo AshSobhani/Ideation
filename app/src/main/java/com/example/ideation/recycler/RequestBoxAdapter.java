@@ -47,7 +47,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 				Log.d(TAG, "onClick: Request Accepted");
 
 				//Accept the request by updating request status and adding them to whitelist
-				acceptRequest(position);
+				handleRequest(position);
 			}
 		});
 
@@ -93,34 +93,60 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 		}
 	}
 
-	private void acceptRequest(int position) {
+	private void handleRequest(int position) {
 		//Access the requests document to get the requester user UID
 		getSnapshots().getSnapshot(position).getReference().get()
 				.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 					@Override
 					public void onSuccess(DocumentSnapshot documentSnapshot) {
-						//Retrieve the user UID and put into a string
-						String userUID = documentSnapshot.getString(IdeationContract.PROJECT_REQUESTS_USERUID);
+						//Get the NDA flag to check if project needs a signature
+						Boolean ndaFlag = documentSnapshot.getBoolean(IdeationContract.PROJECT_REQUESTS_NDA_FLAG);
 
-						//Put the requester user UID into the projects whitelist
-						documentSnapshot.getReference().getParent().getParent()
-								.update(IdeationContract.PROJECT_WHITELIST, FieldValue.arrayUnion(userUID))
-								.addOnCompleteListener(new OnCompleteListener<Void>() {
-									@Override
-									public void onComplete(@NonNull Task<Void> task) {
-										Log.d(TAG, "onComplete: User added to whitelist");
-									}
-								});
+						//If the project does not have an NDA form grant the user access otherwise request signature
+						if (!ndaFlag) {
+							acceptRequest(documentSnapshot);
+						}
+						else {
+							//Project has an NDA so request a signature
+							requestSignature(documentSnapshot);
+						}
+					}
+				});
+	}
 
-						//On request accepted, set status to accepted
-						documentSnapshot.getReference()
-								.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_ACCEPTED)
-								.addOnCompleteListener(new OnCompleteListener<Void>() {
-									@Override
-									public void onComplete(@NonNull Task<Void> task) {
-										Log.d(TAG, "onComplete: Request accepted and status updated");
-									}
-								});
+	private void acceptRequest(DocumentSnapshot documentSnapshot) {
+		//Retrieve the user UID and put into a string
+		String userUID = documentSnapshot.getString(IdeationContract.PROJECT_REQUESTS_USERUID);
+
+		//Put the requester user UID into the projects whitelist
+		documentSnapshot.getReference().getParent().getParent()
+				.update(IdeationContract.PROJECT_WHITELIST, FieldValue.arrayUnion(userUID))
+				.addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						Log.d(TAG, "onComplete: User added to whitelist");
+					}
+				});
+
+		//On request accepted, set status to accepted
+		documentSnapshot.getReference()
+				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_ACCEPTED)
+				.addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						Log.d(TAG, "onComplete: Request accepted and status updated to request accepted");
+					}
+				});
+	}
+
+	private void requestSignature(DocumentSnapshot documentSnapshot) {
+		//On request accepted, set status to accepted
+		documentSnapshot.getReference()
+				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_SIGNATURE_PENDING)
+				.addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						Log.d(TAG, "onComplete: Request accepted and status updated to signature pending");
 					}
 				});
 	}

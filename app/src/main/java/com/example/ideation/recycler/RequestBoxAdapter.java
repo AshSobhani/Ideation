@@ -75,7 +75,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 				public void onClick(View v) {
 					Log.d(TAG, "onClick: Request Accepted");
 
-					//Get the adapter position
+					//Get the adapter position and check its valid
 					int position = getAdapterPosition();
 					if (position != RecyclerView.NO_POSITION) {
 						//Accept the request by updating request status and adding them to whitelist and notify the holder
@@ -90,7 +90,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 				public void onClick(View v) {
 					Log.d(TAG, "onClick: Request Declined");
 
-					//Get the adapter position
+					//Get the adapter position and check its valid
 					int position = getAdapterPosition();
 					if (position != RecyclerView.NO_POSITION) {
 						//Decline the request by updating request status and notify the holder

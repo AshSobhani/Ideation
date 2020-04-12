@@ -110,7 +110,8 @@ public class DeniedDialog extends AppCompatDialogFragment {
 										//Add a request document to project request
 										db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUIDFinal).collection(IdeationContract.COLLECTION_ACCESS_REQUESTS)
 												.whereEqualTo(IdeationContract.PROJECT_REQUESTS_USERUID, userUID)
-												.whereEqualTo(IdeationContract.PROJECT_REQUESTS_PROJECT, projectTitle).get()
+												.whereEqualTo(IdeationContract.PROJECT_REQUESTS_PROJECT, projectTitle)
+												.whereEqualTo(IdeationContract.PROJECT_REQUESTS_APPLICABLE, IdeationContract.FALSE).get()
 												.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 													@Override
 													public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -142,13 +143,14 @@ public class DeniedDialog extends AppCompatDialogFragment {
 																data.put(IdeationContract.PROJECT_REQUESTS_DATETIME, new Timestamp(new Date()));
 																data.put(IdeationContract.PROJECT_REQUESTS_REASON, requestReason.getText().toString());
 																data.put(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REQUESTED);
+																data.put(IdeationContract.PROJECT_REQUESTS_APPLICABLE, IdeationContract.FALSE);
 
 																//Create a boolean flag field showing if an NDA exists or not
 																if (ndaPath == null) {
-																	data.put(IdeationContract.PROJECT_REQUESTS_NDA_FLAG, IdeationContract.NDA_FLAG_FALSE);
+																	data.put(IdeationContract.PROJECT_REQUESTS_NDA_FLAG, IdeationContract.FALSE);
 																}
 																else {
-																	data.put(IdeationContract.PROJECT_REQUESTS_NDA_FLAG, IdeationContract.NDA_FLAG_TRUE);
+																	data.put(IdeationContract.PROJECT_REQUESTS_NDA_FLAG, IdeationContract.TRUE);
 																}
 
 																//Add a request document to project request

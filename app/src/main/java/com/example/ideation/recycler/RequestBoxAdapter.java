@@ -28,7 +28,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 	}
 
 	@Override
-	protected void onBindViewHolder(@NonNull final RequestBoxHolder holder, int position, @NonNull RequestBox model) {
+	protected void onBindViewHolder(@NonNull final RequestBoxHolder holder, final int position, @NonNull RequestBox model) {
 		//Set the Project Box fields respectively
 		holder.textViewProject.setText(model.getProject());
 		holder.textViewUserName.setText(model.getUserName());
@@ -39,36 +39,6 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 			holder.textViewRequestReason.setText(model.getReason());
 			holder.textViewRequestReason.setVisibility(View.VISIBLE);
 		}
-
-		final int pos = position;
-
-		//If they click the accept request button do as follows
-		holder.acceptRequestButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.d(TAG, "onClick: Request Accepted");
-
-				//Accept the request by updating request status and adding them to whitelist and notify the holder
-				handleRequest(pos);
-
-				Log.d(TAG, "Button clicked position: " + pos);
-				Log.d(TAG, "Items: " + getItemCount());
-			}
-		});
-
-		//If they click the decline request button do as follows
-		holder.declineRequestButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.d(TAG, "onClick: Request Declined");
-
-				//Decline the request by updating request status and notify the holder
-				declineRequest(pos);
-
-				Log.d(TAG, "Button clicked position: " + pos);
-				Log.d(TAG, "Items: " + getItemCount());
-			}
-		});
 	}
 
 	@NonNull
@@ -98,6 +68,36 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 			textViewRequestDateTime = boxView.findViewById(R.id.requestDateTime);
 			acceptRequestButton = boxView.findViewById(R.id.acceptRequestButton);
 			declineRequestButton = boxView.findViewById(R.id.declineRequestButton);
+
+			//If they click the accept request button do as follows
+			acceptRequestButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Log.d(TAG, "onClick: Request Accepted");
+
+					//Get the adapter position
+					int position = getAdapterPosition();
+					if (position != RecyclerView.NO_POSITION) {
+						//Accept the request by updating request status and adding them to whitelist and notify the holder
+						handleRequest(getAdapterPosition());
+					}
+				}
+			});
+
+			//If they click the decline request button do as follows
+			declineRequestButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Log.d(TAG, "onClick: Request Declined");
+
+					//Get the adapter position
+					int position = getAdapterPosition();
+					if (position != RecyclerView.NO_POSITION) {
+						//Decline the request by updating request status and notify the holder
+						declineRequest(position);
+					}
+				}
+			});
 		}
 	}
 
@@ -112,6 +112,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 
 						//If the project does not have an NDA form grant the user access otherwise request signature
 						if (!ndaFlag) {
+							//Project doesn't have an NDA so grant access
 							acceptRequest(documentSnapshot);
 						} else {
 							//Project has an NDA so request a signature
@@ -142,7 +143,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						Log.d(TAG, "onComplete: Request accepted and status updated to request accepted");
-						notifyDataSetChanged();
+						//notifyDataSetChanged();
 					}
 				});
 	}
@@ -155,12 +156,12 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						Log.d(TAG, "onComplete: Request accepted and status updated to signature pending");
-						notifyDataSetChanged();
+						//notifyDataSetChanged();
 					}
 				});
 	}
 
-	private void declineRequest(int position) {
+	private void declineRequest(final int position) {
 		//On request decline request, set status to declined
 		getSnapshots().getSnapshot(position).getReference()
 				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_DECLINED)
@@ -168,7 +169,7 @@ public class RequestBoxAdapter extends FirestoreRecyclerAdapter<RequestBox, Requ
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						Log.d(TAG, "onComplete: Request declined and status updated");
-						notifyDataSetChanged();
+						//notifyDataSetChanged();
 					}
 				});
 	}

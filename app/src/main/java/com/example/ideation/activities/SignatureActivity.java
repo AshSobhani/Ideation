@@ -177,7 +177,8 @@ public class SignatureActivity extends AppCompatActivity {
 	public void onDecline(View v) {
 		//On request declined, set status to request revoked
 		db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).document(requestUID)
-				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_REVOKED)
+				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_REVOKED,
+						IdeationContract.PROJECT_REQUESTS_APPLICABLE, IdeationContract.TRUE)
 				.addOnCompleteListener(new OnCompleteListener<Void>() {
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {

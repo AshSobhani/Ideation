@@ -140,7 +140,7 @@ public class SharedProjectsFragment extends Fragment {
 						adapter.notifyItemChanged(finalViewHolder.getAdapterPosition());
 					}
 				})
-				.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+				.setPositiveButton("Revoke", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
 						//If the deletion is confirmed the delete the project

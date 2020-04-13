@@ -107,31 +107,32 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 					}
 				});
 
-		//Change the request status to access revoked and make the request applicability true
 		//From the current project
 		projectRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 			@Override
 			public void onSuccess(DocumentSnapshot documentSnapshot) {
-				//Get the project title
-				String projectTitle = documentSnapshot.getString(IdeationContract.PROJECT_TITLE);
-				//String projectUID =
-
 				//Get the most recent request by this user
 				projectRef.collection(IdeationContract.COLLECTION_ACCESS_REQUESTS)
 						.whereEqualTo(IdeationContract.PROJECT_REQUESTS_USERUID, userUID)
-						.whereEqualTo(IdeationContract.PROJECT_REQUESTS_PROJECT, projectTitle)
 						.whereEqualTo(IdeationContract.PROJECT_REQUESTS_APPLICABLE, IdeationContract.FALSE)
 						.orderBy(IdeationContract.PROJECT_REQUESTS_DATETIME, Query.Direction.DESCENDING)
 						.limit(1).get()
 						.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 							@Override
 							public void onComplete(@NonNull Task<QuerySnapshot> task) {
+								//Get the request UID
 								String requestUID = task.getResult().getDocuments().get(0).getId();
 
+								//Change its status to revoked and make the project applicable for the user as they have revoked
 								projectRef.collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).document(requestUID)
-										.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REVOKED);
-								projectRef.collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).document(requestUID)
-										.update(IdeationContract.PROJECT_REQUESTS_APPLICABLE, IdeationContract.TRUE);
+										.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_ACCESS_REVOKED, 
+												IdeationContract.PROJECT_REQUESTS_APPLICABLE, IdeationContract.TRUE)
+										.addOnCompleteListener(new OnCompleteListener<Void>() {
+											@Override
+											public void onComplete(@NonNull Task<Void> task) {
+												Log.d(TAG, "onComplete: Access revoked and applicability updated to true");
+											}
+										});
 							}
 						});
 			}

@@ -25,7 +25,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -177,7 +176,7 @@ public class SignatureActivity extends AppCompatActivity {
 	public void onDecline(View v) {
 		//On request declined, set status to request revoked
 		db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).document(requestUID)
-				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_REVOKED,
+				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_SIGNATURE_DENIED,
 						IdeationContract.PROJECT_REQUESTS_APPLICABLE, IdeationContract.TRUE)
 				.addOnCompleteListener(new OnCompleteListener<Void>() {
 					@Override

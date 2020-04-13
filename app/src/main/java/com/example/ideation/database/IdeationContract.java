@@ -42,13 +42,13 @@ public class IdeationContract {
 	public static final String PROJECT_REQUESTS_APPLICABLE = "Applicable";
 
 	//Request Status States
-	public static final String REQUESTS_STATUS_ACCESS_REQUESTED = "Access Requested";
-	public static final String REQUESTS_STATUS_SIGNATURE_PENDING = "Signature Pending";
-	public static final String REQUESTS_STATUS_REQUEST_ACCEPTED = "Request Accepted";
-	public static final String REQUESTS_STATUS_REQUEST_DECLINED = "Request Declined";
-	public static final String REQUESTS_STATUS_ACCESS_REVOKED = "Access Revoked";
-	public static final String REQUESTS_STATUS_REQUEST_REVOKED = "Request Revoked";
-	public static final String REQUESTS_STATUS_PROJECT_ARCHIVED = "Project Archived";
+	public static final String REQUESTS_STATUS_ACCESS_REQUESTED = "Access Requested"; //A user has requested access from a project
+	public static final String REQUESTS_STATUS_SIGNATURE_PENDING = "Signature Pending"; //The request has been accepted with the condition that the NDA is signed off
+	public static final String REQUESTS_STATUS_REQUEST_ACCEPTED = "Request Accepted"; //The request has been full accepted the user now has access
+	public static final String REQUESTS_STATUS_REQUEST_DECLINED = "Request Declined"; //The project owner has declined the users request
+	public static final String REQUESTS_STATUS_ACCESS_REVOKED = "Access Revoked"; //The user has revoked their access privilege after gaining access
+	public static final String REQUESTS_STATUS_SIGNATURE_DENIED = "Signature Denied"; //The user has disagreed to the NDA form and revoked their request
+	public static final String REQUESTS_STATUS_PROJECT_ARCHIVED = "Project Archived"; //The project has been archived
 
 	//Boolean States
 	public static final Boolean TRUE = true;

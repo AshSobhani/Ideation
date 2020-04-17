@@ -1,10 +1,16 @@
 package com.example.ideation.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +45,7 @@ import java.util.Map;
 
 public class NewProjectActivity extends AppCompatActivity {
 	private static final String TAG = "NewProjectActivity";
+	private int STORAGE_PERMISSION_CODE = 1;
 	private static final int PICK_FILE_REQUEST = 1;
 
 	//Initialise variables
@@ -179,11 +186,16 @@ public class NewProjectActivity extends AppCompatActivity {
 	}
 
 	public void onChooseFile(View v) {
-		//Create a new intent looking for PDF files and start it
-		Intent intent = new Intent();
-		intent.setType("application/pdf");
-		intent.setAction(Intent.ACTION_GET_CONTENT);
-		startActivityForResult(intent, PICK_FILE_REQUEST);
+		//If the phone has given the application storage permission the continue in not request
+		if (ContextCompat.checkSelfPermission(NewProjectActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+			Toast.makeText(NewProjectActivity.this, "Permission Okay!",  Toast.LENGTH_SHORT).show();
+
+			//Open file manager to select NDA
+			openFileSelector();
+		} else {
+			//Prompt a request for access
+			requestStoragePermission();
+		}
 	}
 
 	private String getFileExtension(Uri uri) {
@@ -208,5 +220,55 @@ public class NewProjectActivity extends AppCompatActivity {
 			cursor.moveToFirst();
 			fileName.setText(cursor.getString(nameIndex));
 		}
+	}
+
+	private void requestStoragePermission() {
+		if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+				Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+			//Create a dialog explaining why
+			new AlertDialog.Builder(this)
+					.setTitle("Permission Required")
+					.setMessage("Storage permission is required to access your files.")
+					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							ActivityCompat.requestPermissions(NewProjectActivity.this,
+									new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+						}
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					})
+					.create().show();
+		} else {
+			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		//Return whether or not the permission was granted and act accordingly
+		if (requestCode == STORAGE_PERMISSION_CODE)  {
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+
+				//Open file manager to select NDA
+				openFileSelector();
+			} else {
+				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+	private void openFileSelector() {
+		//Create a new intent looking for PDF files and start it
+		Intent intent = new Intent();
+		intent.setType("application/pdf");
+		intent.setAction(Intent.ACTION_GET_CONTENT);
+		startActivityForResult(intent, PICK_FILE_REQUEST);
 	}
 }

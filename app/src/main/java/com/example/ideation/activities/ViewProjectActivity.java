@@ -1,12 +1,18 @@
 package com.example.ideation.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +36,7 @@ import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class ViewProjectActivity extends AppCompatActivity {
 	private static final String TAG = "ViewProjectActivity";
+	private int STORAGE_PERMISSION_CODE = 1;
 
 	//Make variables
 	String projectUID;
@@ -131,11 +138,65 @@ public class ViewProjectActivity extends AppCompatActivity {
 	}
 
 	public void onDownloadAndViewFile(View v) {
+		//If the phone has given the application storage permission the continue in not request
+		if (ContextCompat.checkSelfPermission(ViewProjectActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+			//Download file and navigate user to downloads
+			downloadAndNavigate();
+		} else {
+			//Prompt a request for access
+			requestStoragePermission();
+		}
+	}
+
+	private void requestStoragePermission() {
+		if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+			//Create a dialog explaining why
+			new AlertDialog.Builder(this)
+					.setTitle("Permission Required")
+					.setMessage("Storage permission is required to download to your files.")
+					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							ActivityCompat.requestPermissions(ViewProjectActivity.this,
+									new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+						}
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					})
+					.create().show();
+		} else {
+			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		//Return whether or not the permission was granted and act accordingly
+		if (requestCode == STORAGE_PERMISSION_CODE)  {
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+
+				//Open file manager to select NDA
+				downloadAndNavigate();
+			} else {
+				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+	private void downloadAndNavigate() {
 		//Initialise a download manager
 		DownloadManager downloadManager = (DownloadManager) ViewProjectActivity.this.getSystemService(Context.DOWNLOAD_SERVICE);
 
 		//Enqueue the download request and navigate user to downloads
-		downloadManager.enqueue(request);
-		startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+		if (request != null) {
+			downloadManager.enqueue(request);
+			startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+		}
 	}
 }

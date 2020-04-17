@@ -1,11 +1,16 @@
 package com.example.ideation.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import com.example.ideation.dialogs.DeniedDialog;
 import com.example.ideation.database.IdeationContract;
@@ -15,6 +20,7 @@ import com.example.ideation.R;
 import com.example.ideation.activities.ViewProjectActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,6 +39,9 @@ public class DiscoveryFragment extends Fragment {
 
 	//Initialise Variables
 	private View v;
+	private boolean resultFlag;
+	private TextInputLayout searchTextFieldLayout;
+	private TextView emptyViewField;
 	private RecyclerView recyclerView;
 	private ProjectBoxAdapter adapter;
 	private FirebaseAuth firebaseAuth;
@@ -52,17 +61,56 @@ public class DiscoveryFragment extends Fragment {
 
 		//Find the view and assign to member variable
 		recyclerView = v.findViewById(R.id.projectsRecyclerView);
+		emptyViewField = v.findViewById(R.id.emptyView);
+		searchTextFieldLayout = v.findViewById(R.id.searchTextLayout);
 
-		//Populate the recycler view
-		populateRecyclerView();
+		//Update recycler view with filter and hide keyboard
+		searchTextFieldLayout.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				//Hide the keyboard
+				InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+				if (imm != null) {
+					imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+				}
+
+				//Add filter to recycler view
+				populateRecyclerView(v.getText().toString().toLowerCase());
+				return false;
+			}
+		});
+
+		//Reset filter and clear text box
+		searchTextFieldLayout.setEndIconOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//Clear the text box
+				searchTextFieldLayout.getEditText().setText("");
+
+				//Load projects with no filter
+				populateRecyclerView("");
+			}
+		});
+
+		//Load projects with no filter
+		populateRecyclerView("");
 
 		return v;
 	}
 
-	private void populateRecyclerView() {
+	private void populateRecyclerView(String searchText) {
+		//Set the result flag to false as default
+		resultFlag = false;
+
 		//Create the project collection reference, and if needed add query filer below (priority, by date, etc..)
 		Query query = db.collection(IdeationContract.COLLECTION_PROJECTS);
-		//Query query = projectRef.orderBy("name").startAt(searchText).endAt(searchText + "\uf8ff");
+
+		//If the search is empty then order by date created
+		if (!searchText.equals("")) {
+			query = query.orderBy(IdeationContract.PROJECT_TITLE_SEARCH).startAt(searchText).endAt(searchText + "\uf8ff");
+		} else {
+			query = query.orderBy(IdeationContract.PROJECT_DATE_CREATED, Query.Direction.DESCENDING);
+		}
 
 		//Query the database and build
 		FirestoreRecyclerOptions<ProjectBox> options = new FirestoreRecyclerOptions.Builder<ProjectBox>()
@@ -72,6 +120,34 @@ public class DiscoveryFragment extends Fragment {
 
 		//Assign project box adapter to variable
 		adapter = new ProjectBoxAdapter(options);
+
+		//Check if there are any results if yes show them and hide the no results text
+		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+			public void onItemRangeInserted(int positionStart, int itemCount) {
+				int totalNumberOfItems = adapter.getItemCount();
+
+				//If there are results update view and update flag
+				if(totalNumberOfItems >= 1) {
+					recyclerView.setVisibility(View.VISIBLE);
+					emptyViewField.setVisibility(View.GONE);
+
+					resultFlag = true;
+				}
+			}
+		});
+
+		//Do a result check but wait for results to load and flag to change if flag is false
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			public void run() {
+				//If there are no results
+				if(!resultFlag) {
+					//Set the default view to no results
+					recyclerView.setVisibility(View.GONE);
+					emptyViewField.setVisibility(View.VISIBLE);
+				}
+			}
+		}, 200);
 
 		//Set adapter attributes and start
 		recyclerView.setHasFixedSize(true);

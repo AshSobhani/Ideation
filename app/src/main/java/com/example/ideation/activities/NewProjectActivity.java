@@ -148,6 +148,7 @@ public class NewProjectActivity extends AppCompatActivity {
 						projectInfo.put(IdeationContract.PROJECT_OWNERUID, ownerUID);
 						projectInfo.put(IdeationContract.PROJECT_OWNERNAME, ownerName);
 						projectInfo.put(IdeationContract.PROJECT_TITLE, titleText);
+						projectInfo.put(IdeationContract.PROJECT_TITLE_SEARCH, titleText.toLowerCase());
 						projectInfo.put(IdeationContract.PROJECT_DESCRIPTION, descriptionText);
 						projectInfo.put(IdeationContract.PROJECT_CATEGORY, categoryText);
 						projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, new Timestamp(new Date()));

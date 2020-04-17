@@ -23,6 +23,7 @@ public class IdeationContract {
 	public static final String PROJECT_OWNERUID = "OwnerUID";
 	public static final String PROJECT_OWNERNAME = "OwnerName";
 	public static final String PROJECT_TITLE = "Title";
+	public static final String PROJECT_TITLE_SEARCH = "TitleSearch";
 	public static final String PROJECT_DESCRIPTION = "Description";
 	public static final String PROJECT_CATEGORY = "Category";
 	public static final String PROJECT_DATE_CREATED = "DateCreated";

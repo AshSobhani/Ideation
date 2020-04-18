@@ -92,8 +92,14 @@ public class DiscoveryFragment extends Fragment {
 			}
 		});
 
-		//Load projects with no filter
-		populateRecyclerView("");
+		if(savedInstanceState != null) {
+			//Restore current search and load projects with filter
+			String currentSearch = savedInstanceState.getString("currentSearch");
+			populateRecyclerView(currentSearch);
+		} else {
+			//Load projects with no filter
+			populateRecyclerView("");
+		}
 
 		return v;
 	}
@@ -226,5 +232,12 @@ public class DiscoveryFragment extends Fragment {
 				}
 			}
 		}, 500);
+	}
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		//Save current search
+		outState.putString("currentSearch", searchTextFieldLayout.getEditText().getText().toString().toLowerCase());
+		super.onSaveInstanceState(outState);
 	}
 }

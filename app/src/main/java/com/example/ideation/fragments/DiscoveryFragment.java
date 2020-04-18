@@ -99,9 +99,6 @@ public class DiscoveryFragment extends Fragment {
 	}
 
 	private void populateRecyclerView(String searchText) {
-		//Set the result flag to false as default
-		resultFlag = false;
-
 		//Create the project collection reference, and if needed add query filer below (priority, by date, etc..)
 		Query query = db.collection(IdeationContract.COLLECTION_PROJECTS);
 
@@ -120,6 +117,9 @@ public class DiscoveryFragment extends Fragment {
 
 		//Assign project box adapter to variable
 		adapter = new ProjectBoxAdapter(options);
+
+		//Set default flag to false
+		resultFlag = false;
 
 		//Check if there are any results if yes show them and hide the no results text
 		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -147,7 +147,7 @@ public class DiscoveryFragment extends Fragment {
 					emptyViewField.setVisibility(View.VISIBLE);
 				}
 			}
-		}, 200);
+		}, 500);
 
 		//Set adapter attributes and start
 		recyclerView.setHasFixedSize(true);

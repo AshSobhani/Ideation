@@ -3,12 +3,15 @@ package com.example.ideation.dialogs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.ideation.database.IdeationContract;
 import com.example.ideation.R;
+import com.example.ideation.recycler.ProjectBoxAdapter;
 import com.example.ideation.recycler.RequestBox;
 import com.example.ideation.recycler.RequestBoxAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -30,6 +33,8 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 	private FirebaseAuth firebaseAuth;
 	private RequestBoxAdapter adapter;
 	private RecyclerView recyclerView;
+	private boolean resultFlag;
+	private TextView emptyViewField;
 
 	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -50,6 +55,7 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 
 		//Assign views to variables
 		recyclerView = v.findViewById(R.id.requestsRecyclerView);
+		emptyViewField = v.findViewById(R.id.emptyView);
 
 		//Set the builder view and customise
 		builder.setView(v)
@@ -85,9 +91,61 @@ public class AccessRequestsDialog extends AppCompatDialogFragment {
 		//Assign project box adapter to variable
 		adapter = new RequestBoxAdapter(options);
 
+		//Handle the view (check if empty and use place holder)
+		handleRecyclerView(adapter);
+
 		//Set adapter attributes and start
 		recyclerView.setHasFixedSize(true);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 		recyclerView.setAdapter(adapter);
+	}
+
+	private void handleRecyclerView (final RequestBoxAdapter adapter) {
+		//Set default flag to false
+		resultFlag = false;
+
+		//Check if there are any results if yes show them and hide the no results text
+		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+			public void onItemRangeInserted(int positionStart, int itemCount) {
+				int totalNumberOfItems = adapter.getItemCount();
+
+				//If there are results update view and update flag
+				if(totalNumberOfItems >= 1) {
+					recyclerView.setVisibility(View.VISIBLE);
+					emptyViewField.setVisibility(View.GONE);
+
+					resultFlag = true;
+				}
+			}
+
+			public void onItemRangeRemoved(int positionStart, int itemCount) {
+				int totalNumberOfItems = adapter.getItemCount();
+
+				//If there are results update view and update flag
+				if (totalNumberOfItems >= 1) {
+					recyclerView.setVisibility(View.VISIBLE);
+					emptyViewField.setVisibility(View.GONE);
+
+					resultFlag = true;
+				} else {
+					//Set the default view to no results
+					recyclerView.setVisibility(View.GONE);
+					emptyViewField.setVisibility(View.VISIBLE);
+				}
+			}
+		});
+
+		//Do a result check but wait for results to load and flag to change if flag is false
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			public void run() {
+				//If there are no results
+				if(!resultFlag) {
+					//Set the default view to no results
+					recyclerView.setVisibility(View.GONE);
+					emptyViewField.setVisibility(View.VISIBLE);
+				}
+			}
+		}, 500);
 	}
 }

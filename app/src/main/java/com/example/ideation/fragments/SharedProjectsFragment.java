@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ideation.database.IdeationContract;
 import com.example.ideation.dialogs.SignaturesPendingDialog;
@@ -35,6 +37,8 @@ public class SharedProjectsFragment extends Fragment {
 
 	//Initialise Variables
 	private Button signatureRequestsButton;
+	private TextView emptyViewField;
+	private boolean resultFlag;
 	private RecyclerView recyclerView;
 	private ProjectBoxAdapter adapter;
 	private FirebaseAuth firebaseAuth;
@@ -54,6 +58,7 @@ public class SharedProjectsFragment extends Fragment {
 
 		//Find the view and assign to member variable
 		signatureRequestsButton = v.findViewById(R.id.openSignatureRequests);
+		emptyViewField = v.findViewById(R.id.emptyView);
 		recyclerView = v.findViewById(R.id.projectsRecyclerView);
 
 		//Set an on click listener for the button
@@ -87,6 +92,9 @@ public class SharedProjectsFragment extends Fragment {
 
 		//Assign project box adapter to variable
 		adapter = new ProjectBoxAdapter(options);
+
+		//Handle the view (check if empty and use place holder)
+		handleRecyclerView(adapter);
 
 		//Set adapter attributes and start
 		recyclerView.setHasFixedSize(true);
@@ -159,5 +167,54 @@ public class SharedProjectsFragment extends Fragment {
 		//Make an instance of our access dialog and show it
 		SignaturesPendingDialog signaturesPendingDialog = new SignaturesPendingDialog();
 		signaturesPendingDialog.show(getParentFragmentManager(), "Signatures Pending Dialog");
+	}
+
+	private void handleRecyclerView (final ProjectBoxAdapter adapter) {
+		//Set default flag to false
+		resultFlag = false;
+
+		//Check if there are any results if yes show them and hide the no results text
+		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+			public void onItemRangeInserted(int positionStart, int itemCount) {
+				int totalNumberOfItems = adapter.getItemCount();
+
+				//If there are results update view and update flag
+				if(totalNumberOfItems >= 1) {
+					recyclerView.setVisibility(View.VISIBLE);
+					emptyViewField.setVisibility(View.GONE);
+
+					resultFlag = true;
+				}
+			}
+
+			public void onItemRangeRemoved(int positionStart, int itemCount) {
+				int totalNumberOfItems = adapter.getItemCount();
+
+				//If there are results update view and update flag
+				if (totalNumberOfItems >= 1) {
+					recyclerView.setVisibility(View.VISIBLE);
+					emptyViewField.setVisibility(View.GONE);
+
+					resultFlag = true;
+				} else {
+					//Set the default view to no results
+					recyclerView.setVisibility(View.GONE);
+					emptyViewField.setVisibility(View.VISIBLE);
+				}
+			}
+		});
+
+		//Do a result check but wait for results to load and flag to change if flag is false
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			public void run() {
+				//If there are no results
+				if(!resultFlag) {
+					//Set the default view to no results
+					recyclerView.setVisibility(View.GONE);
+					emptyViewField.setVisibility(View.VISIBLE);
+				}
+			}
+		}, 500);
 	}
 }

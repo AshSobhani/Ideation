@@ -40,8 +40,8 @@ public class DiscoveryFragment extends Fragment {
 	//Initialise Variables
 	private View v;
 	private boolean resultFlag;
-	private TextInputLayout searchTextFieldLayout;
 	private TextView emptyViewField;
+	private TextInputLayout searchTextFieldLayout;
 	private RecyclerView recyclerView;
 	private ProjectBoxAdapter adapter;
 	private FirebaseAuth firebaseAuth;
@@ -84,11 +84,11 @@ public class DiscoveryFragment extends Fragment {
 		searchTextFieldLayout.setEndIconOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//Clear the text box
-				searchTextFieldLayout.getEditText().setText("");
-
 				//Load projects with no filter
 				populateRecyclerView("");
+
+				//Clear the text box
+				searchTextFieldLayout.getEditText().setText("");
 			}
 		});
 
@@ -118,36 +118,8 @@ public class DiscoveryFragment extends Fragment {
 		//Assign project box adapter to variable
 		adapter = new ProjectBoxAdapter(options);
 
-		//Set default flag to false
-		resultFlag = false;
-
-		//Check if there are any results if yes show them and hide the no results text
-		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-			public void onItemRangeInserted(int positionStart, int itemCount) {
-				int totalNumberOfItems = adapter.getItemCount();
-
-				//If there are results update view and update flag
-				if(totalNumberOfItems >= 1) {
-					recyclerView.setVisibility(View.VISIBLE);
-					emptyViewField.setVisibility(View.GONE);
-
-					resultFlag = true;
-				}
-			}
-		});
-
-		//Do a result check but wait for results to load and flag to change if flag is false
-		Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
-			public void run() {
-				//If there are no results
-				if(!resultFlag) {
-					//Set the default view to no results
-					recyclerView.setVisibility(View.GONE);
-					emptyViewField.setVisibility(View.VISIBLE);
-				}
-			}
-		}, 500);
+		//Handle the view (check if empty and use place holder)
+		handleRecyclerView(adapter);
 
 		//Set adapter attributes and start
 		recyclerView.setHasFixedSize(true);
@@ -205,5 +177,54 @@ public class DiscoveryFragment extends Fragment {
 		DeniedDialog deniedDialog = new DeniedDialog();
 		deniedDialog.setArguments(bundle);
 		deniedDialog.show(getParentFragmentManager(), "Denied Dialog");
+	}
+
+	private void handleRecyclerView (final ProjectBoxAdapter adapter) {
+		//Set default flag to false
+		resultFlag = false;
+
+		//Check if there are any results if yes show them and hide the no results text
+		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+			public void onItemRangeInserted(int positionStart, int itemCount) {
+				int totalNumberOfItems = adapter.getItemCount();
+
+				//If there are results update view and update flag
+				if(totalNumberOfItems >= 1) {
+					recyclerView.setVisibility(View.VISIBLE);
+					emptyViewField.setVisibility(View.GONE);
+
+					resultFlag = true;
+				}
+			}
+
+			public void onItemRangeRemoved(int positionStart, int itemCount) {
+				int totalNumberOfItems = adapter.getItemCount();
+
+				//If there are results update view and update flag
+				if (totalNumberOfItems >= 1) {
+					recyclerView.setVisibility(View.VISIBLE);
+					emptyViewField.setVisibility(View.GONE);
+
+					resultFlag = true;
+				} else {
+					//Set the default view to no results
+					recyclerView.setVisibility(View.GONE);
+					emptyViewField.setVisibility(View.VISIBLE);
+				}
+			}
+		});
+
+		//Do a result check but wait for results to load and flag to change if flag is false
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			public void run() {
+				//If there are no results
+				if(!resultFlag) {
+					//Set the default view to no results
+					recyclerView.setVisibility(View.GONE);
+					emptyViewField.setVisibility(View.VISIBLE);
+				}
+			}
+		}, 500);
 	}
 }

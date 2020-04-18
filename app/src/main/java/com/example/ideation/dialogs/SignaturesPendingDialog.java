@@ -4,13 +4,16 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.ideation.R;
 import com.example.ideation.activities.SignatureActivity;
 import com.example.ideation.database.IdeationContract;
+import com.example.ideation.recycler.RequestBoxAdapter;
 import com.example.ideation.recycler.SignatureBox;
 import com.example.ideation.recycler.SignatureBoxAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -28,11 +31,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SignaturesPendingDialog extends AppCompatDialogFragment {
 	private static final String TAG = "SignaturesPendingDialog";
+	private int LAUNCH_SIGNATURE_ACTIVITY = 1;
 	
 	//Initialise variables
 	private FirebaseAuth firebaseAuth;
 	private SignatureBoxAdapter adapter;
 	private RecyclerView recyclerView;
+	private boolean resultFlag;
+	private TextView emptyViewField;
 
 	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -53,6 +59,7 @@ public class SignaturesPendingDialog extends AppCompatDialogFragment {
 
 		//Assign views to variables
 		recyclerView = v.findViewById(R.id.requestsRecyclerView);
+		emptyViewField = v.findViewById(R.id.emptyView);
 
 		//Set the builder view and customise
 		builder.setView(v)
@@ -88,6 +95,9 @@ public class SignaturesPendingDialog extends AppCompatDialogFragment {
 		//Assign project box adapter to variable
 		adapter = new SignatureBoxAdapter(options);
 
+		//Handle the view (check if empty and use place holder)
+		handleRecyclerView(adapter);
+
 		//Set adapter attributes and start
 		recyclerView.setHasFixedSize(true);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -117,6 +127,60 @@ public class SignaturesPendingDialog extends AppCompatDialogFragment {
 		//Create an intent and start view project activity whilst also sending the bundle
 		Intent intent = new Intent(getContext(), SignatureActivity.class);
 		intent.putExtras(bundle);
-		startActivity(intent);
+		startActivityForResult(intent, LAUNCH_SIGNATURE_ACTIVITY);
+	}
+
+	private void handleRecyclerView (final SignatureBoxAdapter adapter) {
+		//Set default flag to false
+		resultFlag = false;
+
+		//Check if there are any results if yes show them and hide the no results text
+		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+			public void onItemRangeInserted(int positionStart, int itemCount) {
+				int totalNumberOfItems = adapter.getItemCount();
+
+				//If there are results update view and update flag
+				if(totalNumberOfItems >= 1) {
+					recyclerView.setVisibility(View.VISIBLE);
+					emptyViewField.setVisibility(View.GONE);
+
+					resultFlag = true;
+				}
+			}
+
+			public void onItemRangeRemoved(int positionStart, int itemCount) {
+				int totalNumberOfItems = adapter.getItemCount();
+
+				//If there are results update view and update flag
+				if (totalNumberOfItems >= 1) {
+					recyclerView.setVisibility(View.VISIBLE);
+					emptyViewField.setVisibility(View.GONE);
+
+					resultFlag = true;
+				} else {
+					//Set the default view to no results
+					recyclerView.setVisibility(View.GONE);
+					emptyViewField.setVisibility(View.VISIBLE);
+				}
+			}
+		});
+
+		//Do a result check but wait for results to load and flag to change if flag is false
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			public void run() {
+				//If there are no results
+				if(!resultFlag) {
+					//Set the default view to no results
+					recyclerView.setVisibility(View.GONE);
+					emptyViewField.setVisibility(View.VISIBLE);
+				}
+			}
+		}, 500);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		handleRecyclerView(adapter);
 	}
 }

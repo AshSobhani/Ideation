@@ -74,7 +74,8 @@ public class DiscoveryFragment extends Fragment {
 					imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 				}
 
-				//Add filter to recycler view
+				//Add filter to recycler view and hide recycler view
+				recyclerView.setVisibility(View.INVISIBLE);
 				populateRecyclerView(v.getText().toString().toLowerCase());
 				return false;
 			}
@@ -231,7 +232,7 @@ public class DiscoveryFragment extends Fragment {
 					emptyViewField.setVisibility(View.VISIBLE);
 				}
 			}
-		}, 500);
+		}, 750);
 	}
 
 	@Override

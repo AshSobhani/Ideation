@@ -60,7 +60,7 @@
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_signin_button"
-        android:onClick="onDownloadAndViewFile"
+        android:onClick="checkPermissionsBeforeDownload"
         android:text="Download Projects NDA"
         android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"

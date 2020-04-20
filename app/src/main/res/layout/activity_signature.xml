@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:background="@drawable/rounded_signin_button"
-        android:onClick="onDownloadAndViewFile"
+        android:onClick="checkPermissionsBeforeDownload"
         android:text="Download Non Disclosure Agreement"
         android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"

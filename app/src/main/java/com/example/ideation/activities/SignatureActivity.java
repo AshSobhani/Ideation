@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -36,6 +37,23 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
@@ -74,6 +92,7 @@ public class SignatureActivity extends AppCompatActivity {
 		confirmPasswordFailedField = findViewById(R.id.confirmPasswordFailedText);
 		confirmPassword = findViewById(R.id.confirmPasswordText);
 
+		//Get the project information
 		retrieveProjectData();
 	}
 
@@ -132,7 +151,7 @@ public class SignatureActivity extends AppCompatActivity {
 				});
 	}
 
-	public void onDownloadAndViewFile(View v) {
+	public void checkPermissionsBeforeDownload(View v) {
 		//If the phone has given the application storage permission the continue in not request
 		if (ContextCompat.checkSelfPermission(SignatureActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 			//Download file and navigate user to downloads
@@ -148,7 +167,7 @@ public class SignatureActivity extends AppCompatActivity {
 		String confirmPasswordText = confirmPassword.getText().toString();
 
 		//Make sure strings are not empty (causing an issue)
-		if(confirmPasswordText.equals("")) {
+		if (confirmPasswordText.equals("")) {
 			confirmPasswordText = "empty";
 		}
 
@@ -166,10 +185,36 @@ public class SignatureActivity extends AppCompatActivity {
 						if (task.isSuccessful()) {
 							Toast.makeText(SignatureActivity.this, "Success!", Toast.LENGTH_SHORT).show();
 
-							//If the password was good then give the user access to the project
-							addUserToProjectWhitelist();
-							//Finish activity and return
-							finish();
+							//Get the user UID
+							final String userUID = firebaseUser.getUid();
+
+							//Access user records
+							db.collection(IdeationContract.COLLECTION_USERS).document(userUID)
+									.get()
+									.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+										@Override
+										public void onSuccess(DocumentSnapshot documentSnapshot) {
+											//Get the user public key encoded string
+											String encodedPublicKeyString = documentSnapshot.getString(IdeationContract.USER_PUBLIC_KEY);
+											//Decode string back into bytes
+											byte[] encodedPublicKey = Base64.decode(encodedPublicKeyString, Base64.NO_WRAP);
+
+											//Hash the NDA file, then sign it, and then verify it...
+											byte[] hashedNDAFile = hashNDAFile();
+											byte[] signedNDAFile = signNDA(userUID, hashedNDAFile);
+											String encodedSignature = verifySignedNDAFile(encodedPublicKey, hashedNDAFile, signedNDAFile);
+
+											if (encodedSignature.equals("Verification Failed")) {
+												confirmPasswordFailedField.setText("Digital signature failed");
+											} else {
+												//If the password was good then give the user access to the project
+												addUserToProjectWhitelist(encodedSignature);
+
+												//Finish activity and return
+												finish();
+											}
+										}
+									});
 						} else {
 							// If sign in fails, display a message to the user.
 							Log.w(TAG, "re-authenticate:failure", task.getException());
@@ -198,7 +243,7 @@ public class SignatureActivity extends AppCompatActivity {
 		finish();
 	}
 
-	private void addUserToProjectWhitelist() {
+	private void addUserToProjectWhitelist(String encodedSignature) {
 		//Retrieve the user UID and put into a string
 		String userUID = firebaseUser.getUid();
 
@@ -214,11 +259,11 @@ public class SignatureActivity extends AppCompatActivity {
 
 		//On request accepted, set status to accepted
 		db.collection(IdeationContract.COLLECTION_PROJECTS).document(projectUID).collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).document(requestUID)
-				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_ACCEPTED)
+				.update(IdeationContract.PROJECT_REQUESTS_STATUS, IdeationContract.REQUESTS_STATUS_REQUEST_ACCEPTED, IdeationContract.PROJECT_REQUESTS_SIGNATURE, encodedSignature)
 				.addOnCompleteListener(new OnCompleteListener<Void>() {
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
-						Log.d(TAG, "onComplete: Request accepted and status updated to request accepted");
+						Log.d(TAG, "onComplete: Request accepted and status updated to request accepted and signature added");
 					}
 				});
 	}
@@ -234,7 +279,7 @@ public class SignatureActivity extends AppCompatActivity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							ActivityCompat.requestPermissions(SignatureActivity.this,
-									new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+									new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
 						}
 					})
 					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -245,22 +290,7 @@ public class SignatureActivity extends AppCompatActivity {
 					})
 					.create().show();
 		} else {
-			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-		}
-	}
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		//Return whether or not the permission was granted and act accordingly
-		if (requestCode == STORAGE_PERMISSION_CODE)  {
-			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
-
-				//Open file manager to select NDA
-				downloadAndNavigate();
-			} else {
-				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
-			}
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
 		}
 	}
 
@@ -272,6 +302,116 @@ public class SignatureActivity extends AppCompatActivity {
 		if (request != null) {
 			downloadManager.enqueue(request);
 			startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+		}
+	}
+
+	public byte[] hashNDAFile() {
+		String dataToSign = "MAMY";
+
+		//Initialise digest
+		MessageDigest digest = null;
+
+		//Get the SHA512 message digest instance
+		try {
+			digest = MessageDigest.getInstance("SHA-512");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+		//Apply the digest to the data to hash the data
+		digest.update(dataToSign.getBytes(StandardCharsets.UTF_8));
+		byte[] hashedNDAFile = digest.digest();
+
+		//Return hashed NDA file
+		return hashedNDAFile;
+	}
+
+	public byte[] signNDA(String signerUID, byte[] hash) {
+		//Initialise signature
+		byte[] signedNDAFile = null;
+
+		try {
+			//Get the keystore instance
+			KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
+			ks.load(null);
+
+			//SIGN
+			//Get the private key from Key Store and store in variable
+			KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) ks.getEntry(signerUID, null);  //null if you don't have key locked up with password
+			PrivateKey privateKey = privateKeyEntry.getPrivateKey();
+
+			//Initialise a signature and get SHA512 with RSA instance
+			Signature signature = Signature.getInstance("SHA512withRSA");
+			//Add the private key to the signature
+			signature.initSign(privateKey);
+			//Add the hashed data to the signature
+			signature.update(hash);
+			//Execute the signature
+			signedNDAFile = signature.sign();
+
+		} catch (SignatureException | UnrecoverableEntryException | NoSuchAlgorithmException | CertificateException | InvalidKeyException | KeyStoreException | IOException e) {
+			e.printStackTrace();
+		}
+
+		//Return the signature
+		return signedNDAFile;
+	}
+
+	public String verifySignedNDAFile(byte[] encodedPublicKey, byte[] hash, byte[] signedNDA) {
+		//Initialise variables
+		boolean verified = false;
+		String encodedSignature = null;
+
+		try {
+			//GET THE USERS PUBLIC KEY
+			//Takes your byte array of the key as constructor parameter
+			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(encodedPublicKey);
+			//Takes algorithm used (RSA) to generate keys
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			//Creates a new PublicKey object
+			PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+
+			//VERIFY THE SIGNATURE
+			//Initialise a signature and get SHA512 with RSA instance
+			Signature verificationSignature = Signature.getInstance("SHA512withRSA");
+			//Add the public key
+			verificationSignature.initVerify(publicKey);
+			//Add the hashed data to the signature
+			verificationSignature.update(hash);
+			//Check if its verified
+			verified = verificationSignature.verify(signedNDA);
+
+		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException | InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
+
+		//If it verifies return the encoded signature to store in request document else return fail
+		if (verified) {
+			Log.d(TAG, "verifiedDeviceSignature: Verified");
+			Toast.makeText(SignatureActivity.this, "VERIFIED", Toast.LENGTH_SHORT).show();
+
+			//Encode the signature so it can be stored and return
+			encodedSignature = new String(Base64.encode(signedNDA, 2));
+			return encodedSignature;
+		} else {
+			Log.d(TAG, "verifiedDeviceSignature: Not Verified");
+			Toast.makeText(SignatureActivity.this, "FAILED", Toast.LENGTH_SHORT).show();
+			return "Verification Failed";
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		//Return whether or not the permission was granted and act accordingly
+		if (requestCode == STORAGE_PERMISSION_CODE) {
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+
+				//Open file manager to select NDA
+				downloadAndNavigate();
+			} else {
+				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 }

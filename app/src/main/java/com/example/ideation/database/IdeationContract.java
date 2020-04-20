@@ -15,6 +15,7 @@ public class IdeationContract {
 	public static final String USER_FIRSTNAME = "FirstName";
 	public static final String USER_LASTNAME = "LastName";
 	public static final String USER_USERNAME = "UserName";
+	public static final String USER_PUBLIC_KEY = "UserPublicKey";
 	public static final String USER_BIO = "Bio";
 	public static final String USER_AGE = "Age";
 	public static final String USER_PHOTOURL = "PhotoUrl";
@@ -39,6 +40,7 @@ public class IdeationContract {
 	public static final String PROJECT_REQUESTS_DATETIME = "DateTime";
 	public static final String PROJECT_REQUESTS_REASON = "Reason";
 	public static final String PROJECT_REQUESTS_STATUS = "Status";
+	public static final String PROJECT_REQUESTS_SIGNATURE = "Signature";
 	public static final String PROJECT_REQUESTS_NDA_FLAG = "NDAFlag";
 	public static final String PROJECT_REQUESTS_APPLICABLE = "Applicable";
 

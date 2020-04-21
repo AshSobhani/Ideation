@@ -176,7 +176,7 @@
         android:layout_marginVertical="4dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/rounded_signin_button"
-        android:onClick="storeKeyAsymmetricTest"
+        android:onClick="onCreateAccount"
         android:text="Create Account"
         android:textColor="@color/colorPrimary"
         android:textSize="15sp"

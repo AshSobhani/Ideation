@@ -1,6 +1,7 @@
 package com.example.ideation.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -8,16 +9,23 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,8 +46,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyStore;
@@ -62,12 +75,15 @@ public class SignatureActivity extends AppCompatActivity {
 	private int STORAGE_PERMISSION_CODE = 1;
 
 	//Make variables
-	String projectUID, requestUID;
+	String projectUID, requestUID, fileName;
 	private TextView titleField, confirmPasswordFailedField;
 	private EditText confirmPassword;
 	private FirebaseUser firebaseUser;
 	private FirebaseAuth firebaseAuth;
 	private DownloadManager.Request request;
+	private BroadcastReceiver onDownloadComplete = null;
+	private Button acceptButton;
+	private byte[] pdfInBytes = null;
 
 	//Get firestore and storage instance and store in variables, and then create storage reference
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -89,6 +105,7 @@ public class SignatureActivity extends AppCompatActivity {
 
 		//Assign views to variables
 		titleField = findViewById(R.id.projectTitleText);
+		acceptButton = findViewById(R.id.acceptButton);
 		confirmPasswordFailedField = findViewById(R.id.confirmPasswordFailedText);
 		confirmPassword = findViewById(R.id.confirmPasswordText);
 
@@ -133,7 +150,7 @@ public class SignatureActivity extends AppCompatActivity {
 					@Override
 					public void onSuccess(Uri uri) {
 						//Create the file name and make a string url
-						String fileName = projectTitle + "NDAForm";
+						fileName = projectTitle + "NDAForm";
 
 						//Create the download request
 						request = new DownloadManager.Request(uri);
@@ -204,6 +221,7 @@ public class SignatureActivity extends AppCompatActivity {
 											byte[] signedNDAFile = signNDA(userUID, hashedNDAFile);
 											String encodedSignature = verifySignedNDAFile(encodedPublicKey, hashedNDAFile, signedNDAFile);
 
+											//If it fails then let the user know and don't process request
 											if (encodedSignature.equals("Verification Failed")) {
 												confirmPasswordFailedField.setText("Digital signature failed");
 											} else {
@@ -296,18 +314,50 @@ public class SignatureActivity extends AppCompatActivity {
 
 	private void downloadAndNavigate() {
 		//Initialise a download manager
-		DownloadManager downloadManager = (DownloadManager) SignatureActivity.this.getSystemService(Context.DOWNLOAD_SERVICE);
+		final DownloadManager downloadManager = (DownloadManager) SignatureActivity.this.getSystemService(Context.DOWNLOAD_SERVICE);
 
 		//Enqueue the download request and navigate user to downloads
 		if (request != null) {
-			downloadManager.enqueue(request);
-			startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+			final long downloadID = downloadManager.enqueue(request);
+
+			//Create a broadcast receiver to receive when downland is done
+			BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+				@RequiresApi(api = Build.VERSION_CODES.O)
+
+				//Do the following when the download is done
+				public void onReceive(Context context, Intent intent) {
+					//Take the user to the downloads page
+					startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+
+					//Create the file directory
+					String fileDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileName + ".pdf";
+
+					//Parse the directory and create a path
+					Uri uri = Uri.parse(fileDirectory);
+					Path filePath = Paths.get(uri.getPath());
+
+					try {
+						//Convert the file into bytes and store in variable
+						pdfInBytes = Files.readAllBytes(filePath);
+
+						//Enable the button and allow them to agree to the NDA
+						acceptButton.setEnabled(true);
+						acceptButton.setTextColor(Color.parseColor("#00ccff"));
+
+						//Check if the bytes give back the PDF
+						//checkBytesToPDF(pdfInBytes);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+
+			//Register to receiver and wait until the download is complete
+			registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 		}
 	}
 
 	public byte[] hashNDAFile() {
-		String dataToSign = "MAMY";
-
 		//Initialise digest
 		MessageDigest digest = null;
 
@@ -318,15 +368,24 @@ public class SignatureActivity extends AppCompatActivity {
 			e.printStackTrace();
 		}
 
-		//Apply the digest to the data to hash the data
-		digest.update(dataToSign.getBytes(StandardCharsets.UTF_8));
-		byte[] hashedNDAFile = digest.digest();
+		//Make sure there are bytes to hash
+		if (pdfInBytes != null) {
+			//Apply the digest to the data to hash the data
+			digest.update(pdfInBytes);
+			byte[] hashedNDAFile = digest.digest();
 
-		//Return hashed NDA file
-		return hashedNDAFile;
+			Toast.makeText(SignatureActivity.this, "Good bytes", Toast.LENGTH_SHORT).show();
+
+			//Return hashed NDA file
+			return hashedNDAFile;
+		} else {
+			//If there are no bytes then return null
+			Toast.makeText(SignatureActivity.this, "No bytes", Toast.LENGTH_SHORT).show();
+			return null;
+		}
 	}
 
-	public byte[] signNDA(String signerUID, byte[] hash) {
+	public byte[] signNDA(String signerUID, byte[] hashedNDAFile) {
 		//Initialise signature
 		byte[] signedNDAFile = null;
 
@@ -345,7 +404,7 @@ public class SignatureActivity extends AppCompatActivity {
 			//Add the private key to the signature
 			signature.initSign(privateKey);
 			//Add the hashed data to the signature
-			signature.update(hash);
+			signature.update(hashedNDAFile);
 			//Execute the signature
 			signedNDAFile = signature.sign();
 
@@ -357,7 +416,7 @@ public class SignatureActivity extends AppCompatActivity {
 		return signedNDAFile;
 	}
 
-	public String verifySignedNDAFile(byte[] encodedPublicKey, byte[] hash, byte[] signedNDA) {
+	public String verifySignedNDAFile(byte[] encodedPublicKey, byte[] hashedNDAFile, byte[] signedNDA) {
 		//Initialise variables
 		boolean verified = false;
 		String encodedSignature = null;
@@ -377,7 +436,7 @@ public class SignatureActivity extends AppCompatActivity {
 			//Add the public key
 			verificationSignature.initVerify(publicKey);
 			//Add the hashed data to the signature
-			verificationSignature.update(hash);
+			verificationSignature.update(hashedNDAFile);
 			//Check if its verified
 			verified = verificationSignature.verify(signedNDA);
 
@@ -400,6 +459,16 @@ public class SignatureActivity extends AppCompatActivity {
 		}
 	}
 
+	private void checkBytesToPDF(byte[] pdfInBytes) throws IOException {
+		//Chose file name and location
+		File outFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/" + "BytesToNDA" + ".pdf");
+
+		//Use the bytes and to populate the file
+		OutputStream out = new FileOutputStream(outFile);
+		out.write(pdfInBytes);
+		out.close();
+	}
+
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		//Return whether or not the permission was granted and act accordingly
@@ -412,6 +481,14 @@ public class SignatureActivity extends AppCompatActivity {
 			} else {
 				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
 			}
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (onDownloadComplete != null) {
+			unregisterReceiver(onDownloadComplete);
 		}
 	}
 }

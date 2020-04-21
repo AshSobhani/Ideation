@@ -39,7 +39,7 @@
         android:id="@+id/signatureDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="24dp"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
         android:text="This project is protected by a digital non disclosure agreement. To gain access you are required to download and read this legal document and accept its conditions."
@@ -54,7 +54,7 @@
         android:id="@+id/downloadNDAButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="24dp"
         android:background="@drawable/rounded_signin_button"
         android:onClick="checkPermissionsBeforeDownload"
         android:text="Download Non Disclosure Agreement"
@@ -64,14 +64,13 @@
         app:layout_constraintTop_toBottomOf="@+id/signatureDescription" />
 
     <TextView
-        android:id="@+id/signatureConsentTitle"
+        android:id="@+id/stepsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="30dp"
         android:gravity="center_vertical"
-        android:text="Digital Signature Consent"
+        android:text="Required Steps:"
         android:textAllCaps="true"
         android:textColor="#333333"
         android:textSize="18sp"
@@ -80,12 +79,41 @@
         app:layout_constraintTop_toBottomOf="@+id/downloadNDAButton" />
 
     <TextView
+        android:id="@+id/stepsBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:text="1. Download and read the NDA \n2. If you agree to its terms confirm your password \n3. Finally click accept to process the signature"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stepsTitle" />
+
+    <TextView
+        android:id="@+id/signatureConsentTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center_vertical"
+        android:text="Digital Signature"
+        android:textAllCaps="true"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stepsBody" />
+
+    <TextView
         android:id="@+id/signatureConsentText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
-        android:text="By clicking accept you are consenting to the conditions stated in the projects NDA form, if you do not consent then please either go back to consider it further, alternately you can disagree and revoke the project request."
+        android:text="By clicking accept you are consenting to the conditions stated in the projects NDA form, if you do not consent then please either go back to consider it further, alternately you can decline to revoke the project request."
         android:textColor="#333333"
         android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -95,12 +123,13 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/outlinedTextField"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="Confirm Password"
-        app:layout_constraintTop_toBottomOf="@+id/signatureConsentText">
+        app:layout_constraintTop_toBottomOf="@+id/signatureConsentText"
+        tools:layout_editor_absoluteX="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/confirmPasswordText"
@@ -131,9 +160,10 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_signin_button"
+        android:enabled="false"
         android:onClick="onSignAndAccept"
         android:text="Accept"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/design_default_color_error"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

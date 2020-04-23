@@ -7,9 +7,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -47,12 +51,14 @@ public class NewProjectActivity extends AppCompatActivity {
 	private static final String TAG = "NewProjectActivity";
 	private int STORAGE_PERMISSION_CODE = 1;
 	private static final int PICK_FILE_REQUEST = 1;
+	private static final String UPLOAD_COMPLETE = "Upload Complete";
 
 	//Initialise variables
 	EditText titleField, descriptionField, categoryField;
 	String titleText, descriptionText, categoryText;
 	private TextView fileName;
 	private ProgressBar progressBar;
+	BroadcastReceiver onUploadComplete;
 
 	//Declare a URI for the PDF
 	private Uri fileUri;
@@ -88,8 +94,20 @@ public class NewProjectActivity extends AppCompatActivity {
 
 		//Add project if fields are not empty and finish activity
 		if (!titleField.equals("") && !descriptionText.equals("") && !categoryText.equals("")) {
+			//Create a broadcast receiver that waits for the upload to finish
+			onUploadComplete = new BroadcastReceiver() {
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					Toast.makeText(getBaseContext(), "Upload Completed!!!", Toast.LENGTH_SHORT).show();
+					finish();
+				}
+			};
+
+			//Register to receiver and wait until the download is complete
+			registerReceiver(onUploadComplete, new IntentFilter(UPLOAD_COMPLETE));
+
+			//Upload the file
 			uploadFileAndAddProject();
-			finish();
 		} else {
 			Toast.makeText(NewProjectActivity.this, "Error: Empty Fields", Toast.LENGTH_SHORT).show();
 		}
@@ -111,6 +129,9 @@ public class NewProjectActivity extends AppCompatActivity {
 							//Get the NDA form path and pass it to the add project function
 							String NDAFormPath = taskSnapshot.getStorage().getPath();
 							addProjectToCollection(NDAFormPath);
+
+							//Send broadcast to let the activity know the upload is complete
+							sendBroadcast(new Intent(UPLOAD_COMPLETE));
 						}
 					})
 					.addOnFailureListener(new OnFailureListener() {
@@ -189,7 +210,7 @@ public class NewProjectActivity extends AppCompatActivity {
 	public void onChooseFile(View v) {
 		//If the phone has given the application storage permission the continue in not request
 		if (ContextCompat.checkSelfPermission(NewProjectActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-			Toast.makeText(NewProjectActivity.this, "Permission Okay!",  Toast.LENGTH_SHORT).show();
+			Toast.makeText(NewProjectActivity.this, "Permission Okay!", Toast.LENGTH_SHORT).show();
 
 			//Open file manager to select NDA
 			openFileSelector();
@@ -235,7 +256,7 @@ public class NewProjectActivity extends AppCompatActivity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							ActivityCompat.requestPermissions(NewProjectActivity.this,
-									new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+									new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
 						}
 					})
 					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -246,14 +267,14 @@ public class NewProjectActivity extends AppCompatActivity {
 					})
 					.create().show();
 		} else {
-			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
 		}
 	}
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		//Return whether or not the permission was granted and act accordingly
-		if (requestCode == STORAGE_PERMISSION_CODE)  {
+		if (requestCode == STORAGE_PERMISSION_CODE) {
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
 
@@ -271,5 +292,13 @@ public class NewProjectActivity extends AppCompatActivity {
 		intent.setType("application/pdf");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		startActivityForResult(intent, PICK_FILE_REQUEST);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (onUploadComplete != null) {
+			unregisterReceiver(onUploadComplete);
+		}
 	}
 }

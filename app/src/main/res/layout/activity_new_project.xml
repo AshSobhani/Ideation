@@ -12,10 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="48dp"
-        android:layout_marginVertical="4dp"
+        android:layout_marginVertical="8dp"
         android:hint="Title"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/layoutProjectDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed">
 
@@ -32,10 +34,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="48dp"
-        android:layout_marginVertical="4dp"
+        android:layout_marginVertical="8dp"
         android:hint="Description"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/layoutProjectCategory"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutProjectTitle">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -51,10 +55,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="48dp"
-        android:layout_marginVertical="4dp"
+        android:layout_marginVertical="8dp"
         android:hint="Category"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/button_choose_file"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutProjectDescription">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -64,12 +70,26 @@
             android:ems="10" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <Button
+        android:id="@+id/button_choose_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_marginLeft="48dp"
+        android:background="@drawable/rounded_signup_button"
+        android:onClick="onChooseFile"
+        android:paddingHorizontal="8dp"
+        android:text="Files"
+        app:layout_constraintBottom_toTopOf="@+id/progress_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutProjectCategory" />
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/fileName"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="48dp"
         android:layout_marginRight="48dp"
+        android:layout_marginLeft="16dp"
         android:background="@drawable/textview_border"
         android:gravity="center"
         android:text="Project NDA (PDF)"
@@ -79,50 +99,30 @@
         app:layout_constraintStart_toEndOf="@+id/button_choose_file"
         app:layout_constraintTop_toTopOf="@+id/button_choose_file" />
 
-    <Button
-        android:id="@+id/button_choose_file"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="4dp"
-        android:background="@drawable/rounded_signup_button"
-        android:onClick="onChooseFile"
-        android:paddingHorizontal="8dp"
-        android:text="Files"
-        app:layout_constraintBottom_toTopOf="@+id/buttonAdd"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutProjectCategory" />
-
     <ProgressBar
         android:id="@+id/progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginHorizontal="48dp"
         android:layout_marginVertical="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonAdd" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonAdd"
+        app:layout_constraintTop_toBottomOf="@+id/button_choose_file" />
 
     <Button
         android:id="@+id/buttonAdd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="48dp"
-        android:layout_marginVertical="4dp"
+        android:layout_marginVertical="8dp"
         android:background="@drawable/rounded_signin_button"
         android:onClick="onAddProject"
         android:text="Save"
         android:textColor="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@id/progress_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_choose_file" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_bar"
+        tools:layout_editor_absoluteX="48dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

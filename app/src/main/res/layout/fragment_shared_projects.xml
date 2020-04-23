@@ -33,7 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/projectsTitle" />
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/projectsRecyclerView"
         android:layout_width="match_parent"
@@ -66,7 +65,7 @@
         android:layout_gravity="bottom"
         android:layout_margin="8dp"
         android:background="@drawable/rounded_signin_button"
-        android:text="Signature Requests"
+        android:text="Pending Signatures"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent" />
 

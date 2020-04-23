@@ -318,7 +318,8 @@ public class SignatureActivity extends AppCompatActivity {
 
 		//Enqueue the download request and navigate user to downloads
 		if (request != null) {
-			final long downloadID = downloadManager.enqueue(request);
+			//Queue the request
+			downloadManager.enqueue(request);
 
 			//Create a broadcast receiver to receive when downland is done
 			BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {

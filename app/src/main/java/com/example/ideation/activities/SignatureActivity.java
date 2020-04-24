@@ -15,7 +15,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -32,6 +31,7 @@ import android.widget.Toast;
 
 import com.example.ideation.R;
 import com.example.ideation.database.IdeationContract;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,6 +43,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -67,6 +69,8 @@ import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
@@ -80,6 +84,7 @@ public class SignatureActivity extends AppCompatActivity {
 	private EditText confirmPassword;
 	private FirebaseUser firebaseUser;
 	private FirebaseAuth firebaseAuth;
+	private FirebaseFunctions firebaseFunctions;
 	private DownloadManager.Request request;
 	private BroadcastReceiver onDownloadComplete = null;
 	private Button acceptButton;
@@ -97,6 +102,7 @@ public class SignatureActivity extends AppCompatActivity {
 		//Assign instance and user to variables
 		firebaseAuth = FirebaseAuth.getInstance();
 		firebaseUser = firebaseAuth.getCurrentUser();
+		firebaseFunctions = FirebaseFunctions.getInstance();
 
 		//Retrieve project UID
 		Bundle bundle = getIntent().getExtras();
@@ -182,12 +188,10 @@ public class SignatureActivity extends AppCompatActivity {
 	public void onSignAndAccept(View v) {
 		//Get the confirmed password attempt as a string
 		String confirmPasswordText = confirmPassword.getText().toString();
-
 		//Make sure strings are not empty (causing an issue)
 		if (confirmPasswordText.equals("")) {
 			confirmPasswordText = "empty";
 		}
-
 		//Minimise the keyboard on action done
 		confirmPassword.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
@@ -200,8 +204,6 @@ public class SignatureActivity extends AppCompatActivity {
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						if (task.isSuccessful()) {
-							Toast.makeText(SignatureActivity.this, "Success!", Toast.LENGTH_SHORT).show();
-
 							//Get the user UID
 							final String userUID = firebaseUser.getUid();
 
@@ -213,24 +215,11 @@ public class SignatureActivity extends AppCompatActivity {
 										public void onSuccess(DocumentSnapshot documentSnapshot) {
 											//Get the user public key encoded string
 											String encodedPublicKeyString = documentSnapshot.getString(IdeationContract.USER_PUBLIC_KEY);
-											//Decode string back into bytes
-											byte[] encodedPublicKey = Base64.decode(encodedPublicKeyString, Base64.NO_WRAP);
 
 											//Hash the NDA file, then sign it, and then verify it...
 											byte[] hashedNDAFile = hashNDAFile();
 											byte[] signedNDAFile = signNDA(userUID, hashedNDAFile);
-											String encodedSignature = verifySignedNDAFile(encodedPublicKey, hashedNDAFile, signedNDAFile);
-
-											//If it fails then let the user know and don't process request
-											if (encodedSignature.equals("Verification Failed")) {
-												confirmPasswordFailedField.setText("Digital signature failed");
-											} else {
-												//If the password was good then give the user access to the project
-												addUserToProjectWhitelist(encodedSignature);
-
-												//Finish activity and return
-												finish();
-											}
+											verifySignature(encodedPublicKeyString, hashedNDAFile, signedNDAFile);
 										}
 									});
 						} else {
@@ -417,6 +406,78 @@ public class SignatureActivity extends AppCompatActivity {
 		return signedNDAFile;
 	}
 
+	private void verifySignature(String encodedPublicKeyString, byte[] hashedNDAFile, byte[] signedNDAFile) {
+		//Encode into strings using base 64
+		final String encodedSignature = new String(Base64.encode(signedNDAFile, 2));
+		String encodedFile = new String(Base64.encode(hashedNDAFile, 2));
+
+		//Send the verification request to the server
+		verifySignatureServerRequest(encodedPublicKeyString, encodedSignature, encodedFile).addOnCompleteListener(new OnCompleteListener<Boolean>() {
+			@Override
+			public void onComplete(@NonNull Task<Boolean> task) {
+				//Get the result on complete
+				boolean result = task.getResult();
+
+				//If the verification passes
+				if (result) {
+					Log.d(TAG, "onComplete: Verification passed");
+					addUserToProjectWhitelist(encodedSignature);
+
+					//Finish activity and return
+					finish();
+				} else {
+					//Notify the user it failed
+					confirmPasswordFailedField.setText("Digital signature failed");
+				}
+			}
+		});
+	}
+
+	private Task<Boolean> verifySignatureServerRequest(String publicKey, String signature, String message) {
+		//Create the arguments to the callable function, which are two integers
+		Map<String, Object> data = new HashMap<>();
+		data.put("publicKey", publicKey);
+		data.put("signature", signature);
+		data.put("message", message);
+
+		//Call the function and extract the operation from the result
+		return firebaseFunctions
+				.getHttpsCallable("verifySignature")
+				.call(data)
+				.continueWith(new Continuation<HttpsCallableResult, Boolean>() {
+					@Override
+					public Boolean then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+						//Get the result and return
+						Map<String, Object> result = (Map<String, Object>) task.getResult().getData();
+						return (Boolean) result.get("verificationResult");
+					}
+				});
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		//Return whether or not the permission was granted and act accordingly
+		if (requestCode == STORAGE_PERMISSION_CODE) {
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+
+				//Open file manager to select NDA
+				downloadAndNavigate();
+			} else {
+				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (onDownloadComplete != null) {
+			unregisterReceiver(onDownloadComplete);
+		}
+	}
+
+	/*
 	public String verifySignedNDAFile(byte[] encodedPublicKey, byte[] hashedNDAFile, byte[] signedNDA) {
 		//Initialise variables
 		boolean verified = false;
@@ -469,27 +530,5 @@ public class SignatureActivity extends AppCompatActivity {
 		out.write(pdfInBytes);
 		out.close();
 	}
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		//Return whether or not the permission was granted and act accordingly
-		if (requestCode == STORAGE_PERMISSION_CODE) {
-			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
-
-				//Open file manager to select NDA
-				downloadAndNavigate();
-			} else {
-				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
-			}
-		}
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		if (onDownloadComplete != null) {
-			unregisterReceiver(onDownloadComplete);
-		}
-	}
+	 */
 }

@@ -123,7 +123,7 @@ public class SignUpActivity extends AppCompatActivity {
 						// Sign up failure, check why the sign up failed
 						if (e instanceof FirebaseAuthWeakPasswordException) {
 							// Password too weak
-							signUpFailedTextField.setText("Password is too week");
+							signUpFailedTextField.setText("Password is too weak");
 						} else if (e instanceof FirebaseAuthInvalidCredentialsException) {
 							// Email address is not a real email address
 							signUpFailedTextField.setText("Please enter a valid email address");
@@ -223,114 +223,4 @@ public class SignUpActivity extends AppCompatActivity {
 			return null;
 		}
 	}
-
-	//PublicKey pubKey;
-//
-//	public void storeKeyAsymmetricTest(View v){
-//		//Initialise the key key pair generator
-//		KeyPairGenerator keyPairGenerator = null;
-//
-//		//Get instance of android keystore's RSA key algorithm
-//		try {
-//			keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
-//		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-//			e.printStackTrace();
-//		}
-//
-//		//Initialise and build a custom keypair generator
-//		try {
-//			keyPairGenerator.initialize(new KeyGenParameterSpec.Builder("TEST", KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
-//					.setDigests(KeyProperties.DIGEST_SHA512, KeyProperties.DIGEST_SHA256)
-//					.setKeySize(2048)
-//					.setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1, KeyProperties.ENCRYPTION_PADDING_RSA_OAEP, KeyProperties.ENCRYPTION_PADDING_NONE)
-//					.setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1, KeyProperties.SIGNATURE_PADDING_RSA_PSS)
-//					.build());
-//
-//			//Generate the key pair and get the public key
-//			KeyPair keyPairAsymmetric = keyPairGenerator.generateKeyPair();
-//			PublicKey devicePublic = keyPairAsymmetric.getPublic();
-//
-//			//Convert to bytes
-//			byte[] encodedPublic = devicePublic.getEncoded();
-//
-//			Log.d(TAG, "SignVerifyTest - Encoded Public: " + encodedPublic);
-//
-//			//String encodedPublicString = new String(encodedPublic, StandardCharsets.ISO_8859_1);
-//			//byte[] encodedPublicKey = encodedPublicString.getBytes(StandardCharsets.ISO_8859_1);
-//
-//			String encodedString = Base64.encodeToString(encodedPublic, Base64.NO_WRAP);
-//
-//			Log.d(TAG, "SignVerifyTest - Encoded Public String After Base64 Encode: " + encodedString);
-//
-//			byte[] encodedPublicKey = Base64.decode(encodedString, Base64.NO_WRAP);
-//
-//			Log.d(TAG, "SignVerifyTest - Encoded Public After Base64 Decode: " + encodedPublicKey);
-//
-//			//Takes your byte array of the key as constructor parameter
-//			X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(encodedPublicKey);
-//			//Takes algorithm used (RSA) to generate keys
-//			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//			//Creates a new PublicKey object
-//			pubKey = keyFactory.generatePublic(pubKeySpec);
-//
-//		} catch (InvalidAlgorithmParameterException e) {
-//			e.printStackTrace();
-//		} catch (NoSuchAlgorithmException e) {
-//			e.printStackTrace();
-//		} catch (InvalidKeySpecException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//
-//	public void verifiedDeviceSignature(View v){
-//		String dataToSign = "MAMAMAMA";
-//
-//		boolean verified = false;
-//		String signature = null;
-//		MessageDigest digest = null;
-//
-//		try {
-//			digest = MessageDigest.getInstance("SHA-512");
-//		} catch (NoSuchAlgorithmException e) {
-//			e.printStackTrace();
-//		}
-//
-//		digest.update(dataToSign.getBytes(StandardCharsets.UTF_8));
-//		byte[] hash = digest.digest();
-//
-//		try {
-//			KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
-//			ks.load(null);
-//
-//			//******This is a PrivateKeyEntry
-//			KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) ks.getEntry("TEST", null);  //null if you don't have key locked up with password
-//			PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-//
-//			Signature s = Signature.getInstance("SHA512withRSA");
-//			s.initSign(privateKey);
-//			s.update(hash);
-//			byte[] sig = s.sign();
-//
-//			Log.d(TAG, "SignVerifyTest - pubKey after generation: " + pubKey);
-//
-//			Signature v1 = Signature.getInstance("SHA512withRSA");
-//			v1.initVerify(pubKey);
-//			v1.update(hash);
-//			verified = v1.verify(sig);
-//
-//			String strSig = new String(Base64.encode(sig, 2));
-//			signature = strSig;
-//
-//
-//
-//		} catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException | UnrecoverableEntryException | InvalidKeyException | SignatureException e) {
-//			e.printStackTrace();
-//		}
-//
-//		if(verified){
-//			Log.d(TAG, "SignVerifyTest: Verified");
-//		} else {
-//			Log.d(TAG, "SignVerifyTest: Not Verified");
-//		}
-//	}
 }

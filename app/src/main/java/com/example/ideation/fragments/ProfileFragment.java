@@ -162,7 +162,7 @@ public class ProfileFragment extends Fragment {
 			verificationField.setText("Verified");
 			resendVerificationButton.setVisibility(getView().INVISIBLE);
 		} else {
-			verificationField.setText("Not Verified");
+			verificationField.setText("Pending");
 			resendVerificationButton.setVisibility(getView().VISIBLE);
 		}
 	}

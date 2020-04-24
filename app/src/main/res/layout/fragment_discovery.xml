@@ -20,7 +20,7 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/searchTextLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
@@ -29,11 +29,16 @@
         android:layout_marginHorizontal="8dp"
         android:layout_marginVertical="16dp"
         android:hint="Search Projects"
+        android:textColorHint="@color/colorPrimary"
+        app:boxBackgroundColor="#EEEEEE"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/discoveryTitle"
-        app:startIconDrawable="@drawable/search_icon">
+        app:startIconDrawable="@drawable/search_icon"
+        app:startIconTint="@color/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/searchText"

@@ -82,7 +82,7 @@ public class SharedProjectsFragment extends Fragment {
 
 		//Get collection reference and add query filer below (priority, by date, etc..)
 		final CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
-		Query query = projectRef.whereArrayContains(IdeationContract.PROJECT_WHITELIST, UID);
+		Query query = projectRef.whereArrayContains(IdeationContract.PROJECT_WHITELIST, UID).whereEqualTo(IdeationContract.PROJECT_ARCHIVED, IdeationContract.FALSE);
 
 		//Query the database and build
 		FirestoreRecyclerOptions<ProjectBox> options = new FirestoreRecyclerOptions.Builder<ProjectBox>()

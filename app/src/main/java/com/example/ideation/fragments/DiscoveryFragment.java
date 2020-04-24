@@ -106,8 +106,8 @@ public class DiscoveryFragment extends Fragment {
 	}
 
 	private void populateRecyclerView(String searchText) {
-		//Create the project collection reference, and if needed add query filer below (priority, by date, etc..)
-		Query query = db.collection(IdeationContract.COLLECTION_PROJECTS);
+		//Create the project collection reference, and filter out archived projects
+		Query query = db.collection(IdeationContract.COLLECTION_PROJECTS).whereEqualTo(IdeationContract.PROJECT_ARCHIVED, IdeationContract.FALSE);
 
 		//If the search is empty then order by date created
 		if (!searchText.equals("")) {

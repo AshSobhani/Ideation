@@ -95,7 +95,7 @@ public class MyProjectsFragment extends Fragment {
 
 		//Get collection reference and add query filer below (priority, by date, etc..)
 		CollectionReference projectRef = db.collection(IdeationContract.COLLECTION_PROJECTS);
-		Query query = projectRef.whereEqualTo(IdeationContract.PROJECT_OWNERUID, userUID);
+		Query query = projectRef.whereEqualTo(IdeationContract.PROJECT_OWNERUID, userUID).whereEqualTo(IdeationContract.PROJECT_ARCHIVED, IdeationContract.FALSE);
 
 		//Query the database and build
 		FirestoreRecyclerOptions<ProjectBox> options = new FirestoreRecyclerOptions.Builder<ProjectBox>()
@@ -165,7 +165,7 @@ public class MyProjectsFragment extends Fragment {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
 						//If the deletion is confirmed the delete the project
-						adapter.deleteProject(finalViewHolder.getAdapterPosition());
+						adapter.archiveProject(finalViewHolder.getAdapterPosition());
 					}
 				});
 

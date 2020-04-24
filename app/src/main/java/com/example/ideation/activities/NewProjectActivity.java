@@ -129,9 +129,6 @@ public class NewProjectActivity extends AppCompatActivity {
 							//Get the NDA form path and pass it to the add project function
 							String NDAFormPath = taskSnapshot.getStorage().getPath();
 							addProjectToCollection(NDAFormPath);
-
-							//Send broadcast to let the activity know the upload is complete
-							sendBroadcast(new Intent(UPLOAD_COMPLETE));
 						}
 					})
 					.addOnFailureListener(new OnFailureListener() {
@@ -166,13 +163,15 @@ public class NewProjectActivity extends AppCompatActivity {
 
 						//Create a hash to store the data before inserting into firebase
 						Map<String, Object> projectInfo = new HashMap<>();
-						projectInfo.put(IdeationContract.PROJECT_OWNERUID, ownerUID);
-						projectInfo.put(IdeationContract.PROJECT_OWNERNAME, ownerName);
 						projectInfo.put(IdeationContract.PROJECT_TITLE, titleText);
-						projectInfo.put(IdeationContract.PROJECT_TITLE_SEARCH, titleText.toLowerCase());
+						projectInfo.put(IdeationContract.PROJECT_OWNERNAME, ownerName);
+						projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, new Timestamp(new Date()));
 						projectInfo.put(IdeationContract.PROJECT_DESCRIPTION, descriptionText);
 						projectInfo.put(IdeationContract.PROJECT_CATEGORY, categoryText);
-						projectInfo.put(IdeationContract.PROJECT_DATE_CREATED, new Timestamp(new Date()));
+						projectInfo.put(IdeationContract.PROJECT_OWNERUID, ownerUID);
+						projectInfo.put(IdeationContract.PROJECT_TITLE_SEARCH, titleText.toLowerCase());
+						projectInfo.put(IdeationContract.PROJECT_ARCHIVED, IdeationContract.FALSE);
+
 						//Initiate the project white list
 						projectInfo.put(IdeationContract.PROJECT_WHITELIST, Arrays.asList("Initiator"));
 
@@ -205,6 +204,9 @@ public class NewProjectActivity extends AppCompatActivity {
 						Log.d(TAG, e.toString());
 					}
 				});
+
+		//Send broadcast to let the activity know the project is added
+		sendBroadcast(new Intent(UPLOAD_COMPLETE));
 	}
 
 	public void onChooseFile(View v) {

@@ -60,7 +60,7 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 		return new ProjectBoxHolder(v);
 	}
 
-	public void deleteProject(int position) {
+	public void archiveProject(int position) {
 		//Create a reference to the project and make it final so it can be accessed in inner class
 		final DocumentReference projectRef = getSnapshots().getSnapshot(position).getReference();
 
@@ -80,8 +80,8 @@ public class ProjectBoxAdapter extends FirestoreRecyclerAdapter<ProjectBox, Proj
 								projectRef.collection(IdeationContract.COLLECTION_ACCESS_REQUESTS).document(document.getId())
 										.set(statusData, SetOptions.merge());
 							}
-							//Delete the document
-							projectRef.delete();
+							//Archive the document
+							projectRef.update(IdeationContract.PROJECT_ARCHIVED, IdeationContract.TRUE);
 						} else {
 							Log.d(TAG, "Error getting documents: ", task.getException());
 						}

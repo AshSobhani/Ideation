@@ -7,7 +7,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -22,7 +21,8 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -54,11 +54,13 @@ public class NewProjectActivity extends AppCompatActivity {
 	private static final String UPLOAD_COMPLETE = "Upload Complete";
 
 	//Initialise variables
-	EditText titleField, descriptionField, categoryField;
+	EditText titleField, descriptionField;
+	AutoCompleteTextView categoryDropdown;
 	String titleText, descriptionText, categoryText;
 	private TextView fileName;
 	private ProgressBar progressBar;
 	BroadcastReceiver onUploadComplete;
+	String[] categories = new String[] {"Health", "Business", "Technology", "Music", "Food", "Design", "Fashion", "Engineering", "Gaming"};
 
 	//Declare a URI for the PDF
 	private Uri fileUri;
@@ -81,16 +83,20 @@ public class NewProjectActivity extends AppCompatActivity {
 		//Assign views to variables
 		titleField = findViewById(R.id.projectTitle);
 		descriptionField = findViewById(R.id.projectDescription);
-		categoryField = findViewById(R.id.projectCategory);
 		fileName = findViewById(R.id.fileName);
 		progressBar = findViewById(R.id.progress_bar);
+		categoryDropdown = findViewById(R.id.projectCategory);
+
+		//Create the adapter and assign it to the drop down menu
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(getBaseContext(), R.layout.dropdown_menu_popup_item, categories);
+		categoryDropdown.setAdapter(adapter);
 	}
 
 	public void onAddProject(View v) {
 		//Retrieve the strings
 		titleText = titleField.getText().toString();
 		descriptionText = descriptionField.getText().toString();
-		categoryText = categoryField.getText().toString();
+		categoryText = categoryDropdown.getText().toString();
 
 		//Add project if fields are not empty and finish activity
 		if (!titleField.equals("") && !descriptionText.equals("") && !categoryText.equals("")) {

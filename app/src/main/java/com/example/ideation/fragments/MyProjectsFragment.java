@@ -140,12 +140,12 @@ public class MyProjectsFragment extends Fragment {
 			@Override
 			public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 				//Show validation dialog - Delete if confirmed and restore if not
-				deleteIfValidated(viewHolder);
+				archiveIfValidated(viewHolder);
 			}
 		}).attachToRecyclerView(recyclerView);
 	}
 
-	private void deleteIfValidated(RecyclerView.ViewHolder viewHolder) {
+	private void archiveIfValidated(RecyclerView.ViewHolder viewHolder) {
 		//Make the view holder final so it can be called in an inner class
 		final RecyclerView.ViewHolder finalViewHolder = viewHolder;
 
@@ -153,7 +153,7 @@ public class MyProjectsFragment extends Fragment {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
 
 		//Set the builder view and customise
-		alertDialogBuilder.setTitle("Are you sure?").setMessage("This project will be deleted permanently and cannot be restored.")
+		alertDialogBuilder.setTitle("Are you sure?").setMessage("This project will be archived permanently and cannot be restored.")
 				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {

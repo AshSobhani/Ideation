@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -26,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 public class ProfileFragment extends Fragment {
@@ -142,10 +145,27 @@ public class ProfileFragment extends Fragment {
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						if (task.isSuccessful()) {
-							Toast.makeText(getContext(), "Verification email resent to " + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
+							//Show a snack bar confirming the verification email has been sent
+							Snackbar.make(getView(), "Verification Sent: " + firebaseUser.getEmail(), BaseTransientBottomBar.LENGTH_LONG)
+									.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary))
+									.setActionTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent))
+									.setAction("OK", new View.OnClickListener() {
+										@Override
+										public void onClick(View v) {
+										}
+									})
+									.show();
 						} else {
-							Log.e(TAG, "sendEmailVerification", task.getException());
-							Toast.makeText(getContext(), "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+							//Show a snack bar notifying the user an email has already been sent
+							Snackbar.make(getView(), "An email has already been sent.", BaseTransientBottomBar.LENGTH_LONG)
+									.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary))
+									.setActionTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent))
+									.setAction("OK", new View.OnClickListener() {
+										@Override
+										public void onClick(View v) {
+										}
+									})
+									.show();
 						}
 					}
 				});

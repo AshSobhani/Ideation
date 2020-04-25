@@ -23,6 +23,7 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -56,6 +57,7 @@ public class NewProjectActivity extends AppCompatActivity {
 	//Initialise variables
 	EditText titleField, descriptionField;
 	TextView addFailedField;
+	Button createButton;
 	AutoCompleteTextView categoryDropdown;
 	String titleText, descriptionText, categoryText;
 	private TextView fileName;
@@ -88,6 +90,7 @@ public class NewProjectActivity extends AppCompatActivity {
 		fileName = findViewById(R.id.fileName);
 		progressBar = findViewById(R.id.progress_bar);
 		categoryDropdown = findViewById(R.id.projectCategory);
+		createButton = findViewById(R.id.buttonAdd);
 
 		//Create the adapter and assign it to the drop down menu
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(getBaseContext(), R.layout.dropdown_menu_popup_item, categories);
@@ -113,6 +116,9 @@ public class NewProjectActivity extends AppCompatActivity {
 
 			//Register to receiver and wait until the download is complete
 			registerReceiver(onUploadComplete, new IntentFilter(UPLOAD_COMPLETE));
+
+			//Disable button to avoid duplicates
+			createButton.setEnabled(false);
 
 			//Upload the file
 			uploadFileAndAddProject();

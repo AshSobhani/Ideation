@@ -2,6 +2,7 @@ package com.example.ideation.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,8 +21,11 @@ import com.example.ideation.R;
 import com.example.ideation.activities.ViewProjectActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -30,6 +34,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,6 +50,7 @@ public class DiscoveryFragment extends Fragment {
 	private RecyclerView recyclerView;
 	private ProjectBoxAdapter adapter;
 	private FirebaseAuth firebaseAuth;
+	private FirebaseUser firebaseUser;
 
 	//Make an database instance
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -58,6 +64,7 @@ public class DiscoveryFragment extends Fragment {
 
 		// Initialize Firebase Auth
 		firebaseAuth = FirebaseAuth.getInstance();
+		firebaseUser = firebaseAuth.getCurrentUser();
 
 		//Find the view and assign to member variable
 		recyclerView = v.findViewById(R.id.projectsRecyclerView);
@@ -137,10 +144,25 @@ public class DiscoveryFragment extends Fragment {
 		adapter.setOnBoxClickListener(new ProjectBoxAdapter.OnBoxClickListener() {
 			@Override
 			public void onBoxClick(DocumentSnapshot documentSnapshot, int position) {
-				//Get owner UID
-				final String projectUID = documentSnapshot.getId();
+				if (firebaseUser.isEmailVerified()) {
+					//Get owner UID
+					final String projectUID = documentSnapshot.getId();
 
-				accessProject(projectUID);
+					accessProject(projectUID);
+				} else {
+					Log.d(TAG, "onBoxClick: Request failed (not verified)");
+
+					//Show a snack prompting the user to verify their email
+					Snackbar.make(getView(), "Email has not yet been verified, this is required to use project discovery.", BaseTransientBottomBar.LENGTH_LONG)
+							.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary))
+							.setActionTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent))
+							.setAction("OK", new View.OnClickListener() {
+								@Override
+								public void onClick(View v) {
+								}
+							})
+							.show();
+				}
 			}
 		});
 	}

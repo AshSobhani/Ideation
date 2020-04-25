@@ -44,14 +44,14 @@
         android:layout_marginBottom="12dp"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="invisible"
+        android:onClick="onEditProject"
         android:tint="@color/common_google_signin_btn_text_dark_focused"
+        android:visibility="invisible"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/ownerAndDateText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/projectTitleText"
         app:maxImageSize="30dp"
-        android:onClick="onEditProject"
         app:srcCompat="@android:drawable/ic_menu_edit"
         app:useCompatPadding="false" />
 
@@ -64,14 +64,14 @@
         android:layout_marginBottom="12dp"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="invisible"
+        android:onClick="onEditDone"
         android:tint="@color/colorPrimaryDark"
+        android:visibility="invisible"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/ownerAndDateText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/projectTitleText"
         app:maxImageSize="35dp"
-        android:onClick="onEditDone"
         app:srcCompat="@drawable/ic_check"
         app:useCompatPadding="false" />
 
@@ -117,6 +117,7 @@
                     android:enabled="false"
                     android:focusable="false"
                     android:inputType="text"
+                    android:maxLength="16"
                     android:textColor="@color/colorPrimaryDark" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,8 +145,9 @@
                     android:clickable="false"
                     android:enabled="false"
                     android:focusable="false"
-                    android:minLines="3"
                     android:inputType="textMultiLine"
+                    android:maxLength="200"
+                    android:minLines="3"
                     android:textColor="@color/colorPrimaryDark" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -173,8 +175,9 @@
                     android:clickable="false"
                     android:enabled="false"
                     android:focusable="false"
-                    android:minLines="3"
                     android:inputType="textMultiLine"
+                    android:maxLength="250"
+                    android:minLines="3"
                     android:textColor="@color/colorPrimaryDark" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -202,6 +205,7 @@
                     android:clickable="false"
                     android:enabled="false"
                     android:focusable="false"
+                    android:maxLength="250"
                     android:minLines="3"
                     android:textColor="@color/colorPrimaryDark" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -230,8 +234,9 @@
                     android:clickable="false"
                     android:enabled="false"
                     android:focusable="false"
-                    android:minLines="3"
                     android:inputType="textMultiLine"
+                    android:maxLength="250"
+                    android:minLines="3"
                     android:textColor="@color/colorPrimaryDark" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -259,8 +264,9 @@
                     android:clickable="false"
                     android:enabled="false"
                     android:focusable="false"
-                    android:minLines="3"
                     android:inputType="textMultiLine"
+                    android:maxLength="250"
+                    android:minLines="3"
                     android:textColor="@color/colorPrimaryDark" />
             </com.google.android.material.textfield.TextInputLayout>
 

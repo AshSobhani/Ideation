@@ -105,20 +105,26 @@ public class ViewProjectActivity extends AppCompatActivity {
 	public void onEditDone(View v) {
 		Log.d(TAG, "onEditProject: Edit Mode");
 
-		//Show save changes button and hide edit project button
-		editProjectButton.setVisibility(View.VISIBLE);
-		editDoneButton.setVisibility(View.INVISIBLE);
-		//Make the text uneditable
-		textEditMode(false);
-
 		//Initialise the alert dialog builder
 		android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
 
 		//Set the builder view and customise
-		alertDialogBuilder.setTitle("Would you like to save these changes?").setMessage("This project will be deleted permanently and cannot be restored.")
+		alertDialogBuilder.setTitle("Commit these changes?").setMessage("If you would like to discard changes select revert, alternately press back to continue editing.")
+				.setNeutralButton("Back", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Log.d(TAG, "onClick: Back to editing");
+					}
+				})
 				.setNegativeButton("Revert", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
+						//Show save changes button and hide edit project button
+						editProjectButton.setVisibility(View.VISIBLE);
+						editDoneButton.setVisibility(View.INVISIBLE);
+						//Make the text uneditable
+						textEditMode(false);
+
 						//Reload data fields
 						retrieveProjectData();
 					}
@@ -126,6 +132,12 @@ public class ViewProjectActivity extends AppCompatActivity {
 				.setPositiveButton("Save", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
+						//Show save changes button and hide edit project button
+						editProjectButton.setVisibility(View.VISIBLE);
+						editDoneButton.setVisibility(View.INVISIBLE);
+						//Make the text uneditable
+						textEditMode(false);
+
 						//Create a hash to store the data before inserting into firebase
 						Map<String, Object> editData = new HashMap<>();
 						editData.put(IdeationContract.PROJECT_CATEGORY, categoryField.getText().toString());

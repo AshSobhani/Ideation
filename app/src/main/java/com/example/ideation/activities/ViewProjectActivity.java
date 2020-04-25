@@ -25,12 +25,15 @@ import com.example.ideation.database.IdeationContract;
 import com.example.ideation.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.text.SimpleDateFormat;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
@@ -65,7 +68,7 @@ public class ViewProjectActivity extends AppCompatActivity {
 
 		//Assign views to variables
 		titleField = findViewById(R.id.projectTitleText);
-		projectOwnerField = findViewById(R.id.projectOwnerText);
+		projectOwnerField = findViewById(R.id.ownerAndDateText);
 		categoryField = findViewById(R.id.categoryText);
 		descriptionField = findViewById(R.id.descriptionText);
 		downloadNDAButton = findViewById(R.id.downloadNDAButton);
@@ -82,9 +85,17 @@ public class ViewProjectActivity extends AppCompatActivity {
 						//Get the project title and assign to final variable
 						final String projectTitle = documentSnapshot.getString(IdeationContract.PROJECT_TITLE);
 
+						//Get the date
+						Timestamp date = documentSnapshot.getTimestamp(IdeationContract.PROJECT_DATE_CREATED);
+						//Change date format to desired format
+						SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
+						String formattedDateCreated = df.format(date.toDate());
+						//Create the owner and date field
+						String ownerAndDate = documentSnapshot.getString(IdeationContract.PROJECT_OWNERNAME) + " | " + formattedDateCreated;
+
 						//Set the text fields
 						titleField.setText(projectTitle);
-						projectOwnerField.setText(documentSnapshot.getString(IdeationContract.PROJECT_OWNERNAME));
+						projectOwnerField.setText(ownerAndDate);
 						categoryField.setText(documentSnapshot.getString(IdeationContract.PROJECT_CATEGORY));
 						descriptionField.setText(documentSnapshot.getString(IdeationContract.PROJECT_DESCRIPTION));
 

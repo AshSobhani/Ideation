@@ -55,6 +55,7 @@ public class NewProjectActivity extends AppCompatActivity {
 
 	//Initialise variables
 	EditText titleField, descriptionField;
+	TextView addFailedField;
 	AutoCompleteTextView categoryDropdown;
 	String titleText, descriptionText, categoryText;
 	private TextView fileName;
@@ -83,6 +84,7 @@ public class NewProjectActivity extends AppCompatActivity {
 		//Assign views to variables
 		titleField = findViewById(R.id.projectTitle);
 		descriptionField = findViewById(R.id.projectDescription);
+		addFailedField = findViewById(R.id.addProjectFailed);
 		fileName = findViewById(R.id.fileName);
 		progressBar = findViewById(R.id.progress_bar);
 		categoryDropdown = findViewById(R.id.projectCategory);
@@ -115,7 +117,7 @@ public class NewProjectActivity extends AppCompatActivity {
 			//Upload the file
 			uploadFileAndAddProject();
 		} else {
-			Toast.makeText(NewProjectActivity.this, "Error: Empty Fields", Toast.LENGTH_SHORT).show();
+			addFailedField.setText("Please fill out all fields.");
 		}
 	}
 

@@ -40,6 +40,8 @@
             android:id="@+id/projectTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="text"
             android:ems="10" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,6 +63,7 @@
             android:id="@+id/projectDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minLines="3"
             android:ems="10" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -82,6 +85,8 @@
             android:id="@+id/projectCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="text"
             android:ems="10" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -136,8 +141,21 @@
         android:onClick="onAddProject"
         android:text="Save"
         android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/addProjectFailed"
+        app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
+
+    <TextView
+        android:id="@+id/addProjectFailed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="48dp"
+        android:paddingLeft="8dp"
+        android:text=""
+        android:textColor="#BA0000"
+        android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progress_bar"
-        tools:layout_editor_absoluteX="48dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonAdd"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

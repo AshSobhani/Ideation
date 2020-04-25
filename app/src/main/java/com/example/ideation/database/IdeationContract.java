@@ -46,6 +46,7 @@ public class IdeationContract {
 	public static final String PROJECT_REQUESTS_REASON = "Reason";
 	public static final String PROJECT_REQUESTS_STATUS = "Status";
 	public static final String PROJECT_REQUESTS_SIGNATURE = "Signature";
+	public static final String PROJECT_REQUESTS_SIGNATURE_DATETIME = "SignatureDateTime";
 	public static final String PROJECT_REQUESTS_NDA_FLAG = "NDAFlag";
 	public static final String PROJECT_REQUESTS_APPLICABLE = "Applicable";
 

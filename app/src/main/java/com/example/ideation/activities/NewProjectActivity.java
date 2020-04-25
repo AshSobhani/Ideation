@@ -109,7 +109,7 @@ public class NewProjectActivity extends AppCompatActivity {
 			onUploadComplete = new BroadcastReceiver() {
 				@Override
 				public void onReceive(Context context, Intent intent) {
-					Toast.makeText(getBaseContext(), "Upload Completed!!!", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getBaseContext(), "Upload Completed!!!", Toast.LENGTH_SHORT).show();
 					finish();
 				}
 			};
@@ -138,7 +138,7 @@ public class NewProjectActivity extends AppCompatActivity {
 					.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 						@Override
 						public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-							Toast.makeText(NewProjectActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
+							//Toast.makeText(NewProjectActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
 
 							//Get the NDA form path and pass it to the add project function
 							String NDAFormPath = taskSnapshot.getStorage().getPath();
@@ -148,7 +148,7 @@ public class NewProjectActivity extends AppCompatActivity {
 					.addOnFailureListener(new OnFailureListener() {
 						@Override
 						public void onFailure(@NonNull Exception e) {
-							Toast.makeText(NewProjectActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+							//Toast.makeText(NewProjectActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 						}
 					})
 					.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -161,7 +161,7 @@ public class NewProjectActivity extends AppCompatActivity {
 					});
 		} else {
 			addProjectToCollection(null);
-			Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -199,13 +199,13 @@ public class NewProjectActivity extends AppCompatActivity {
 								.addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
 									@Override
 									public void onSuccess(DocumentReference documentReference) {
-										Toast.makeText(NewProjectActivity.this, "Project Created", Toast.LENGTH_SHORT).show();
+										//Toast.makeText(NewProjectActivity.this, "Project Created", Toast.LENGTH_SHORT).show();
 									}
 								})
 								.addOnFailureListener(new OnFailureListener() {
 									@Override
 									public void onFailure(@NonNull Exception e) {
-										Toast.makeText(NewProjectActivity.this, "Failed to add project", Toast.LENGTH_SHORT).show();
+										//Toast.makeText(NewProjectActivity.this, "Failed to add project", Toast.LENGTH_SHORT).show();
 										Log.d(TAG, e.toString());
 									}
 								});
@@ -214,7 +214,7 @@ public class NewProjectActivity extends AppCompatActivity {
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(NewProjectActivity.this, "Failed to access user", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(NewProjectActivity.this, "Failed to access user", Toast.LENGTH_SHORT).show();
 						Log.d(TAG, e.toString());
 					}
 				});
@@ -226,7 +226,7 @@ public class NewProjectActivity extends AppCompatActivity {
 	public void onChooseFile(View v) {
 		//If the phone has given the application storage permission the continue in not request
 		if (ContextCompat.checkSelfPermission(NewProjectActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-			Toast.makeText(NewProjectActivity.this, "Permission Okay!", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(NewProjectActivity.this, "Permission Okay!", Toast.LENGTH_SHORT).show();
 
 			//Open file manager to select NDA
 			openFileSelector();
@@ -292,12 +292,12 @@ public class NewProjectActivity extends AppCompatActivity {
 		//Return whether or not the permission was granted and act accordingly
 		if (requestCode == STORAGE_PERMISSION_CODE) {
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
 
 				//Open file manager to select NDA
 				openFileSelector();
 			} else {
-				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
 			}
 		}
 	}

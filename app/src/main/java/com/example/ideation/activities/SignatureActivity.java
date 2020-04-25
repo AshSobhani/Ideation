@@ -142,7 +142,7 @@ public class SignatureActivity extends AppCompatActivity {
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(SignatureActivity.this, "Error: Request Not Found", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(SignatureActivity.this, "Error: Request Not Found", Toast.LENGTH_SHORT).show();
 						Log.d(TAG, e.toString());
 					}
 				});
@@ -230,7 +230,7 @@ public class SignatureActivity extends AppCompatActivity {
 
 							//Notify the user that the password is wrong by changing text field
 							confirmPasswordFailedField.setText("Incorrect password.");
-							Toast.makeText(SignatureActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+							//Toast.makeText(SignatureActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 						}
 					}
 				});
@@ -368,13 +368,13 @@ public class SignatureActivity extends AppCompatActivity {
 			digest.update(pdfInBytes);
 			byte[] hashedNDAFile = digest.digest();
 
-			Toast.makeText(SignatureActivity.this, "Good bytes", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(SignatureActivity.this, "Good bytes", Toast.LENGTH_SHORT).show();
 
 			//Return hashed NDA file
 			return hashedNDAFile;
 		} else {
 			//If there are no bytes then return null
-			Toast.makeText(SignatureActivity.this, "No bytes", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(SignatureActivity.this, "No bytes", Toast.LENGTH_SHORT).show();
 			return null;
 		}
 	}
@@ -463,12 +463,12 @@ public class SignatureActivity extends AppCompatActivity {
 		//Return whether or not the permission was granted and act accordingly
 		if (requestCode == STORAGE_PERMISSION_CODE) {
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
 
 				//Open file manager to select NDA
 				downloadAndNavigate();
 			} else {
-				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -481,50 +481,6 @@ public class SignatureActivity extends AppCompatActivity {
 		}
 	}
 
-	/*
-	public String verifySignedNDAFile(byte[] encodedPublicKey, byte[] hashedNDAFile, byte[] signedNDA) {
-		//Initialise variables
-		boolean verified = false;
-		String encodedSignature = null;
-
-		try {
-			//GET THE USERS PUBLIC KEY
-			//Takes your byte array of the key as constructor parameter
-			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(encodedPublicKey);
-			//Takes algorithm used (RSA) to generate keys
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			//Creates a new PublicKey object
-			PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
-
-			//VERIFY THE SIGNATURE
-			//Initialise a signature and get SHA512 with RSA instance
-			Signature verificationSignature = Signature.getInstance("SHA512withRSA");
-			//Add the public key
-			verificationSignature.initVerify(publicKey);
-			//Add the hashed data to the signature
-			verificationSignature.update(hashedNDAFile);
-			//Check if its verified
-			verified = verificationSignature.verify(signedNDA);
-
-		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException | InvalidKeySpecException e) {
-			e.printStackTrace();
-		}
-
-		//If it verifies return the encoded signature to store in request document else return fail
-		if (verified) {
-			Log.d(TAG, "verifiedDeviceSignature: Verified");
-			Toast.makeText(SignatureActivity.this, "VERIFIED", Toast.LENGTH_SHORT).show();
-
-			//Encode the signature so it can be stored and return
-			encodedSignature = new String(Base64.encode(signedNDA, 2));
-			return encodedSignature;
-		} else {
-			Log.d(TAG, "verifiedDeviceSignature: Not Verified");
-			Toast.makeText(SignatureActivity.this, "FAILED", Toast.LENGTH_SHORT).show();
-			return "Verification Failed";
-		}
-	}
-
 	private void checkBytesToPDF(byte[] pdfInBytes) throws IOException {
 		//Chose file name and location
 		File outFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/" + "BytesToNDA" + ".pdf");
@@ -534,5 +490,4 @@ public class SignatureActivity extends AppCompatActivity {
 		out.write(pdfInBytes);
 		out.close();
 	}
-	 */
 }

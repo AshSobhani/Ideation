@@ -240,7 +240,6 @@ public class ViewProjectActivity extends AppCompatActivity {
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(ViewProjectActivity.this, "Error: Project Not Found", Toast.LENGTH_SHORT).show();
 						Log.d(TAG, e.toString());
 					}
 				});
@@ -316,12 +315,10 @@ public class ViewProjectActivity extends AppCompatActivity {
 		//Return whether or not the permission was granted and act accordingly
 		if (requestCode == STORAGE_PERMISSION_CODE) {
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
-
 				//Open file manager to select NDA
 				downloadAndNavigate();
 			} else {
-				Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
 			}
 		}
 	}

@@ -148,10 +148,9 @@ public class SignUpActivity extends AppCompatActivity {
 					@Override
 					public void onComplete(@NonNull Task<Void> task) {
 						if (task.isSuccessful()) {
-							Toast.makeText(SignUpActivity.this, "Verification email sent to " + user.getEmail(), Toast.LENGTH_SHORT).show();
+							Log.d(TAG, "onComplete: Verification email sent to: " + user.getEmail());
 						} else {
 							Log.e(TAG, "sendEmailVerification", task.getException());
-							Toast.makeText(SignUpActivity.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
 						}
 					}
 				});
@@ -176,13 +175,12 @@ public class SignUpActivity extends AppCompatActivity {
 				.addOnSuccessListener(new OnSuccessListener<Void>() {
 					@Override
 					public void onSuccess(Void aVoid) {
-						Toast.makeText(SignUpActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
+						Log.d(TAG, "onSuccess: User document added");
 					}
 				})
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(SignUpActivity.this, "Error!", Toast.LENGTH_SHORT).show();
 						Log.d(TAG, e.toString());
 					}
 				});

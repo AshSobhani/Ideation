@@ -101,14 +101,14 @@ public class ProfileFragment extends Fragment {
 							checkVerification();
 
 						} else {
-							Toast.makeText(getActivity(), "Document does not exist", Toast.LENGTH_SHORT).show();
+							//Toast.makeText(getActivity(), "Document does not exist", Toast.LENGTH_SHORT).show();
 						}
 					}
 				})
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(getContext(), "Error!", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(getContext(), "Error!", Toast.LENGTH_SHORT).show();
 						Log.d(TAG, e.toString());
 					}
 				});
